@@ -15,3 +15,5 @@ before_script:
   - mysql -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'localhost';"
   # TODO: import data
   - mysql -hlocalhost -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
+# TODO: implement tests
+script: /usr/bin/env true
