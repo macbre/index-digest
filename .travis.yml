@@ -13,7 +13,7 @@ before_script:
   - mysql -u root -e "CREATE DATABASE index_digest;"
   - mysql -u root -e "CREATE USER 'index_digest'@'localhost' IDENTIFIED BY 'qwerty';"
   - mysql -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'localhost';"
-  # TODO: import data
+  - "./sql/populate.sh" # import the test schema files
   - mysql -hlocalhost -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
 # TODO: implement tests
 script: /usr/bin/env true
