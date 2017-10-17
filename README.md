@@ -1,4 +1,7 @@
 # index-digest
+
+[![Build Status](https://travis-ci.org/macbre/index-digest.svg?branch=master)](https://travis-ci.org/macbre/index-digest)
+
 Analyses your database queries and schema and suggests indices improvements
 
 
