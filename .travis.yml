@@ -1,0 +1,19 @@
+language: python
+dist: trusty
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+# @see https://docs.travis-ci.com/user/database-setup/#MySQL
+services:
+  - mysql
+before_script:
+  - mysql -u root -e "CREATE DATABASE index_digest;"
+  - mysql -u root -e "CREATE USER 'index_digest'@'localhost' IDENTIFIED BY 'qwerty';"
+  - mysql -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'localhost';"
+  - "./sql/populate.sh" # import the test schema files
+  - mysql -hlocalhost -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
+# TODO: implement tests
+script: /usr/bin/env true
