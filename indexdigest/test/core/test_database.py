@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from unittest import TestCase
 
 from indexdigest.database import DatabaseBase, Database
@@ -36,5 +38,20 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
     def test_tables(self):
         tables = list(self.connection.tables)
+        print(tables)
 
         self.assertTrue('0000_the_table' in tables)
+
+    def test_variables(self):
+        variables = self.connection.variables()
+        print(variables)
+
+        self.assertTrue('version_compile_os' in variables)
+        self.assertTrue('innodb_version' in variables)
+
+    def test_variables_like(self):
+        variables = self.connection.variables(like='innodb')
+        print(variables)
+
+        self.assertFalse('version_compile_os' in variables)  # this variable does not match given like
+        self.assertTrue('innodb_version' in variables)

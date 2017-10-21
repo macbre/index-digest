@@ -2,6 +2,8 @@
 Database connector wrapper
 """
 import logging
+from collections import OrderedDict
+
 import MySQLdb
 
 from indexdigest.utils import parse_dsn
@@ -46,7 +48,9 @@ class DatabaseBase(object):
         :rtype: Connection
         """
         if self._connection is None:
-            self.logger.info('Lazy connecting to {host} and using {db} database'.format(**self._connection_params))
+            self.logger.info('Lazy connecting to %s and using %s database',
+                             self._connection_params['host'], self._connection_params['db'])
+
             self._connection = MySQLdb.connect(**self._connection_params)
 
         return self._connection
@@ -56,7 +60,7 @@ class DatabaseBase(object):
         :type sql str
         :rtype: MySQLdb.cursors.Cursor
         """
-        self.logger.info('Query: {}'.format(sql))
+        self.logger.info('Query: %s', sql)
 
         cursor = self.connection.cursor()
         cursor.execute(sql)
@@ -88,10 +92,24 @@ class DatabaseBase(object):
         :type sql str
         :rtype: str[]
         """
-        cursor = self.query(sql)
-
-        for row in cursor:
+        for row in self.query(sql):
             yield str(row[0])
+
+    def query_key_value(self, sql):
+        """
+        Returns an ordered dictionary with key / value taken fro first two fields of each row.
+
+        e.g. SHOW VARIABLES
+
+        :type sql str
+        :rtype: OrderedDict
+        """
+        res = OrderedDict()
+
+        for row in self.query(sql):
+            res[row[0]] = row[1]
+
+        return res
 
 
 class Database(DatabaseBase):
@@ -115,3 +133,16 @@ class Database(DatabaseBase):
         :rtype: str[]
         """
         return self.query_list('SHOW TABLES')
+
+    def variables(self, like=None):
+        """
+        Returns the key / value dictionary with server variables
+
+        :type like str
+        :rtype: OrderedDict
+        """
+        sql = 'SHOW VARIABLES'
+        if like is not None:
+            sql += ' LIKE "{}%"'.format(like)
+
+        return self.query_key_value(sql)
