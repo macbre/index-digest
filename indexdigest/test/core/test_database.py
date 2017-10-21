@@ -2,15 +2,8 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.database import DatabaseBase, Database
-
-
-class DatabaseTestMixin(object):
-    DSN = 'mysql://index_digest:qwerty@localhost/index_digest'
-
-    @property
-    def connection(self):
-        return Database.connect_dsn(self.DSN)
+from indexdigest.test import DatabaseTestMixin
+from indexdigest.database import DatabaseBase
 
 
 class TestDatabaseBase(TestCase, DatabaseTestMixin):
