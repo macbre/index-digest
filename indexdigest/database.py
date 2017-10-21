@@ -46,6 +46,7 @@ class DatabaseBase(object):
         :rtype: Connection
         """
         if self._connection is None:
+            self.logger.info('Lazy connecting to {host} and using {db} database'.format(**self._connection_params))
             self._connection = MySQLdb.connect(**self._connection_params)
 
         return self._connection
@@ -55,6 +56,8 @@ class DatabaseBase(object):
         :type sql str
         :rtype: MySQLdb.cursors.Cursor
         """
+        self.logger.info('Query: {}'.format(sql))
+
         cursor = self.connection.cursor()
         cursor.execute(sql)
 
@@ -75,6 +78,20 @@ class DatabaseBase(object):
         :rtype: str
         """
         return self.query_row(sql)[0]
+
+    def query_list(self, sql):
+        """
+        Returns an iterator with the first field on each row.
+
+        e.g. SHOW TABLES
+
+        :type sql str
+        :rtype: str[]
+        """
+        cursor = self.query(sql)
+
+        for row in cursor:
+            yield str(row[0])
 
 
 class Database(DatabaseBase):
@@ -97,7 +114,4 @@ class Database(DatabaseBase):
 
         :rtype: str[]
         """
-        cursor = self.query('SHOW TABLES')
-
-        for row in cursor:
-            print(row)
+        return self.query_list('SHOW TABLES')
