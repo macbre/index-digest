@@ -2,9 +2,10 @@
 Database connector wrapper
 """
 import logging
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 import MySQLdb
+from MySQLdb.cursors import DictCursor
 
 from indexdigest.utils import parse_dsn
 
@@ -73,11 +74,19 @@ class DatabaseBase(object):
         :type sql str
         :rtype: list
         """
-        cursor = self.query(sql)
+        return self.query(sql).fetchone()
 
-        return cursor.fetchone()
+    def query_dict_row(self, sql):
+        """
+        Return a single row as a dictionary
 
-    def query_rows(self, sql):
+        :type sql str
+        :rtype: dict
+        """
+        # DictCursor is a Cursor class that returns rows as dictionaries
+        return self.query(sql, cursor_class=DictCursor).fetchone()
+
+    def query_dict_rows(self, sql):
         """
         Return all rows as dictionaries
 
@@ -85,7 +94,7 @@ class DatabaseBase(object):
         :rtype: dict[]
         """
         # DictCursor is a Cursor class that returns rows as dictionaries
-        for row in self.query(sql, cursor_class=MySQLdb.cursors.DictCursor):
+        for row in self.query(sql, cursor_class=DictCursor):
             yield row
 
     def query_field(self, sql):
@@ -165,4 +174,47 @@ class Database(DatabaseBase):
         :type sql str
         :rtype: list
         """
-        return self.query_rows('EXPLAIN {}'.format(sql))
+        return self.query_dict_rows('EXPLAIN {}'.format(sql))
+
+    def get_table_metadata(self, table_name):
+        """
+        Return table's metadata: columns, indices and stats.
+
+        :type table_name str
+        :rtype: dict
+        """
+        information_schema_where = "WHERE TABLE_SCHEMA='{db}' AND TABLE_NAME='{table_name}'".format(
+            db=self._connection_params['db'], table_name=table_name
+        )
+
+        # 1. table stats
+        # @see https://dev.mysql.com/doc/refman/5.7/en/tables-table.html
+        stats = self.query_dict_row(
+            "SELECT ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH "
+            "FROM information_schema.TABLES " + information_schema_where)
+
+        # 2. columns
+        # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
+        columns = OrderedDict()
+
+        for column in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name)):
+            columns[column['Field']] = column['Type']
+
+        # 3. indices
+        # @see https://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
+        res = self.query_dict_rows(
+            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY "
+            "FROM information_schema.STATISTICS " + information_schema_where)
+
+        indices = defaultdict(list)
+        for row in res:
+            indices[row['INDEX_NAME']].append(row['COLUMN_NAME'])
+
+        return {
+            'engine': stats['ENGINE'],
+            'rows': stats['TABLE_ROWS'],  # For InnoDB the row count is only a rough estimate
+            'data_size': stats['DATA_LENGTH'],
+            'index_size': stats['INDEX_LENGTH'],
+            'columns': columns,
+            'indices': indices,
+        }

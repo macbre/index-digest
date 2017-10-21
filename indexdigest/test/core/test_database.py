@@ -34,13 +34,20 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
         self.assertEqual(cnt, 3)
 
     def test_query_row(self):
-        row = self.connection.query_row('SELECT * FROM 0000_the_table LIMIT 1')
+        row = self.connection.query_row('SELECT * FROM 0000_the_table WHERE id = 1')
 
         self.assertEqual(row[0], 1)
         self.assertEqual(row[1], 'test')
 
-    def test_query_rows(self):
-        rows = list(self.connection.query_rows('SELECT * FROM 0000_the_table'))
+    def test_query_dict_row(self):
+        row = self.connection.query_dict_row('SELECT * FROM 0000_the_table ORDER BY 1')
+        print(row)
+
+        self.assertEqual(row['id'], 1)
+        self.assertEqual(row['foo'], 'test')
+
+    def test_query_dict_rows(self):
+        rows = list(self.connection.query_dict_rows('SELECT * FROM 0000_the_table ORDER BY 1'))
         row = rows[0]
         print(row)
 
@@ -95,3 +102,28 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertEqual(row['key'], 'PRIMARY')
         self.assertEqual(row['table'], '0000_the_table')
         self.assertEqual(row['Extra'], 'Using index')
+
+    def test_get_table_metadata(self):
+        meta = self.connection.get_table_metadata('0000_the_table')
+        print(meta)
+
+        # stats
+        self.assertEqual(meta['engine'], 'InnoDB')
+        self.assertEqual(meta['rows'], 3)
+        self.assertTrue(meta['index_size'] > 0)
+        self.assertTrue(meta['data_size'] > 0)
+
+        # columns
+        self.assertTrue('id' in meta['columns'])
+        self.assertTrue('id' in meta['columns'])
+        self.assertTrue('foo' in meta['columns'])
+        self.assertEqual(meta['columns']['id'], 'int(9)')
+        self.assertEqual(len(meta['columns'].keys()), 2)
+
+        # indices
+        self.assertTrue('PRIMARY' in meta['indices'])
+        self.assertTrue('idx_foo' in meta['indices'])
+        self.assertEqual(meta['indices']['PRIMARY'], ['id', 'foo'])
+        self.assertEqual(meta['indices']['idx_foo'], ['foo'])
+
+        # assert False
