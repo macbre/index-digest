@@ -1,7 +1,10 @@
 """
 This module contains utility functions
 """
-from urlparse import urlparse
+try:
+    from urlparse import urlparse  # Python2
+except ImportError:
+    from urllib.parse import urlparse  # Python3
 
 
 def parse_dsn(dsn):
