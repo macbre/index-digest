@@ -7,6 +7,7 @@ from collections import OrderedDict, defaultdict
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 
+from indexdigest.indices import Index
 from indexdigest.utils import parse_dsn
 
 
@@ -178,7 +179,7 @@ class Database(DatabaseBase):
 
     def get_table_metadata(self, table_name):
         """
-        Return table's metadata: columns, indices and stats.
+        Return table's metadata: columns and stats.
 
         :type table_name str
         :rtype: dict
@@ -200,21 +201,47 @@ class Database(DatabaseBase):
             "FROM information_schema.COLUMNS " + information_schema_where
         )
 
-        # 3. indices
-        # @see https://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
-        res = self.query_dict_rows(
-            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY "
-            "FROM information_schema.STATISTICS " + information_schema_where)
-
-        indices = defaultdict(list)
-        for row in res:
-            indices[row['INDEX_NAME']].append(row['COLUMN_NAME'])
-
         return {
             'engine': stats['ENGINE'],
             'rows': stats['TABLE_ROWS'],  # For InnoDB the row count is only a rough estimate
             'data_size': stats['DATA_LENGTH'],
             'index_size': stats['INDEX_LENGTH'],
             'columns': columns,
-            'indices': indices,
         }
+
+    def get_table_indices(self, table_name):
+        """
+        Return the list of indices for a given table
+
+        :type table_name str
+        :rtype: list[Index]
+        """
+        # @see https://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
+        # @see https://dev.mysql.com/doc/refman/5.7/en/show-index.html
+        res = self.query_dict_rows(
+            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY "
+            "FROM information_schema.STATISTICS "
+            "WHERE TABLE_SCHEMA='{db}' AND TABLE_NAME='{table_name}'".format(
+                db=self._connection_params['db'], table_name=table_name))
+
+        index_columns = defaultdict(list)
+        index_meta = {}
+
+        for row in res:
+            index_name = row['INDEX_NAME']
+            index_columns[index_name].append(row['COLUMN_NAME'])
+
+            if index_name not in index_meta:
+                index_meta[index_name] = {
+                    'unique': row['NON_UNIQUE'] == 0,
+                    'primary': row['INDEX_NAME'] == 'PRIMARY',
+                }
+
+        ret = []
+
+        for index_name, columns in index_columns.iteritems():
+            meta = index_meta[index_name]
+            ret.append(Index(
+                name=index_name, columns=columns, primary=meta['primary'], unique=meta['unique']))
+
+        return ret
