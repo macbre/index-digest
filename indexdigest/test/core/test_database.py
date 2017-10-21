@@ -28,6 +28,17 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
         self.assertTrue('information_schema' in res, res)
         self.assertTrue('index_digest' in res, res)
 
+    def test_query_field(self):
+        cnt = self.connection.query_field('SELECT count(*) FROM 0000_the_table')
+
+        self.assertEqual(cnt, 3)
+
+    def test_query_row(self):
+        row = self.connection.query_row('SELECT * FROM 0000_the_table LIMIT 1')
+
+        self.assertEqual(row[0], 1)
+        self.assertEqual(row[1], 'test')
+
     def test_query_rows(self):
         rows = list(self.connection.query_rows('SELECT * FROM 0000_the_table'))
         row = rows[0]
