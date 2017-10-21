@@ -82,8 +82,13 @@ class Index(object):
         """
         :rtype: str
         """
-        return '<{_}> {type}{name} ({columns})'.format(
-            _=self.__class__.__name__,
+        return '<{}> {}'.format(self.__class__.__name__, str(self))
+
+    def __str__(self):
+        """
+        :rtype: str
+        """
+        return '{type}{name} ({columns})'.format(
             type='PRIMARY KEY' if self.is_primary else 'UNIQUE KEY ' if self.is_unique else 'KEY ',
             name=self.name if not self.is_primary else '',
             columns=', '.join(self.columns)

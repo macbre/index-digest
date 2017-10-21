@@ -1,6 +1,7 @@
 """
 This linter checks for redundant indices from a given set of them
 """
+from . import LinterEntry
 
 
 def get_redundant_indices(indices):
@@ -21,15 +22,16 @@ def get_redundant_indices(indices):
 def check_redundant_indices(database):
     """
     :type database  indexdigest.database.Database
-    :rtype: str
+    :rtype: list[LinterEntry]
     """
     reports = []
 
     for table in database.tables():
         indices = database.get_table_indices(table)
         for (redundant_index, suggested_index) in get_redundant_indices(indices):
-            # use LinterEntry wrapper
-            reports.append('{}: {} index can be removed as redundant (covered by {})'.
-                           format(table, redundant_index, suggested_index))
+            reports.append(
+                LinterEntry(linter_type='redundant_indices', table_name=table,
+                            message='{} index can be removed as redundant (covered by {})'.
+                            format(redundant_index, suggested_index)))
 
     return reports

@@ -26,14 +26,14 @@ class TestRedundantIndices(TestCase, DatabaseTestMixin):
     def test_check_redundant_indices(self):
         reports = check_redundant_indices(self.connection)
         reports = list(filter(
-            lambda i: str(i).startswith('0004_'),
+            lambda i: i.table_name.startswith('0004_'),
             reports
         ))
 
         print(reports)
 
         self.assertEqual(len(reports), 2)
-        self.assertEqual(reports[0], '0004_id_foo: <Index> UNIQUE KEY idx (id, foo) index can be removed as redundant (covered by <Index> PRIMARY KEY (id, foo))')
-        self.assertEqual(reports[1], '0004_id_foo_bar: <Index> KEY idx_foo (foo) index can be removed as redundant (covered by <Index> KEY idx_foo_bar (foo, bar))')
+        self.assertEqual(str(reports[0]), '0004_id_foo: UNIQUE KEY idx (id, foo) index can be removed as redundant (covered by PRIMARY KEY (id, foo))')
+        self.assertEqual(str(reports[1]), '0004_id_foo_bar: KEY idx_foo (foo) index can be removed as redundant (covered by KEY idx_foo_bar (foo, bar))')
 
         # assert False
