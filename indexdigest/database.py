@@ -225,7 +225,7 @@ class Database(DatabaseBase):
                 db=self._connection_params['db'], table_name=table_name))
 
         index_columns = defaultdict(list)
-        index_meta = {}
+        index_meta = OrderedDict()
 
         for row in res:
             index_name = row['INDEX_NAME']
@@ -239,8 +239,8 @@ class Database(DatabaseBase):
 
         ret = []
 
-        for index_name, columns in index_columns.items():
-            meta = index_meta[index_name]
+        for index_name, meta in index_meta.items():
+            columns = index_columns[index_name]
             ret.append(Index(
                 name=index_name, columns=columns, primary=meta['primary'], unique=meta['unique']))
 
