@@ -15,5 +15,6 @@ before_script:
   - mysql -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'localhost';"
   - "./sql/populate.sh" # import the test schema files
   - mysql -hlocalhost -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
-# TODO: implement tests
-script: /usr/bin/env true
+
+install: make install
+script: make test

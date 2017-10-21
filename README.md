@@ -4,6 +4,11 @@
 
 Analyses your database queries and schema and suggests indices improvements
 
+## Requirements
+
+```
+sudo apt-get install libmysqlclient-dev
+```
 
 ## Read more
 
