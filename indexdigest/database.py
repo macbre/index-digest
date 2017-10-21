@@ -112,7 +112,7 @@ class DatabaseBase(object):
         e.g. SHOW TABLES
 
         :type sql str
-        :rtype: str[]
+        :rtype: list[str]
         """
         for row in self.query(sql):
             yield str(row[0])
@@ -151,7 +151,7 @@ class Database(DatabaseBase):
         """
         Returns an iterator with the list of tables.
 
-        :rtype: str[]
+        :rtype: list[str]
         """
         return self.query_list('SHOW TABLES')
 

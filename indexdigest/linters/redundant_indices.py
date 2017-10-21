@@ -16,3 +16,20 @@ def get_redundant_indices(indices):
                 redundant_indices.append((index, compare, ))
 
     return redundant_indices
+
+
+def check_redundant_indices(database):
+    """
+    :type database  indexdigest.database.Database
+    :rtype: str
+    """
+    reports = []
+
+    for table in database.tables():
+        indices = database.get_table_indices(table)
+        for (redundant_index, suggested_index) in get_redundant_indices(indices):
+            # use LinterEntry wrapper
+            reports.append('{}: {} index can be removed as redundant (covered by {})'.
+                           format(table, redundant_index, suggested_index))
+
+    return reports
