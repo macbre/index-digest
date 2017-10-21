@@ -239,7 +239,7 @@ class Database(DatabaseBase):
 
         ret = []
 
-        for index_name, columns in index_columns.iteritems():
+        for index_name, columns in index_columns.items():
             meta = index_meta[index_name]
             ret.append(Index(
                 name=index_name, columns=columns, primary=meta['primary'], unique=meta['unique']))

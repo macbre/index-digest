@@ -19,6 +19,37 @@ class Index(object):
         self._unique = unique
         self._primary = primary
 
+    def is_covered_by(self, index):
+        """
+        Checks if a current index is covered by a different one
+
+        Examples:
+
+        PRIMARY KEY (`id`,`foo`),
+        UNIQUE KEY `idx` (`id`,`foo`)  # redundant
+
+        PRIMARY KEY (`id`),
+        KEY `idx_foo` (`foo`),  # redundant (covered by idx_foo_bar)
+        KEY `idx_foo_bar` (`foo`, `bar`),
+        KEY `idx_id_foo` (`id`, `foo`)
+
+        :type index Index
+        :rtype: bool
+        """
+        # @see https://github.com/macbre/index-digest/issues/4
+
+        # assume primary is never covered by other indices (plus self check)
+        if self.is_primary or self == index:
+            return False
+
+        # now take the subset of columns from the index we're comparing ourselves too
+        columns_cnt = len(self.columns)
+
+        if self.columns == index.columns[:columns_cnt]:
+            return True
+
+        return False
+
     @property
     def name(self):
         """
