@@ -11,9 +11,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         'docopt==0.6.2',
-        'coverage==4.0.1',
-        'pylint==1.4.4',
-        'pytest==2.8.2',
+        'coverage==4.4.1',
+        'pylint==1.7.4',
+        'pytest==3.2.3',
         'mysqlclient==1.3.12',
     ],
     entry_points={
