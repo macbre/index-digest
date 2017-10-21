@@ -18,3 +18,6 @@ before_script:
 
 install: make install
 script: make test && make lint
+
+# @see https://github.com/nickstenning/travis-pip-cache/issues/1
+cache: pip
