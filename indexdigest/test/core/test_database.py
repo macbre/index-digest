@@ -28,6 +28,16 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
         self.assertTrue('information_schema' in res, res)
         self.assertTrue('index_digest' in res, res)
 
+    def test_query_rows(self):
+        rows = list(self.connection.query_rows('SELECT * FROM 0000_the_table'))
+        row = rows[0]
+        print(row)
+
+        self.assertEqual(len(rows), 3)
+
+        self.assertEqual(row['id'], 1)
+        self.assertEqual(row['foo'], 'test')
+
 
 class TestDatabase(TestCase, DatabaseTestMixin):
 
@@ -55,3 +65,22 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
         self.assertFalse('version_compile_os' in variables)  # this variable does not match given like
         self.assertTrue('innodb_version' in variables)
+
+    def test_explain_query(self):
+        """
+        mysql> EXPLAIN SELECT * FROM 0000_the_table WHERE id = 2;
+        +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
+        | id | select_type | table          | type | possible_keys | key     | key_len | ref   | rows | Extra       |
+        +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
+        |  1 | SIMPLE      | 0000_the_table | ref  | PRIMARY,idx   | PRIMARY | 4       | const |    1 | Using index |
+        +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
+        1 row in set (0.00 sec)
+        """
+        res = list(self.connection.explain_query('SELECT * FROM 0000_the_table WHERE id = 2'))
+        row = res[0]
+        print(row)
+
+        self.assertEqual(len(res), 1)
+        self.assertEqual(row['key'], 'PRIMARY')
+        self.assertEqual(row['table'], '0000_the_table')
+        self.assertEqual(row['Extra'], 'Using index')

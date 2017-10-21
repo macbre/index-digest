@@ -55,14 +55,15 @@ class DatabaseBase(object):
 
         return self._connection
 
-    def query(self, sql):
+    def query(self, sql, cursor_class=None):
         """
         :type sql str
+        :type cursor_class MySQLdb.cursors.BaseCursor
         :rtype: MySQLdb.cursors.Cursor
         """
         self.logger.info('Query: %s', sql)
 
-        cursor = self.connection.cursor()
+        cursor = self.connection.cursor(cursorclass=cursor_class)
         cursor.execute(sql)
 
         return cursor
@@ -75,6 +76,17 @@ class DatabaseBase(object):
         cursor = self.query(sql)
 
         return cursor.fetchone()
+
+    def query_rows(self, sql):
+        """
+        Return all rows as dictionaries
+
+        :type sql str
+        :rtype: dict[]
+        """
+        # DictCursor is a Cursor class that returns rows as dictionaries
+        for row in self.query(sql, cursor_class=MySQLdb.cursors.DictCursor):
+            yield row
 
     def query_field(self, sql):
         """
@@ -145,3 +157,12 @@ class Database(DatabaseBase):
             sql += ' LIKE "{}%"'.format(like)
 
         return self.query_key_value(sql)
+
+    def explain_query(self, sql):
+        """
+        Runs EXPLAIN query for a given SQL
+
+        :type sql str
+        :rtype: list
+        """
+        return self.query_rows('EXPLAIN {}'.format(sql))
