@@ -125,7 +125,6 @@ class Database(DatabaseBase):
         """
         return self.query_field('SELECT VERSION()')
 
-    @property
     def tables(self):
         """
         Returns an iterator with the list of tables.

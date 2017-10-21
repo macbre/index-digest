@@ -37,7 +37,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
 
     def test_tables(self):
-        tables = list(self.connection.tables)
+        tables = list(self.connection.tables())
         print(tables)
 
         self.assertTrue('0000_the_table' in tables)
