@@ -195,10 +195,10 @@ class Database(DatabaseBase):
 
         # 2. columns
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
-        columns = OrderedDict()
-
-        for column in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name)):
-            columns[column['Field']] = column['Type']
+        columns = self.query_key_value(
+            "SELECT COLUMN_NAME, DATA_TYPE "
+            "FROM information_schema.COLUMNS " + information_schema_where
+        )
 
         # 3. indices
         # @see https://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
