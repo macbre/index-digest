@@ -17,6 +17,8 @@ Examples:
 
 Visit <https://github.com/macbre/index-digest>
 """
+from __future__ import print_function
+
 import logging
 from docopt import docopt
 
