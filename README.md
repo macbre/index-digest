@@ -4,6 +4,14 @@
 
 Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as your database linter.
 
+`index-digest` does the following:
+
+* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices)
+* if provided with SQL queries log (via `--sql-log` option) it:
+  * checks if all tables, columns and indices are used by these queries
+  * reports queries that do not use indices
+  * reports queries that use filesort or temporary file
+
 ## Requirements
 
 ```
