@@ -27,11 +27,13 @@ class DatabaseBase(object):
         :type passwd str
         :type db str
         """
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logging.getLogger(__name__)
+        self.query_logger = logging.getLogger(__name__ + '.query')
 
         # lazy connect
         self._connection_params = dict(host=host, user=user, passwd=passwd, db=db)
         self._connection = None
+        self.db_name = db
 
     @classmethod
     def connect_dsn(cls, dsn):
@@ -63,7 +65,7 @@ class DatabaseBase(object):
         :type cursor_class MySQLdb.cursors.BaseCursor
         :rtype: MySQLdb.cursors.Cursor
         """
-        self.logger.info('Query: %s', sql)
+        self.query_logger.info('%s', sql)
 
         cursor = self.connection.cursor(cursorclass=cursor_class)
         cursor.execute(sql)
