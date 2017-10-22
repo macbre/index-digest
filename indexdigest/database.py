@@ -147,7 +147,7 @@ class Database(DatabaseBase):
         """
         return self.query_field('SELECT VERSION()')
 
-    def tables(self):
+    def get_tables(self):
         """
         Returns an iterator with the list of tables.
 
@@ -155,7 +155,7 @@ class Database(DatabaseBase):
         """
         return self.query_list('SHOW TABLES')
 
-    def variables(self, like=None):
+    def get_variables(self, like=None):
         """
         Returns the key / value dictionary with server variables
 

@@ -59,21 +59,21 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
         self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
 
-    def test_tables(self):
-        tables = list(self.connection.tables())
+    def test_get_tables(self):
+        tables = list(self.connection.get_tables())
         print(tables)
 
         self.assertTrue(self.TABLE_NAME in tables)
 
-    def test_variables(self):
-        variables = self.connection.variables()
+    def test_get_variables(self):
+        variables = self.connection.get_variables()
         print(variables)
 
         self.assertTrue('version_compile_os' in variables)
         self.assertTrue('innodb_version' in variables)
 
-    def test_variables_like(self):
-        variables = self.connection.variables(like='innodb')
+    def test_get_variables_like(self):
+        variables = self.connection.get_variables(like='innodb')
         print(variables)
 
         self.assertFalse('version_compile_os' in variables)  # this variable does not match given like

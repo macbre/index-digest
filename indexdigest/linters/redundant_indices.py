@@ -26,7 +26,7 @@ def check_redundant_indices(database):
     """
     reports = []
 
-    for table in database.tables():
+    for table in database.get_tables():
         indices = database.get_table_indices(table)
         for (redundant_index, suggested_index) in get_redundant_indices(indices):
             reports.append(
