@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from indexdigest.query import get_query_columns
+from indexdigest.query import get_query_columns, get_query_tables
 
 
 class TestUtils(TestCase):
@@ -23,5 +23,23 @@ class TestUtils(TestCase):
 
         self.assertListEqual(['bar'],
                              get_query_columns('SELECT /* a comment */ bar FROM test_table'))
+
+        # assert False
+
+    def test_get_query_tables(self):
+        self.assertListEqual(['test_table'],
+                             get_query_tables('SELECT * FROM `test_table`'))
+
+        self.assertListEqual(['test_table'],
+                             get_query_tables('SELECT foo FROM `test_table`'))
+
+        self.assertListEqual(['test_table'],
+                             get_query_tables('SELECT foo FROM test_table WHERE id = 1'))
+
+        self.assertListEqual(['test_table', 'second_table'],
+                             get_query_tables('SELECT foo FROM test_table, second_table WHERE id = 1'))
+
+        self.assertListEqual(['revision', 'page', 'wikicities_user'],
+                             get_query_tables('SELECT rev_id,rev_page,rev_text_id,rev_timestamp,rev_comment,rev_user_text,rev_user,rev_minor_edit,rev_deleted,rev_len,rev_parent_id,rev_shaN,page_namespace,page_title,page_id,page_latest,user_name FROM `revision` INNER JOIN `page` ON ((page_id = rev_page)) LEFT JOIN `wikicities_user` ON ((rev_user != N) AND (user_id = rev_user)) WHERE rev_id = X LIMIT N'))
 
         # assert False

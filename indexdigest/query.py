@@ -48,3 +48,33 @@ def get_query_columns(query):
         last_token = token.value.upper()
 
     return columns
+
+
+def get_query_tables(query):
+    """
+    :type query str
+    :rtype: list[str]
+    """
+    tables = []
+    last_keyword = None
+    last_token = None
+
+    table_syntax_keywords = ['FROM', 'WHERE', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON']
+
+    for token in get_query_tokens(query):
+        if token.is_keyword and token.value.upper() in table_syntax_keywords:
+            # keep the name of the last keyword
+            last_keyword = token.value.upper()
+            # print('keyword', last_keyword)
+        elif token.ttype is Name:
+            # analyze the name tokens, column names and where condition values
+            if last_keyword in ['FROM', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN'] \
+                    and last_token not in ['AS']:
+                # print(last_keyword, last_token, token.value)
+
+                if token.value not in tables:
+                    tables.append(token.value.strip('`'))
+
+        last_token = token.value.upper()
+
+    return tables
