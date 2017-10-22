@@ -1,9 +1,11 @@
 from setuptools import setup, find_packages
 
+from indexdigest import VERSION
+
 # @see https://github.com/pypa/sampleproject/blob/master/setup.py
 setup(
     name='indexdigest',
-    version='0.1.0',
+    version=VERSION,
     author='Maciej Brencz',
     author_email='maciej.brencz@gmail.com',
     description='Analyses your database queries and schema and suggests indices improvements',
@@ -18,7 +20,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'index_digest=indexdigest.cli:main',
+            'index_digest=indexdigest.cli.script:main',
         ],
     }
 )
