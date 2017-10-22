@@ -22,16 +22,3 @@ class LinterEntry(object):
     def __str__(self):
         return '{table_name}: {message}'.format(
             table_name=self.table_name, message=self.message)
-
-    def is_of_type(self, type_to_check):
-        """
-        :type type_to_check str
-        :rtype: bool
-        """
-        return self.linter_type == type_to_check
-
-    def get_context(self):
-        """
-        :rtype: dict
-        """
-        return self.context
