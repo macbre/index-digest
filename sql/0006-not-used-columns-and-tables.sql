@@ -10,6 +10,11 @@ CREATE TABLE `0006_not_used_columns` (
 	PRIMARY KEY (`id`)
 );
 
+INSERT INTO 0006_not_used_columns VALUES
+    (1, 'test', NULL, NULL),
+    (42, 'foo', 'test', NULL),
+    (3, 'foo', '', 'check');
+
 DROP TABLE IF EXISTS `0006_not_used_tables`;
 CREATE TABLE `0006_not_used_tables` (
 	`id` int(9) NOT NULL AUTO_INCREMENT,
