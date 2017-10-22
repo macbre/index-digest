@@ -44,10 +44,20 @@ not_used_tables / 0006_not_used_tables
 
 	n/a
 ------------------------------------------------------------------------------------------------------------------------
+not_used_columns / 0006_not_used_columns
+
+	bar column was not used by provided queries
+
+	{
+	 "column_type": "varchar",
+	 "column_name": "bar"
+	}
+------------------------------------------------------------------------------------------------------------------------
 ```
 
 ## Checks
 
+* `not_used_columns`: using provided SQL log file (via `--sql-log`) checks which columns were not used by SELECT queries
 * `not_used_tables`: using provided SQL log file (via `--sql-log`) checks which tables are not used by SELECT queries
 * `redundant_indices`: reports indices that are redundant and covered by other
 
