@@ -14,10 +14,7 @@ def get_query_tokens(query):
     """
     tokens = TokenList(sqlparse.parse(query)[0].tokens).flatten()
 
-    return filter(
-        lambda token: token.ttype is not Whitespace,
-        tokens
-    )
+    return [token for token in tokens if token.ttype is not Whitespace]
 
 
 def get_query_columns(query):

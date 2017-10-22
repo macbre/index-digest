@@ -26,10 +26,7 @@ def check_not_used_tables(database, queries):
                 used_tables.add(row['table'])
 
     # now check which tables were not used
-    not_used_tables = filter(
-        lambda t: t not in used_tables,
-        tables
-    )
+    not_used_tables = [table for table in tables if table not in used_tables]
 
     # generate reports
     reports = []
