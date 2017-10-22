@@ -3,17 +3,19 @@
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN
+  index_digest DSN [--sql-log=<file>]
   index_digest (-h | --help)
   index_digest --version
 
 Options:
   DSN               Data Source Name of database to check
+  --sql-log=<file>  Text file with SQL queries to check against the database
   -h --help         Show this screen.
   --version         Show version.
 
 Examples:
   index_digest mysql://index_digest:qwerty@localhost/index_digest
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
 
 Visit <https://github.com/macbre/index-digest>
 """
@@ -26,7 +28,7 @@ from docopt import docopt
 import indexdigest
 from indexdigest.database import Database
 from indexdigest.linters import \
-    check_not_used_columns_and_tables, \
+    check_not_used_tables, \
     check_redundant_indices
 
 
@@ -44,9 +46,22 @@ def main():
     database = Database.connect_dsn(arguments['DSN'])
     logger.debug('Connected to MySQL server v%s', database.get_server_info())
 
+    # read SQL log file (if provided)
+    sql_log = arguments.get('--sql-log')
+    if sql_log:
+        logger.debug('Trying to open SQL log file: %s', sql_log)
+
+        with open(sql_log) as log_file:
+            queries = log_file.readlines()
+            logger.debug('Got %d entries in SQL log file', len(queries))
+    else:
+        queries = None
+
     # run all checks
     reports = check_redundant_indices(database)
-    reports += check_not_used_columns_and_tables(database, queries=[])  # TODO
+
+    if queries:
+        reports += check_not_used_tables(database, queries=queries)  # TODO
 
     # emit results
     line = '-' * 120
@@ -61,6 +76,7 @@ def main():
             print('{} / {}\n\n\t{}\n\n\t{}'.format(
                 report.linter_type, report.table_name, report.message,
                 json.dumps(report.context, indent=True, default=str).replace("\n", "\n\t")
+                if report.context else 'n/a'
             ))
             print(line)
     else:

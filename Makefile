@@ -24,5 +24,4 @@ publish:
 	python setup.py sdist upload -r pypi
 
 demo:
-	index_digest mysql://index_digest:qwerty@localhost/index_digest
-
+	index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0006-not-used-columns-and-tables-log
