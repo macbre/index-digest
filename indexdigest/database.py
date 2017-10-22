@@ -177,6 +177,7 @@ class Database(DatabaseBase):
         :type sql str
         :rtype: list
         """
+        # @see https://dev.mysql.com/doc/refman/5.7/en/explain-output.html
         return self.query_dict_rows('EXPLAIN {}'.format(sql))
 
     def get_table_metadata(self, table_name):
