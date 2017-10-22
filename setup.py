@@ -17,6 +17,7 @@ setup(
         'pylint==1.7.4',
         'pytest==3.2.3',
         'mysqlclient==1.3.12',
+        'sqlparse==0.2.4',
     ],
     entry_points={
         'console_scripts': [
