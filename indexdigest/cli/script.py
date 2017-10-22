@@ -19,6 +19,7 @@ Visit <https://github.com/macbre/index-digest>
 """
 from __future__ import print_function
 
+import json
 import logging
 from docopt import docopt
 
@@ -37,7 +38,7 @@ def main():
     if 'DSN' not in arguments:
         return
 
-    # connect to thhe database
+    # connect to the database
     database = Database.connect_dsn(arguments['DSN'])
     logger.debug('Connected to MySQL server v%s', database.get_server_info())
 
@@ -45,8 +46,19 @@ def main():
     reports = check_redundant_indices(database)
 
     # emit results
+    line = '-' * 120
+
+    print(line)
     print('Found {} issue(s) to report for "{}" database'.format(len(reports), database.db_name))
+    print(line)
 
     # TODO: implement formatters
-    for report in reports:
-        print('{} | {}'.format(report.linter_type, str(report)))
+    if reports:
+        for report in reports:
+            print('{} / {}\n\n\t{}\n\n\t{}'.format(
+                report.linter_type, report.table_name, report.message,
+                json.dumps(report.context, indent=True, default=str).replace("\n", "\n\t")
+            ))
+            print(line)
+    else:
+        print('Jolly, good! No issues to report')
