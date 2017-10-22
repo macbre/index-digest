@@ -22,3 +22,7 @@ lint:
 publish:
 	python setup.py register -r pypi
 	python setup.py sdist upload -r pypi
+
+demo:
+	index_digest mysql://index_digest:qwerty@localhost/index_digest
+
