@@ -29,6 +29,14 @@ def parse_dsn(dsn):
     }
 
 
+def is_select_query(query):
+    """
+    :type query str
+    :rtype bool
+    """
+    return query.lstrip().lower().startswith('select')
+
+
 class LinterEntry(object):
     """
     Wraps a single linter entry. Various formatters may display this data differently.
