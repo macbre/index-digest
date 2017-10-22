@@ -1,5 +1,5 @@
 project_name = indexdigest
-coverage_options = --include='$(project_name)/*' --omit='$(project_name)/test/*,$(project_name)/config.py,*__init__.py'
+coverage_options = --include='$(project_name)/*' --omit='$(project_name)/test/*'
 
 install:
 	pip install -U -e .
