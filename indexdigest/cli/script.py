@@ -46,7 +46,7 @@ def main():
 
     # run all checks
     reports = check_redundant_indices(database)
-    reports = check_not_used_columns_and_tables(database)
+    reports += check_not_used_columns_and_tables(database, queries=[])  # TODO
 
     # emit results
     line = '-' * 120

@@ -3,14 +3,14 @@ This module provides SQL query parsing functions
 """
 import sqlparse
 
-from sqlparse.sql import Token, TokenList
+from sqlparse.sql import TokenList
 from sqlparse.tokens import Name, Whitespace
 
 
 def get_query_tokens(query):
     """
     :type query str
-    :rtype: list[Token]
+    :rtype: list[sqlparse.sql.Token]
     """
     tokens = TokenList(sqlparse.parse(query)[0].tokens).flatten()
 
