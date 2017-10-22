@@ -6,7 +6,7 @@ from indexdigest.query import get_query_columns
 class TestUtils(TestCase):
 
     def test_get_query_columns(self):
-        self.assertListEqual([],
+        self.assertListEqual(['*'],
                              get_query_columns('SELECT * FROM `test_table`'))
 
         self.assertListEqual(['foo'],

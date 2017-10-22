@@ -4,7 +4,7 @@ This module provides SQL query parsing functions
 import sqlparse
 
 from sqlparse.sql import TokenList
-from sqlparse.tokens import Name, Whitespace
+from sqlparse.tokens import Name, Whitespace, Wildcard
 
 
 def get_query_tokens(query):
@@ -13,6 +13,7 @@ def get_query_tokens(query):
     :rtype: list[sqlparse.sql.Token]
     """
     tokens = TokenList(sqlparse.parse(query)[0].tokens).flatten()
+    # print([(token.value, token.ttype) for token in tokens])
 
     return [token for token in tokens if token.ttype is not Whitespace]
 
@@ -38,6 +39,11 @@ def get_query_columns(query):
 
                 if token.value not in columns:
                     columns.append(token.value)
+        elif token.ttype is Wildcard:
+            # handle wildcard in SELECT part, but ignore count(*)
+            # print(last_keyword, last_token, token.value)
+            if last_keyword == 'SELECT' and last_token != '(':
+                columns.append(token.value)
 
         last_token = token.value.upper()
 
