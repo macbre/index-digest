@@ -1,7 +1,7 @@
 """
 This linter checks for redundant indices from a given set of them
 """
-from . import LinterEntry
+from indexdigest.utils import LinterEntry
 
 
 def get_redundant_indices(indices):
