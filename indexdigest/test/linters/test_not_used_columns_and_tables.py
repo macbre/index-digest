@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables
+from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns
 from indexdigest.database import Database
 from indexdigest.test import DatabaseTestMixin
 
@@ -32,5 +32,41 @@ class TestNotUsedTables(TestCase):
         self.assertEqual(len(reports), 1)
         self.assertEqual(str(reports[0]), '0006_not_used_tables: Table was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0006_not_used_tables')
+
+        # assert False
+
+
+class TestNotUsedColumns(TestCase):
+
+    @property
+    def connection(self):
+        return LimitedViewDatabase.connect_dsn(DatabaseTestMixin.DSN)
+
+    def test_not_used_columns(self):
+        queries = [
+            'SELECT test, id FROM `0006_not_used_columns` WHERE foo = "a"'
+        ]
+
+        reports = check_not_used_columns(database=self.connection, queries=queries)
+
+        self.assertEqual(len(reports), 1)
+        self.assertEqual(str(reports[0]), '0006_not_used_columns: bar column was not used by provided queries')
+        self.assertEqual(reports[0].table_name, '0006_not_used_columns')
+        self.assertEqual(reports[0].context['column_name'], 'bar')
+        self.assertEqual(reports[0].context['column_type'], 'varchar')
+
+        # assert False
+
+    def test_not_used_columns_two(self):
+        queries = [
+            'SELECT test FROM `0006_not_used_columns` WHERE foo = "a"'
+        ]
+
+        reports = check_not_used_columns(database=self.connection, queries=queries)
+
+        # reports ordered is the same as schema columns order
+        self.assertEqual(len(reports), 2)
+        self.assertEqual(reports[0].context['column_name'], 'id')
+        self.assertEqual(reports[1].context['column_name'], 'bar')
 
         # assert False

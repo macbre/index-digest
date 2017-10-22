@@ -30,6 +30,9 @@ class TestUtils(TestCase):
         self.assertListEqual(['test_table'],
                              get_query_tables('SELECT * FROM `test_table`'))
 
+        self.assertListEqual(['0001_test_table'],
+                             get_query_tables('SELECT * FROM `0001_test_table`'))
+
         self.assertListEqual(['test_table'],
                              get_query_tables('SELECT foo FROM `test_table`'))
 

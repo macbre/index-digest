@@ -1,3 +1,3 @@
 INSERT INTO bar VALUES(1, 'foo', 'bar', 'test');
-SELECT /* a comment */ bar FROM 0006_not_used_columns WHERE id = 1;
-SELECT test, id FROM 0006_not_used_columns WHERE foo = 'a';
+SELECT /* a comment */ bar FROM `0006_not_used_columns` WHERE id = 1;
+SELECT test, id FROM `0006_not_used_columns` WHERE foo = 'a';
