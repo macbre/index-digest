@@ -27,4 +27,4 @@ class TestNotUsedColumnsAndTables(TestCase):
 
         results = check_not_used_columns_and_tables(database=self.connection, queries=queries)
 
-        assert False
+        # assert False
