@@ -2,15 +2,8 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.database import DatabaseBase, Database
-
-
-class DatabaseTestMixin(object):
-    DSN = 'mysql://index_digest:qwerty@localhost/index_digest'
-
-    @property
-    def connection(self):
-        return Database.connect_dsn(self.DSN)
+from indexdigest.test import DatabaseTestMixin
+from indexdigest.database import DatabaseBase
 
 
 class TestDatabaseBase(TestCase, DatabaseTestMixin):
@@ -59,26 +52,28 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
 
 class TestDatabase(TestCase, DatabaseTestMixin):
 
+    TABLE_NAME = '0000_the_table'
+
     def test_database_version(self):
         version = self.connection.get_server_info()  # 5.5.57-0+deb8u1
 
         self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
 
-    def test_tables(self):
-        tables = list(self.connection.tables())
+    def test_get_tables(self):
+        tables = list(self.connection.get_tables())
         print(tables)
 
-        self.assertTrue('0000_the_table' in tables)
+        self.assertTrue(self.TABLE_NAME in tables)
 
-    def test_variables(self):
-        variables = self.connection.variables()
+    def test_get_variables(self):
+        variables = self.connection.get_variables()
         print(variables)
 
         self.assertTrue('version_compile_os' in variables)
         self.assertTrue('innodb_version' in variables)
 
-    def test_variables_like(self):
-        variables = self.connection.variables(like='innodb')
+    def test_get_variables_like(self):
+        variables = self.connection.get_variables(like='innodb')
         print(variables)
 
         self.assertFalse('version_compile_os' in variables)  # this variable does not match given like
@@ -94,17 +89,46 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
         1 row in set (0.00 sec)
         """
-        res = list(self.connection.explain_query('SELECT * FROM 0000_the_table WHERE id = 2'))
+        res = list(self.connection.explain_query('SELECT * FROM {} WHERE id = 2'.format(self.TABLE_NAME)))
         row = res[0]
         print(row)
 
         self.assertEqual(len(res), 1)
         self.assertEqual(row['key'], 'PRIMARY')
-        self.assertEqual(row['table'], '0000_the_table')
+        self.assertEqual(row['table'], self.TABLE_NAME)
         self.assertEqual(row['Extra'], 'Using index')
 
+    def test_get_table_indices(self):
+        """
+        mysql> SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY FROM INFORMATION_SCHEMA.STATISTICS
+         WHERE table_name = '0000_the_table';
+        +------------+------------+--------------+-------------+-------------+
+        | INDEX_NAME | NON_UNIQUE | SEQ_IN_INDEX | COLUMN_NAME | CARDINALITY |
+        +------------+------------+--------------+-------------+-------------+
+        | PRIMARY    |          0 |            1 | id          |           3 |
+        | PRIMARY    |          0 |            2 | foo         |           3 |
+        | idx_foo    |          1 |            1 | foo         |           3 |
+        +------------+------------+--------------+-------------+-------------+
+        3 rows in set (0.00 sec)
+        """
+        indices = self.connection.get_table_indices(self.TABLE_NAME)
+        print(indices)
+
+        self.assertEqual(indices[0].name, 'PRIMARY')
+        self.assertEqual(indices[1].name, 'idx_foo')
+
+        self.assertListEqual(indices[0].columns, ['id', 'foo'])
+        self.assertListEqual(indices[1].columns, ['foo'])
+
+        self.assertTrue(indices[0].is_primary)
+        self.assertTrue(indices[0].is_unique)
+        self.assertFalse(indices[1].is_primary)
+        self.assertFalse(indices[1].is_unique)
+
+        # assert False
+
     def test_get_table_metadata(self):
-        meta = self.connection.get_table_metadata('0000_the_table')
+        meta = self.connection.get_table_metadata(self.TABLE_NAME)
         print(meta)
 
         # stats
@@ -120,11 +144,5 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertEqual(meta['columns']['id'], 'int')
         self.assertEqual(meta['columns']['foo'], 'varchar')
         self.assertEqual(len(meta['columns'].keys()), 2)
-
-        # indices
-        self.assertTrue('PRIMARY' in meta['indices'])
-        self.assertTrue('idx_foo' in meta['indices'])
-        self.assertEqual(meta['indices']['PRIMARY'], ['id', 'foo'])
-        self.assertEqual(meta['indices']['idx_foo'], ['foo'])
 
         # assert False

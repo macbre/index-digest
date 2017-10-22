@@ -1,5 +1,5 @@
 project_name = indexdigest
-coverage_options = --include='$(project_name)/*' --omit='$(project_name)/test/*,$(project_name)/config.py,*__init__.py'
+coverage_options = --include='$(project_name)/*' --omit='$(project_name)/test/*'
 
 install:
 	pip install -U -e .
@@ -17,7 +17,7 @@ coverage:
 	coverage report $(coverage_options)
 
 lint:
-	pylint $(project_name)/
+	pylint $(project_name)/ --ignore=test
 
 publish:
 	python setup.py register -r pypi
