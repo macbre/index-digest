@@ -21,4 +21,7 @@ class TestUtils(TestCase):
         self.assertListEqual(['foo', 'test'],
                              get_query_columns('SELECT foo, test as bar FROM `test_table`'))
 
+        self.assertListEqual(['bar'],
+                             get_query_columns('SELECT /* a comment */ bar FROM test_table'))
+
         # assert False
