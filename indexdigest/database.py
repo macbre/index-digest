@@ -32,6 +32,7 @@ class DatabaseBase(object):
         # lazy connect
         self._connection_params = dict(host=host, user=user, passwd=passwd, db=db)
         self._connection = None
+        self.db_name = db
 
     @classmethod
     def connect_dsn(cls, dsn):
