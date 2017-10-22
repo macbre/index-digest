@@ -56,16 +56,22 @@ def check_not_used_columns(database, queries):
     :type database  indexdigest.database.Database
     :type queries list[str]
     :rtype: list[LinterEntry]
+    :raises Exception
     """
     # analyze only SELECT queries from the log
+    queries = list(filter(is_select_query, queries))
+
     used_tables = get_used_tables_from_queries(database, queries)
     used_columns = defaultdict(list)
 
     # analyze given queries and collect used columns for each table
     for query in queries:
         # FIXME: assume we're querying just a single table for now
-        table = get_query_tables(query)[0]
-        columns = get_query_columns(query)
+        try:
+            table = get_query_tables(query)[0]
+            columns = get_query_columns(query)
+        except IndexError:
+            raise Exception('Failed parsing {} query', query)
 
         # print(query, table, columns)
 

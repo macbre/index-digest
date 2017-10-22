@@ -28,7 +28,7 @@ from docopt import docopt
 import indexdigest
 from indexdigest.database import Database
 from indexdigest.linters import \
-    check_not_used_tables, \
+    check_not_used_tables, check_not_used_columns, \
     check_redundant_indices
 
 
@@ -61,7 +61,8 @@ def main():
     reports = check_redundant_indices(database)
 
     if queries:
-        reports += check_not_used_tables(database, queries=queries)  # TODO
+        reports += check_not_used_tables(database, queries=queries)
+        reports += check_not_used_columns(database, queries=queries)
 
     # emit results
     line = '-' * 120
