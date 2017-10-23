@@ -24,27 +24,58 @@ sudo apt-get install libmysqlclient-dev
 $ make demo
 index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0006-not-used-columns-and-tables-log
 ------------------------------------------------------------------------------------------------------------------------
-Found 6 issue(s) to report for "index_digest" database
+Found 7 issue(s) to report for "index_digest" database
 ------------------------------------------------------------------------------------------------------------------------
 redundant_indices / 0004_id_foo
 
 	UNIQUE KEY idx (id, foo) index can be removed as redundant (covered by PRIMARY KEY (id, foo))
 
-	{
-	 "redundant": "UNIQUE KEY idx (id, foo)",
-	 "covered_by": "PRIMARY KEY (id, foo)"
-	}
+	- redundant: UNIQUE KEY idx (id, foo)
+	- covered_by: PRIMARY KEY (id, foo)
+	- schema: CREATE TABLE `0004_id_foo` (
+	    `id` int(9) NOT NULL AUTO_INCREMENT,
+	    `foo` varbinary(16) NOT NULL DEFAULT '',
+	    PRIMARY KEY (`id`,`foo`),
+	    UNIQUE KEY `idx` (`id`,`foo`)
+	  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+	- table_data_size_mb: 0.015625
+	- table_index_size_mb: 0.015625
 ------------------------------------------------------------------------------------------------------------------------
 redundant_indices / 0004_id_foo_bar
 
 	KEY idx_foo (foo) index can be removed as redundant (covered by KEY idx_foo_bar (foo, bar))
 
-	{
-	 "redundant": "KEY idx_foo (foo)",
-	 "covered_by": "KEY idx_foo_bar (foo, bar)"
-	}
+	- redundant: KEY idx_foo (foo)
+	- covered_by: KEY idx_foo_bar (foo, bar)
+	- schema: CREATE TABLE `0004_id_foo_bar` (
+	    `id` int(9) NOT NULL AUTO_INCREMENT,
+	    `foo` varbinary(16) NOT NULL DEFAULT '',
+	    `bar` varbinary(16) NOT NULL DEFAULT '',
+	    PRIMARY KEY (`id`),
+	    KEY `idx_foo` (`foo`),
+	    KEY `idx_foo_bar` (`foo`,`bar`),
+	    KEY `idx_id_foo` (`id`,`foo`)
+	  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+	- table_data_size_mb: 0.015625
+	- table_index_size_mb: 0.046875
 ------------------------------------------------------------------------------------------------------------------------
-...
+not_used_tables / 0000_the_table
+
+	Table was not used by provided queries
+
+	n/a
+------------------------------------------------------------------------------------------------------------------------
+not_used_tables / 0004_id_foo
+
+	Table was not used by provided queries
+
+	n/a
+------------------------------------------------------------------------------------------------------------------------
+not_used_tables / 0004_id_foo_bar
+
+	Table was not used by provided queries
+
+	n/a
 ------------------------------------------------------------------------------------------------------------------------
 not_used_tables / 0006_not_used_tables
 
@@ -56,10 +87,8 @@ not_used_columns / 0006_not_used_columns
 
 	bar column was not used by provided queries
 
-	{
-	 "column_type": "varchar",
-	 "column_name": "bar"
-	}
+	- column_name: bar
+	- column_type: varchar
 ------------------------------------------------------------------------------------------------------------------------
 ```
 
