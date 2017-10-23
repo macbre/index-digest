@@ -36,4 +36,20 @@ class TestRedundantIndices(TestCase, DatabaseTestMixin):
         self.assertEqual(str(reports[0]), '0004_id_foo: UNIQUE KEY idx (id, foo) index can be removed as redundant (covered by PRIMARY KEY (id, foo))')
         self.assertEqual(str(reports[1]), '0004_id_foo_bar: KEY idx_foo (foo) index can be removed as redundant (covered by KEY idx_foo_bar (foo, bar))')
 
+        report = reports[0]
+
+        print(report, report.context)
+
+        self.assertEquals(str(report.context['redundant']), 'UNIQUE KEY idx (id, foo)')
+        self.assertEquals(str(report.context['covered_by']), 'PRIMARY KEY (id, foo)')
+
+        # and we have size reported as well (see #16)
+        self.assertTrue(report.context['table_data_size_mb'] > 0)
+        self.assertTrue(report.context['table_index_size_mb'] > 0)
+
+        # and we a schema reported in the context (see #16)
+        self.assertTrue('CREATE TABLE' in report.context['schema'])
+        self.assertTrue('AUTO_INCREMENT' in report.context['schema'])
+        self.assertTrue('ENGINE=' in report.context['schema'])
+
         # assert False
