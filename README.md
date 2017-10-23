@@ -12,6 +12,8 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports queries that do not use indices
   * reports queries that use filesort or temporary file
 
+This tool **supports MySQL 5.5, 5.6 and 5.7**.
+
 ## Requirements
 
 ```
@@ -90,11 +92,20 @@ not_used_columns / 0006_not_used_columns
 	- column_name: bar
 	- column_type: varchar
 ------------------------------------------------------------------------------------------------------------------------
+...
+------------------------------------------------------------------------------------------------------------------------
+not_used_indices / 0002_not_used_indices
+
+	"KEY test_id_idx (test, id)" was not used by provided queries
+
+	- not_used_index: KEY test_id_idx (test, id)
+------------------------------------------------------------------------------------------------------------------------
 ```
 
 ## Checks
 
 * `not_used_columns`: using provided SQL log file (via `--sql-log`) checks which columns were not used by SELECT queries
+* `not_used_indices`: using provided SQL log file (via `--sql-log`) checks which indices are not used by SELECT queries
 * `not_used_tables`: using provided SQL log file (via `--sql-log`) checks which tables are not used by SELECT queries
 * `redundant_indices`: reports indices that are redundant and covered by other
 
