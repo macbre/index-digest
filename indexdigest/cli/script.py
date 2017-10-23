@@ -68,6 +68,7 @@ def main():
 
         with open(sql_log) as log_file:
             queries = log_file.readlines()
+            queries = list(map(str.strip, queries))  # remove trailing spaces
             logger.debug('Got %d entries in SQL log file', len(queries))
     else:
         queries = None

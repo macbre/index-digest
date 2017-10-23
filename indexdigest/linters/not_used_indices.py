@@ -17,7 +17,7 @@ def check_not_used_indices(database, queries):
     logger = logging.getLogger(__name__)
 
     # analyze only SELECT queries from the log
-    queries = filter(is_select_query, map(str.strip, queries))
+    queries = filter(is_select_query, queries)
     used_indices = defaultdict(list)
 
     # generate reports
