@@ -18,6 +18,7 @@ setup(
         'pytest==3.2.3',
         'mysqlclient==1.3.12',
         'sqlparse==0.2.4',
+        'termcolor==1.1.0',
     ],
     entry_points={
         'console_scripts': [
