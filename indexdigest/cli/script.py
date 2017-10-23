@@ -23,6 +23,7 @@ from __future__ import print_function
 
 import logging
 from docopt import docopt
+from termcolor import colored, cprint
 
 import indexdigest
 from indexdigest.database import Database
@@ -37,11 +38,11 @@ def format_context(context):
     :type context dict
     :rtype: str
     """
-    if context is None:
-        return 'n/a'
-
     return '\n\t'.join([
-        "- {}: {}".format(key, str(value).replace("\n", "\n\t  "))
+        "- {key}: {value}".format(
+            key=colored(key, color='green', attrs=['bold']),
+            value=str(value).replace("\n", "\n\t  ")
+        )
         for (key, value) in context.items()
     ])
 
@@ -81,7 +82,7 @@ def main():
         reports += check_not_used_columns(database, queries=queries)
 
     # emit results
-    line = '-' * 120
+    line = '-' * 60
 
     print(line)
     print('Found {} issue(s) to report for "{}" database'.format(len(reports), database.db_name))
@@ -90,10 +91,14 @@ def main():
     # TODO: implement formatters
     if reports:
         for report in reports:
-            print('{} / {}\n\n\t{}\n\n\t{}'.format(
-                report.linter_type, report.table_name, report.message,
-                format_context(report.context)
-            ))
+            cprint('{type} / {table}'.format(
+                type=report.linter_type, table=report.table_name
+            ), color='blue', attrs=['bold'])
+            cprint('\n\t{}'.format(report.message), color='white')
+
+            if report.context is not None:
+                print('\n\t' + format_context(report.context))
+
             print(line)
     else:
         print('Jolly, good! No issues to report')
