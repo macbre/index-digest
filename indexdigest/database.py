@@ -180,6 +180,15 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/explain-output.html
         return self.query_dict_rows('EXPLAIN {}'.format(sql))
 
+    def get_table_schema(self, table_name):
+        """
+        Run SHOW CREATE TABLE query for a given table
+        :type table_name str
+        :rtype: str
+        """
+        # @see https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html
+        return self.query_row('SHOW CREATE TABLE {}'.format(table_name))[1]
+
     def get_table_metadata(self, table_name):
         """
         Return table's metadata: columns and stats.
