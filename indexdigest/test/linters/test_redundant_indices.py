@@ -33,8 +33,8 @@ class TestRedundantIndices(TestCase, DatabaseTestMixin):
         print(reports)
 
         self.assertEqual(len(reports), 2)
-        self.assertEqual(str(reports[0]), '0004_id_foo: UNIQUE KEY idx (id, foo) index can be removed as redundant (covered by PRIMARY KEY (id, foo))')
-        self.assertEqual(str(reports[1]), '0004_id_foo_bar: KEY idx_foo (foo) index can be removed as redundant (covered by KEY idx_foo_bar (foo, bar))')
+        self.assertEqual(str(reports[0]), '0004_id_foo: "idx" index can be removed as redundant (covered by "PRIMARY")')
+        self.assertEqual(str(reports[1]), '0004_id_foo_bar: "idx_foo" index can be removed as redundant (covered by "idx_foo_bar")')
 
         report = reports[0]
 

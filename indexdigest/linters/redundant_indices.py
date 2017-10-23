@@ -48,8 +48,8 @@ def check_redundant_indices(database):
 
             reports.append(
                 LinterEntry(linter_type='redundant_indices', table_name=table,
-                            message='{} index can be removed as redundant (covered by {})'.
-                            format(redundant_index, suggested_index),
+                            message='"{}" index can be removed as redundant (covered by "{}")'.
+                            format(redundant_index.name, suggested_index.name),
                             context=context))
 
     return reports
