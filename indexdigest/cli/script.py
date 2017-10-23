@@ -21,7 +21,6 @@ Visit <https://github.com/macbre/index-digest>
 """
 from __future__ import print_function
 
-import json
 import logging
 from docopt import docopt
 
@@ -41,7 +40,8 @@ def format_context(context):
         return 'n/a'
 
     return '\n\t'.join([
-        "- {}: {}".format(key, str(value).replace("\n", "\n\t  ")) for (key, value) in context.items()
+        "- {}: {}".format(key, str(value).replace("\n", "\n\t  "))
+        for (key, value) in context.items()
     ])
 
 
