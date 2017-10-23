@@ -12,6 +12,8 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports queries that do not use indices
   * reports queries that use filesort or temporary file
 
+This tool **supports MySQL 5.5, 5.6 and 5.7**.
+
 ## Requirements
 
 ```
