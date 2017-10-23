@@ -1,6 +1,8 @@
 """
 This linter checks for not used columns and tables by going through SELECT queries
 """
+import logging
+
 from collections import defaultdict
 
 from indexdigest.utils import LinterEntry, is_select_query
@@ -22,7 +24,7 @@ def get_used_tables_from_queries(database, queries):
             if 'table' in row:
                 used_tables.append(row['table'])
 
-    return set(used_tables)
+    return list(set(used_tables))  # make it unique
 
 
 def check_not_used_tables(database, queries):
@@ -31,12 +33,14 @@ def check_not_used_tables(database, queries):
     :type queries list[str]
     :rtype: list[LinterEntry]
     """
+    logger = logging.getLogger(__name__)
 
     # get database meta-data
     tables = database.get_tables()
 
     # analyze only SELECT queries from the log
     used_tables = get_used_tables_from_queries(database, queries)
+    logger.info("These tables were used by provided queries: %s", used_tables)
 
     # now check which tables were not used
     not_used_tables = [table for table in tables if table not in used_tables]
@@ -58,11 +62,15 @@ def check_not_used_columns(database, queries):
     :rtype: list[LinterEntry]
     :raises Exception
     """
+    logger = logging.getLogger(__name__)
+
     # analyze only SELECT queries from the log
     queries = list(filter(is_select_query, queries))
 
     used_tables = get_used_tables_from_queries(database, queries)
     used_columns = defaultdict(list)
+
+    logger.info("Will check these tables: %s", used_tables)
 
     # analyze given queries and collect used columns for each table
     for query in queries:
@@ -82,6 +90,7 @@ def check_not_used_columns(database, queries):
     reports = []
 
     for table in used_tables:
+        logger.info("Checking %s table", table)
         table_columns = database.get_table_metadata(table)['columns']
 
         # now get the difference and report them

@@ -127,6 +127,16 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
         # assert False
 
+    def test_get_table_schema(self):
+        schema = self.connection.get_table_schema(self.TABLE_NAME)
+        print(schema)
+
+        self.assertTrue('CREATE TABLE `0000_the_table` (' in schema)
+        self.assertTrue('PRIMARY KEY (`id`,`foo`),' in schema)
+        self.assertTrue('ENGINE=InnoDB' in schema)
+
+        # assert False
+
     def test_get_table_metadata(self):
         meta = self.connection.get_table_metadata(self.TABLE_NAME)
         print(meta)

@@ -2,7 +2,8 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns
+from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
+    get_used_tables_from_queries
 from indexdigest.database import Database
 from indexdigest.test import DatabaseTestMixin
 
@@ -32,6 +33,16 @@ class TestNotUsedTables(TestCase):
         self.assertEqual(len(reports), 1)
         self.assertEqual(str(reports[0]), '0006_not_used_tables: Table was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0006_not_used_tables')
+
+    def test_get_used_tables_from_queries(self):
+        with open('sql/0006-not-used-columns-and-tables-log') as fp:
+            queries = fp.readlines()
+
+        tables = get_used_tables_from_queries(database=self.connection, queries=queries)
+
+        print(tables)
+
+        self.assertListEqual(tables, ['0006_not_used_columns'])
 
         # assert False
 

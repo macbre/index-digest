@@ -21,7 +21,6 @@ Visit <https://github.com/macbre/index-digest>
 """
 from __future__ import print_function
 
-import json
 import logging
 from docopt import docopt
 
@@ -30,6 +29,20 @@ from indexdigest.database import Database
 from indexdigest.linters import \
     check_not_used_tables, check_not_used_columns, \
     check_redundant_indices
+
+
+def format_context(context):
+    """
+    :type context dict
+    :rtype: str
+    """
+    if context is None:
+        return 'n/a'
+
+    return '\n\t'.join([
+        "- {}: {}".format(key, str(value).replace("\n", "\n\t  "))
+        for (key, value) in context.items()
+    ])
 
 
 def main():
@@ -76,8 +89,7 @@ def main():
         for report in reports:
             print('{} / {}\n\n\t{}\n\n\t{}'.format(
                 report.linter_type, report.table_name, report.message,
-                json.dumps(report.context, indent=True, default=str).replace("\n", "\n\t")
-                if report.context else 'n/a'
+                format_context(report.context)
             ))
             print(line)
     else:
