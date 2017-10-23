@@ -14,23 +14,53 @@ Analyses your database queries and schema and suggests indices improvements. You
 
 This tool **supports MySQL 5.5, 5.6 and 5.7**.
 
-## Requirements
+## Requirements & install
 
 ```
-sudo apt-get install libmysqlclient-dev
+sudo apt-get install libmysqlclient-dev python-dev
+
+virtualenv env
+source env/bin/activate
+make install
+```
+
+## How to run it?
+
+```
+$ index_digest -h
+index_digest
+
+Analyses your database queries and schema and suggests indices improvements.
+
+Usage:
+  index_digest DSN [--sql-log=<file>]
+  index_digest (-h | --help)
+  index_digest --version
+
+Options:
+  DSN               Data Source Name of database to check
+  --sql-log=<file>  Text file with SQL queries to check against the database
+  -h --help         Show this screen.
+  --version         Show version.
+
+Examples:
+  index_digest mysql://index_digest:qwerty@localhost/index_digest
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
+
+Visit <https://github.com/macbre/index-digest>
 ```
 
 ## An example
 
 ```
-$ make demo
-index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0006-not-used-columns-and-tables-log
-------------------------------------------------------------------------------------------------------------------------
-Found 7 issue(s) to report for "index_digest" database
-------------------------------------------------------------------------------------------------------------------------
+$ index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log 
+Query <select * from 0002_not_used_indices where bar = 'foo'> does not use any index on `0002_not_used_indices` table
+------------------------------------------------------------
+Found 12 issue(s) to report for "index_digest" database
+------------------------------------------------------------
 redundant_indices / 0004_id_foo
 
-	UNIQUE KEY idx (id, foo) index can be removed as redundant (covered by PRIMARY KEY (id, foo))
+	"idx" index can be removed as redundant (covered by "PRIMARY")
 
 	- redundant: UNIQUE KEY idx (id, foo)
 	- covered_by: PRIMARY KEY (id, foo)
@@ -42,10 +72,11 @@ redundant_indices / 0004_id_foo
 	  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 	- table_data_size_mb: 0.015625
 	- table_index_size_mb: 0.015625
-------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------
 redundant_indices / 0004_id_foo_bar
 
-	KEY idx_foo (foo) index can be removed as redundant (covered by KEY idx_foo_bar (foo, bar))
+	"idx_foo" index can be removed as redundant (covered by "idx_foo_bar")
 
 	- redundant: KEY idx_foo (foo)
 	- covered_by: KEY idx_foo_bar (foo, bar)
@@ -60,46 +91,72 @@ redundant_indices / 0004_id_foo_bar
 	  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 	- table_data_size_mb: 0.015625
 	- table_index_size_mb: 0.046875
-------------------------------------------------------------------------------------------------------------------------
-not_used_tables / 0000_the_table
 
-	Table was not used by provided queries
-
-	n/a
-------------------------------------------------------------------------------------------------------------------------
-not_used_tables / 0004_id_foo
-
-	Table was not used by provided queries
-
-	n/a
-------------------------------------------------------------------------------------------------------------------------
-not_used_tables / 0004_id_foo_bar
-
-	Table was not used by provided queries
-
-	n/a
-------------------------------------------------------------------------------------------------------------------------
-not_used_tables / 0006_not_used_tables
-
-	Table was not used by provided queries
-
-	n/a
-------------------------------------------------------------------------------------------------------------------------
-not_used_columns / 0006_not_used_columns
-
-	bar column was not used by provided queries
-
-	- column_name: bar
-	- column_type: varchar
-------------------------------------------------------------------------------------------------------------------------
-...
-------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------
 not_used_indices / 0002_not_used_indices
 
-	"KEY test_id_idx (test, id)" was not used by provided queries
+	"test_id_idx" index was not used by provided queries
 
 	- not_used_index: KEY test_id_idx (test, id)
-------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------
+not_used_tables / 0000_the_table
+
+	"0000_the_table" table was not used by provided queries
+
+------------------------------------------------------------
+not_used_tables / 0004_id_foo
+
+	"0004_id_foo" table was not used by provided queries
+
+------------------------------------------------------------
+not_used_tables / 0004_id_foo_bar
+
+	"0004_id_foo_bar" table was not used by provided queries
+
+------------------------------------------------------------
+not_used_tables / 0006_not_used_columns
+
+	"0006_not_used_columns" table was not used by provided queries
+
+------------------------------------------------------------
+not_used_tables / 0006_not_used_tables
+
+	"0006_not_used_tables" table was not used by provided queries
+
+------------------------------------------------------------
+not_used_columns / 0002_not_used_indices
+
+	"id" column was not used by provided queries
+
+	- column_type: int
+	- column_name: id
+
+------------------------------------------------------------
+not_used_columns / 0002_not_used_indices
+
+	"foo" column was not used by provided queries
+
+	- column_type: varchar
+	- column_name: foo
+
+------------------------------------------------------------
+not_used_columns / 0002_not_used_indices
+
+	"test" column was not used by provided queries
+
+	- column_type: varchar
+	- column_name: test
+
+------------------------------------------------------------
+not_used_columns / 0002_not_used_indices
+
+	"bar" column was not used by provided queries
+
+	- column_type: varchar
+	- column_name: bar
+
+------------------------------------------------------------
 ```
 
 ## Checks

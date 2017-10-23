@@ -50,7 +50,7 @@ def check_not_used_tables(database, queries):
     for table in not_used_tables:
         reports.append(
             LinterEntry(linter_type='not_used_tables', table_name=table,
-                        message='Table was not used by provided queries'))
+                        message='"{}" table was not used by provided queries'.format(table)))
 
     return reports
 
@@ -102,7 +102,7 @@ def check_not_used_columns(database, queries):
         for column in not_used_columns:
             reports.append(
                 LinterEntry(linter_type='not_used_columns', table_name=table,
-                            message='{} column was not used by provided queries'.format(column),
+                            message='"{}" column was not used by provided queries'.format(column),
                             context={'column_name': column, 'column_type': table_columns[column]}))
 
     return reports

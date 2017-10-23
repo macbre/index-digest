@@ -31,7 +31,7 @@ class TestNotUsedTables(TestCase):
         print(reports)
 
         self.assertEqual(len(reports), 1)
-        self.assertEqual(str(reports[0]), '0006_not_used_tables: Table was not used by provided queries')
+        self.assertEqual(str(reports[0]), '0006_not_used_tables: "0006_not_used_tables" table was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0006_not_used_tables')
 
     def test_get_used_tables_from_queries(self):
@@ -61,7 +61,7 @@ class TestNotUsedColumns(TestCase):
         reports = check_not_used_columns(database=self.connection, queries=queries)
 
         self.assertEqual(len(reports), 1)
-        self.assertEqual(str(reports[0]), '0006_not_used_columns: bar column was not used by provided queries')
+        self.assertEqual(str(reports[0]), '0006_not_used_columns: "bar" column was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0006_not_used_columns')
         self.assertEqual(reports[0].context['column_name'], 'bar')
         self.assertEqual(reports[0].context['column_type'], 'varchar')

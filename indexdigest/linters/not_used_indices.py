@@ -17,7 +17,7 @@ def check_not_used_indices(database, queries):
     logger = logging.getLogger(__name__)
 
     # analyze only SELECT queries from the log
-    queries = filter(is_select_query, map(str.strip, queries))
+    queries = filter(is_select_query, queries)
     used_indices = defaultdict(list)
 
     # generate reports
@@ -46,7 +46,8 @@ def check_not_used_indices(database, queries):
             if index.name not in used_indices[table_name]:
                 reports.append(
                     LinterEntry(linter_type='not_used_indices', table_name=table_name,
-                                message='"{}" was not used by provided queries'.format(str(index)),
+                                message='"{}" index was not used by provided queries'.
+                                format(index.name),
                                 context={"not_used_index": index}))
 
     return reports

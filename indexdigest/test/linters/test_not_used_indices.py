@@ -17,7 +17,7 @@ class TestNotUsedTables(TestCase, DatabaseTestMixin):
         print(reports)
 
         self.assertEqual(len(reports), 1)
-        self.assertEqual(str(reports[0]), '0002_not_used_indices: "KEY test_id_idx (test, id)" was not used by provided queries')
+        self.assertEqual(str(reports[0]), '0002_not_used_indices: "test_id_idx" index was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0002_not_used_indices')
         self.assertEqual(str(reports[0].context['not_used_index']), 'KEY test_id_idx (test, id)')
 
