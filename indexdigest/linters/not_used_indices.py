@@ -46,7 +46,8 @@ def check_not_used_indices(database, queries):
             if index.name not in used_indices[table_name]:
                 reports.append(
                     LinterEntry(linter_type='not_used_indices', table_name=table_name,
-                                message='"{}" was not used by provided queries'.format(str(index)),
+                                message='"{}" index was not used by provided queries'.
+                                format(index.name),
                                 context={"not_used_index": index}))
 
     return reports

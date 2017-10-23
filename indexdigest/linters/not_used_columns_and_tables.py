@@ -50,7 +50,7 @@ def check_not_used_tables(database, queries):
     for table in not_used_tables:
         reports.append(
             LinterEntry(linter_type='not_used_tables', table_name=table,
-                        message='`{}` table was not used by provided queries'.format(table)))
+                        message='"{}" table was not used by provided queries'.format(table)))
 
     return reports
 
