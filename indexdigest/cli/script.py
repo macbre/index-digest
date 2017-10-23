@@ -99,6 +99,7 @@ def main():
             if report.context is not None:
                 print('\n\t' + format_context(report.context))
 
+            print()
             print(line)
     else:
         print('Jolly, good! No issues to report')
