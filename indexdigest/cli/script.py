@@ -38,10 +38,10 @@ def format_context(context):
     :type context dict
     :rtype: str
     """
-    return '\n\t'.join([
+    return '\n  '.join([
         "- {key}: {value}".format(
             key=colored(key, color='green', attrs=['bold']),
-            value=str(value).replace("\n", "\n\t  ")
+            value=str(value).replace("\n", "\n    ")
         )
         for (key, value) in context.items()
     ])
@@ -59,7 +59,7 @@ def main():
 
     # connect to the database
     database = Database.connect_dsn(arguments['DSN'])
-    logger.debug('Connected to MySQL server v%s', database.get_server_info())
+    logger.debug('Connected to MySQL server v%s', database.get_server_version())
 
     # read SQL log file (if provided)
     sql_log = arguments.get('--sql-log')
@@ -88,6 +88,9 @@ def main():
     print(line)
     print('Found {} issue(s) to report for "{}" database'.format(len(reports), database.db_name))
     print(line)
+    print('MySQL v{} at {}'.format(database.get_server_version(), database.get_server_hostname()))
+    print('index-digest v{}'.format(indexdigest.VERSION))
+    print(line)
 
     # TODO: implement formatters
     if reports:
@@ -95,10 +98,10 @@ def main():
             cprint('{type} / {table}'.format(
                 type=report.linter_type, table=report.table_name
             ), color='blue', attrs=['bold'])
-            cprint('\n\t{}'.format(report.message), color='white')
+            cprint('\n  {}'.format(report.message), color='white')
 
             if report.context is not None:
-                print('\n\t' + format_context(report.context))
+                print('\n  ' + format_context(report.context))
 
             print()
             print(line)

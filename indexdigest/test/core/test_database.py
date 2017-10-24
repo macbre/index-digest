@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.test import DatabaseTestMixin
+from indexdigest.test import DatabaseTestMixin, DatabaseWithMockedRow
 from indexdigest.database import DatabaseBase
 
 
@@ -55,7 +55,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
     TABLE_NAME = '0000_the_table'
 
     def test_database_version(self):
-        version = self.connection.get_server_info()  # 5.5.57-0+deb8u1
+        version = self.connection.get_server_version()  # 5.5.57-0+deb8u1
 
         self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
 
@@ -156,3 +156,14 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertEqual(len(meta['columns'].keys()), 2)
 
         # assert False
+
+
+class TestsWithDatabaseMocked(TestCase):
+
+    def test_database_hostname(self):
+        db = DatabaseWithMockedRow(mocked_row=['hostname', 'kopytko.foo.net'])
+        self.assertEquals(db.get_server_hostname(), 'kopytko.foo.net')
+
+    def test_database_version(self):
+        db = DatabaseWithMockedRow(mocked_row=['5.5.58-0+deb8u1'])
+        self.assertEquals(db.get_server_version(), '5.5.58-0+deb8u1')
