@@ -64,7 +64,7 @@ class TestNotUsedColumns(TestCase):
         self.assertEqual(str(reports[0]), '0006_not_used_columns: "bar" column was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0006_not_used_columns')
         self.assertEqual(reports[0].context['column_name'], 'bar')
-        self.assertEqual(reports[0].context['column_type'], 'varchar')
+        self.assertEqual(reports[0].context['column_type'], 'varchar(16)')
 
         # assert False
 
@@ -78,7 +78,9 @@ class TestNotUsedColumns(TestCase):
         # reports ordered is the same as schema columns order
         self.assertEqual(len(reports), 2)
         self.assertEqual(reports[0].context['column_name'], 'id')
+        self.assertEqual(reports[0].context['column_type'], 'int(9)')
         self.assertEqual(reports[1].context['column_name'], 'bar')
+        self.assertEqual(reports[1].context['column_type'], 'varchar(16)')
 
         # assert False
 

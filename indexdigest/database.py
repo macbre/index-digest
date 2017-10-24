@@ -231,7 +231,7 @@ class Database(DatabaseBase):
         # 2. columns
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
         columns = self.query_key_value(
-            "SELECT COLUMN_NAME, DATA_TYPE "
+            "SELECT COLUMN_NAME, COLUMN_TYPE "
             "FROM information_schema.COLUMNS " + information_schema_where
         )
 

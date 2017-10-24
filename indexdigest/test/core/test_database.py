@@ -151,8 +151,8 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertTrue('id' in meta['columns'])
         self.assertTrue('id' in meta['columns'])
         self.assertTrue('foo' in meta['columns'])
-        self.assertEqual(meta['columns']['id'], 'int')
-        self.assertEqual(meta['columns']['foo'], 'varchar')
+        self.assertEqual(meta['columns']['id'], 'int(9)')
+        self.assertEqual(meta['columns']['foo'], 'varchar(16)')
         self.assertEqual(len(meta['columns'].keys()), 2)
 
         # assert False
