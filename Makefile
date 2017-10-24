@@ -25,3 +25,6 @@ publish:
 
 demo:
 	index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0006-not-used-columns-and-tables-log
+
+sql-console:
+	mysql -hlocalhost -uindex_digest -pqwerty index_digest
