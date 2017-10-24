@@ -55,7 +55,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
     TABLE_NAME = '0000_the_table'
 
     def test_database_version(self):
-        version = self.connection.get_server_info()  # 5.5.57-0+deb8u1
+        version = self.connection.get_server_version()  # 5.5.57-0+deb8u1
 
         self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
 
@@ -166,4 +166,4 @@ class TestsWithDatabaseMocked(TestCase):
 
     def test_database_version(self):
         db = DatabaseWithMockedRow(mocked_row=['5.5.58-0+deb8u1'])
-        self.assertEquals(db.get_server_info(), '5.5.58-0+deb8u1')
+        self.assertEquals(db.get_server_version(), '5.5.58-0+deb8u1')

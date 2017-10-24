@@ -59,7 +59,7 @@ def main():
 
     # connect to the database
     database = Database.connect_dsn(arguments['DSN'])
-    logger.debug('Connected to MySQL server v%s', database.get_server_info())
+    logger.debug('Connected to MySQL server v%s', database.get_server_version())
 
     # read SQL log file (if provided)
     sql_log = arguments.get('--sql-log')
@@ -88,7 +88,7 @@ def main():
     print(line)
     print('Found {} issue(s) to report for "{}" database'.format(len(reports), database.db_name))
     print(line)
-    print('MySQL v{} at {}'.format(database.get_server_info(), database.get_server_hostname()))
+    print('MySQL v{} at {}'.format(database.get_server_version(), database.get_server_hostname()))
     print('index-digest v{}'.format(indexdigest.VERSION))
     print(line)
 
