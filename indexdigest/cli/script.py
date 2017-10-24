@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """index_digest
 
 Analyses your database queries and schema and suggests indices improvements.
@@ -19,7 +20,7 @@ Examples:
 
 Visit <https://github.com/macbre/index-digest>
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import logging
 from docopt import docopt
@@ -95,10 +96,15 @@ def main():
     # TODO: implement formatters
     if reports:
         for report in reports:
-            cprint('{type} / {table}'.format(
-                type=report.linter_type, table=report.table_name
-            ), color='blue', attrs=['bold'])
-            cprint('\n  {}'.format(report.message), color='white')
+            print(
+                colored(report.linter_type, color='blue', attrs=['bold']) +
+                ' → table affected: ' +
+                colored(report.table_name, attrs=['bold'])
+            )
+
+            cprint(
+                '\n{} {}'.format(colored('✗', color='red', attrs=['bold']), report.message),
+                color='white')
 
             if report.context is not None:
                 print('\n  ' + format_context(report.context))
