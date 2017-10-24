@@ -17,7 +17,7 @@ before_script:
   - mysql -hlocalhost -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
 
 install: make install
-script: make test && make lint
+script: make coverage && make lint && make demo
 
 # @see https://github.com/nickstenning/travis-pip-cache/issues/1
 cache: pip

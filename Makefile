@@ -24,7 +24,7 @@ publish:
 	python setup.py sdist upload -r pypi
 
 demo:
-	index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0006-not-used-columns-and-tables-log
+	index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log
 
 sql-console:
 	mysql -hlocalhost -uindex_digest -pqwerty index_digest
