@@ -38,10 +38,10 @@ def format_context(context):
     :type context dict
     :rtype: str
     """
-    return '\n\t'.join([
+    return '\n  '.join([
         "- {key}: {value}".format(
             key=colored(key, color='green', attrs=['bold']),
-            value=str(value).replace("\n", "\n\t  ")
+            value=str(value).replace("\n", "\n    ")
         )
         for (key, value) in context.items()
     ])
@@ -98,10 +98,10 @@ def main():
             cprint('{type} / {table}'.format(
                 type=report.linter_type, table=report.table_name
             ), color='blue', attrs=['bold'])
-            cprint('\n\t{}'.format(report.message), color='white')
+            cprint('\n  {}'.format(report.message), color='white')
 
             if report.context is not None:
-                print('\n\t' + format_context(report.context))
+                print('\n  ' + format_context(report.context))
 
             print()
             print(line)
