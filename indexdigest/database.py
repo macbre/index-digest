@@ -6,9 +6,17 @@ from collections import OrderedDict, defaultdict
 
 import MySQLdb
 from MySQLdb.cursors import DictCursor
+from _mysql_exceptions import OperationalError
 
 from indexdigest.indices import Index
-from indexdigest.utils import parse_dsn
+from indexdigest.utils import parse_dsn, IndexDigestError
+
+
+class IndexDigestQueryError(IndexDigestError):
+    """
+    A wrapper for _mysql_exceptions.OperationalError:
+    """
+    pass
 
 
 class DatabaseBase(object):
@@ -64,11 +72,18 @@ class DatabaseBase(object):
         :type sql str
         :type cursor_class MySQLdb.cursors.BaseCursor
         :rtype: MySQLdb.cursors.Cursor
+        :raises IndexDigestQueryError
         """
         self.query_logger.info('%s', sql)
 
         cursor = self.connection.cursor(cursorclass=cursor_class)
-        cursor.execute(sql)
+
+        try:
+            cursor.execute(sql)
+        except OperationalError as ex:
+            (code, message) = ex.args  # e.g. (1054, "Unknown column 'test' in 'field list'")
+            self.query_logger.error('Database error #%d: %s', code, message)
+            raise IndexDigestQueryError(message)
 
         return cursor
 

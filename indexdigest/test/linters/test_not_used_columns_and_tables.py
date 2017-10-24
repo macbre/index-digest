@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
     get_used_tables_from_queries
-from indexdigest.database import Database
+from indexdigest.database import Database, IndexDigestQueryError
 from indexdigest.test import DatabaseTestMixin
 
 
@@ -81,3 +81,12 @@ class TestNotUsedColumns(TestCase):
         self.assertEqual(reports[1].context['column_name'], 'bar')
 
         # assert False
+
+    def test_parsing_raises_exception(self):
+        queries = [
+            'SELECT test'
+        ]
+
+        with self.assertRaises(IndexDigestQueryError):
+            # this should raise Database error #1054: Unknown column 'test' in 'field list'
+            check_not_used_columns(database=self.connection, queries=queries)

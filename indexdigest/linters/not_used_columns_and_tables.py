@@ -75,11 +75,8 @@ def check_not_used_columns(database, queries):
     # analyze given queries and collect used columns for each table
     for query in queries:
         # FIXME: assume we're querying just a single table for now
-        try:
-            table = get_query_tables(query)[0]
-            columns = get_query_columns(query)
-        except IndexError:
-            raise Exception('Failed parsing {} query', query)
+        table = get_query_tables(query)[0]
+        columns = get_query_columns(query)
 
         # print(query, table, columns)
 

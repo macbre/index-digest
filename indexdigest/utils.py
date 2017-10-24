@@ -56,3 +56,10 @@ class LinterEntry(object):
     def __str__(self):
         return '{table_name}: {message}'.format(
             table_name=self.table_name, message=self.message)
+
+
+class IndexDigestError(Exception):
+    """
+    index-digest base exception class
+    """
+    pass
