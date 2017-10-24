@@ -149,6 +149,13 @@ class Database(DatabaseBase):
         """
         return self.query_field('SELECT VERSION()')
 
+    def get_server_hostname(self):
+        """
+        Return hostname of the server
+        :rtype: str
+        """
+        return self.get_variables(like='hostname').get('hostname')
+
     def get_tables(self):
         """
         Returns an iterator with the list of tables.
