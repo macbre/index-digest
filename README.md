@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/macbre/index-digest.svg?branch=master)](https://travis-ci.org/macbre/index-digest)
 
-Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as your database linter.
+Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as **your database linter**. The goal is to **provide the user with actionable reports** instead of just a list of statistics and schema detials. Inspired by [Percona's `pt-index-usage`](https://www.percona.com/doc/percona-toolkit/LATEST/pt-index-usage.html).
 
 `index-digest` does the following:
 
