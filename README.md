@@ -159,6 +159,20 @@ not_used_columns / 0002_not_used_indices
 ------------------------------------------------------------
 ```
 
+## SQL query log
+
+It's a text file with a single SQL query in each line (no line breaks are allowed). Lines that do not start with `SELECT` are ignored. The file can be [generated using `query-digest` when `--sql-log` output mode is selected](https://github.com/macbre/query-digest#output-modes).
+
+An example:
+
+```sql
+-- A comment
+select * from 0002_not_used_indices order by id
+select * from 0002_not_used_indices where foo = 'foo' and id = 2
+select count(*) from 0002_not_used_indices where foo = 'foo'
+select * from 0002_not_used_indices where bar = 'foo'
+```
+
 ## Checks
 
 * `not_used_columns`: using provided SQL log file (via `--sql-log`) checks which columns were not used by SELECT queries
