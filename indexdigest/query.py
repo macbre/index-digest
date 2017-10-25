@@ -62,16 +62,16 @@ def get_query_tables(query):
     table_syntax_keywords = ['FROM', 'WHERE', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON']
 
     for token in get_query_tokens(query):
+        # print([token, token.ttype])
         if token.is_keyword and token.value.upper() in table_syntax_keywords:
             # keep the name of the last keyword
             last_keyword = token.value.upper()
             # print('keyword', last_keyword)
-        elif token.ttype is Name:
+        elif token.ttype is Name or token.is_keyword:
+            # print([last_keyword, last_token, token.value])
             # analyze the name tokens, column names and where condition values
             if last_keyword in ['FROM', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN'] \
                     and last_token not in ['AS']:
-                # print(last_keyword, last_token, token.value)
-
                 if token.value not in tables:
                     tables.append(token.value.strip('`'))
 
