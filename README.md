@@ -175,10 +175,16 @@ select * from 0002_not_used_indices where bar = 'foo'
 
 ## Checks
 
-* `not_used_columns`: using provided SQL log file (via `--sql-log`) checks which columns were not used by SELECT queries
-* `not_used_indices`: using provided SQL log file (via `--sql-log`) checks which indices are not used by SELECT queries
-* `not_used_tables`: using provided SQL log file (via `--sql-log`) checks which tables are not used by SELECT queries
 * `redundant_indices`: reports indices that are redundant and covered by other
+
+### Additional checks performed on SQL log
+
+> You need to provide SQL log file via `--sql-log` option
+
+* `not_used_columns`: checks which columns were not used by SELECT queries
+* `not_used_indices`: checks which indices are not used by SELECT queries
+* `not_used_tables`: checks which tables are not used by SELECT queries
+* `queries_not_using_index`: reports SELECT queries that do not use any index
 
 ## Read more
 

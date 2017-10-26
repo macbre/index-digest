@@ -3,9 +3,26 @@ This linter checks for not used indices by going through SELECT queries
 """
 import logging
 
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 from indexdigest.utils import LinterEntry, is_select_query
+
+
+def explain_queries(database, queries):
+    """
+    Yields EXPLAIN result rows for given queries
+
+    :type database  indexdigest.database.Database
+    :type queries list[str]
+    :rtype: tuple[str,str,str,str]
+    """
+    # analyze only SELECT queries from the log
+    for query in filter(is_select_query, queries):
+        for row in database.explain_query(query):
+            table_used = row['table']
+            index_used = row['key']
+
+            yield (query, table_used, index_used, row)
 
 
 def check_not_used_indices(database, queries):
@@ -16,30 +33,19 @@ def check_not_used_indices(database, queries):
     """
     logger = logging.getLogger(__name__)
 
-    # analyze only SELECT queries from the log
-    queries = filter(is_select_query, queries)
     used_indices = defaultdict(list)
+
+    # EXPLAIN each query
+    for (query, table_used, index_used, _) in explain_queries(database, queries):
+        if index_used is not None:
+            logger.info("Query <%s> uses %s index on `%s` table", query, index_used, table_used)
+            used_indices[table_used].append(index_used)
 
     # generate reports
     reports = []
 
-    # EXPLAIN each query
-    for query in queries:
-        for row in database.explain_query(query):
-            table_used = row['table']
-            index_used = row['key']
-
-            if index_used is not None:
-                logger.info("Query <%s> uses %s index on `%s` table", query, index_used, table_used)
-                used_indices[table_used].append(index_used)
-            else:
-                logger.warning("Query <%s> does not use any index on `%s` table", query, table_used)
-
-            # print(query, table_used, index_used)
-
-    # print(used_indices)
-
     # analyze all tables used by the above queries
+    # print(used_indices)
     for table_name in used_indices.keys():
         for index in database.get_table_indices(table_name):
 
@@ -49,5 +55,35 @@ def check_not_used_indices(database, queries):
                                 message='"{}" index was not used by provided queries'.
                                 format(index.name),
                                 context={"not_used_index": index}))
+
+    return reports
+
+
+def check_queries_not_using_indices(database, queries):
+    """
+    :type database  indexdigest.database.Database
+    :type queries list[str]
+    :rtype: list[LinterEntry]
+    """
+    reports = []
+
+    for (query, table_used, index_used, explain_row) in explain_queries(database, queries):
+        # print(query, explain_row)
+
+        if index_used is None:
+            context = OrderedDict()
+            context['query'] = query
+
+            # https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain-extra-information
+            context['explain_extra'] = explain_row['Extra']
+            context['explain_rows'] = explain_row['rows']
+            context['explain_filtered'] = explain_row.get('filtered')  # can be not set
+            context['explain_possible_keys'] = explain_row['possible_keys']
+
+            reports.append(
+                LinterEntry(linter_type='queries_not_using_index', table_name=table_used,
+                            message='"{}" query did not make use of any index'.
+                            format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                            context=context))
 
     return reports

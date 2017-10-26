@@ -29,7 +29,7 @@ from termcolor import colored, cprint
 import indexdigest
 from indexdigest.database import Database
 from indexdigest.linters import \
-    check_not_used_indices, \
+    check_not_used_indices, check_queries_not_using_indices, \
     check_not_used_tables, check_not_used_columns, \
     check_redundant_indices
 
@@ -82,6 +82,7 @@ def main():
         reports += check_not_used_indices(database, queries=queries)
         reports += check_not_used_tables(database, queries=queries)
         reports += check_not_used_columns(database, queries=queries)
+        reports += check_queries_not_using_indices(database, queries=queries)
 
     # emit results
     line = '-' * 60
