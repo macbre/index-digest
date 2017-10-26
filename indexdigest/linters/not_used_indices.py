@@ -68,6 +68,8 @@ def check_queries_not_using_indices(database, queries):
     reports = []
 
     for (query, table_used, index_used, explain_row) in explain_queries(database, queries):
+        # print(query, explain_row)
+
         if index_used is None:
             context = OrderedDict()
             context['query'] = query
