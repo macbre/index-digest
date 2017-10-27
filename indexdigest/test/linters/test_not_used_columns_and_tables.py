@@ -5,7 +5,7 @@ from unittest import TestCase
 from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
     get_used_tables_from_queries
 from indexdigest.database import Database, IndexDigestQueryError
-from indexdigest.test import DatabaseTestMixin
+from indexdigest.test import DatabaseTestMixin, read_queries_from_log
 
 
 class LimitedViewDatabase(Database, DatabaseTestMixin):
@@ -23,10 +23,8 @@ class TestNotUsedTables(TestCase):
         return LimitedViewDatabase.connect_dsn(DatabaseTestMixin.DSN)
 
     def test_not_used_tables(self):
-        with open('sql/0006-not-used-columns-and-tables-log') as fp:
-            queries = fp.readlines()
-
-        reports = check_not_used_tables(database=self.connection, queries=queries)
+        reports = check_not_used_tables(
+            database=self.connection, queries=read_queries_from_log('0006-not-used-columns-and-tables-log'))
 
         print(reports)
 

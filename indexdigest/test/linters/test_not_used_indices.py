@@ -4,17 +4,14 @@ from unittest import TestCase
 
 from indexdigest.linters.not_used_indices import check_not_used_indices, \
     check_queries_not_using_indices
-from indexdigest.test import DatabaseTestMixin
+from indexdigest.test import DatabaseTestMixin, read_queries_from_log
 
 
 class TestNotUsedIndices(TestCase, DatabaseTestMixin):
 
     def test_not_used_indices(self):
-        with open('sql/0002-not-used-indices-log') as fp:
-            queries = fp.readlines()
-            queries = list(map(str.strip, queries))  # remove trailing spaces
-
-        reports = check_not_used_indices(database=self.connection, queries=queries)
+        reports = check_not_used_indices(
+            database=self.connection, queries=read_queries_from_log('0002-not-used-indices-log'))
 
         print(reports)
 
@@ -29,11 +26,8 @@ class TestNotUsedIndices(TestCase, DatabaseTestMixin):
 class TestQueriesNotUsingIndices(TestCase, DatabaseTestMixin):
 
     def test_queries(self):
-        with open('sql/0019-queries-not-using-indices-log') as fp:
-            queries = fp.readlines()
-            queries = list(map(str.strip, queries))  # remove trailing spaces
-
-        reports = check_queries_not_using_indices(database=self.connection, queries=queries)
+        reports = check_queries_not_using_indices(
+            database=self.connection, queries=read_queries_from_log('0019-queries-not-using-indices-log'))
 
         # print(reports)
 

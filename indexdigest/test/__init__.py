@@ -1,6 +1,18 @@
 from ..database import Database
 
 
+def read_queries_from_log(log_file):
+    """
+    :type log_file str
+    :rtype: list[str]
+    """
+    with open('sql/{}'.format(log_file)) as fp:
+        queries = fp.readlines()
+        queries = list(map(str.strip, queries))  # remove trailing spaces
+
+    return queries
+
+
 class DatabaseTestMixin(object):
     DSN = 'mysql://index_digest:qwerty@localhost/index_digest'
 
