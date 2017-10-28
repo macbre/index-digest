@@ -15,16 +15,27 @@ def get_used_tables_from_queries(database, queries):
     :type queries list[str]
     :rtype: list[str]
     """
+    logger = logging.getLogger(__name__)
+
     used_tables = []
     queries = filter(is_select_query, queries)
 
     for query in queries:
         # run EXPLAIN for each query from the log
         for row in database.explain_query(query):
-            if 'table' in row:
-                used_tables.append(row['table'])
+            if row.get('table') is not None:
+                if row['table'] not in used_tables:
+                    used_tables.append(row['table'])
+            else:
+                # EXPLAIN may return "no matching row in const table"
+                logger.warning('EXPLAIN %s returned no table, falling back to SQL parsing', query)
 
-    return list(set(used_tables))  # make it unique
+                # fall back to SQL query parsing
+                tables = get_query_tables(query)
+                if tables and tables[0] not in used_tables:
+                    used_tables.append(tables[0])
+
+    return used_tables
 
 
 def check_not_used_tables(database, queries):
