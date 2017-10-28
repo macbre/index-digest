@@ -147,13 +147,19 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertTrue(meta['index_size'] > 0)
         self.assertTrue(meta['data_size'] > 0)
 
+        # assert False
+
+    def test_get_table_columns(self):
+        columns = self.connection.get_table_columns(self.TABLE_NAME)
+        print(columns)
+
         # columns
-        self.assertTrue('id' in meta['columns'])
-        self.assertTrue('id' in meta['columns'])
-        self.assertTrue('foo' in meta['columns'])
-        self.assertEqual(meta['columns']['id'], 'int(9)')
-        self.assertEqual(meta['columns']['foo'], 'varchar(16)')
-        self.assertEqual(len(meta['columns'].keys()), 2)
+        self.assertTrue('id' in columns)
+        self.assertTrue('id' in columns)
+        self.assertTrue('foo' in columns)
+        self.assertEqual(columns['id'], 'int(9)')
+        self.assertEqual(columns['foo'], 'varchar(16)')
+        self.assertEqual(len(columns.keys()), 2)
 
         # assert False
 

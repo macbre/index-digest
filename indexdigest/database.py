@@ -211,6 +211,15 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html
         return self.query_row('SHOW CREATE TABLE {}'.format(table_name))[1]
 
+    def _get_information_schema_where(self, table_name):
+        """
+        :type table_name str
+        :rtype: str
+        """
+        # @see https://dev.mysql.com/doc/refman/5.7/en/information-schema.html
+        return "WHERE TABLE_SCHEMA='{db}' AND TABLE_NAME='{table_name}'".format(
+            db=self._connection_params['db'], table_name=table_name)
+
     def get_table_metadata(self, table_name):
         """
         Return table's metadata: columns and stats.
@@ -218,30 +227,29 @@ class Database(DatabaseBase):
         :type table_name str
         :rtype: dict
         """
-        information_schema_where = "WHERE TABLE_SCHEMA='{db}' AND TABLE_NAME='{table_name}'".format(
-            db=self._connection_params['db'], table_name=table_name
-        )
-
-        # 1. table stats
         # @see https://dev.mysql.com/doc/refman/5.7/en/tables-table.html
         stats = self.query_dict_row(
             "SELECT ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH "
-            "FROM information_schema.TABLES " + information_schema_where)
-
-        # 2. columns
-        # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
-        columns = self.query_key_value(
-            "SELECT COLUMN_NAME, COLUMN_TYPE "
-            "FROM information_schema.COLUMNS " + information_schema_where
-        )
+            "FROM information_schema.TABLES " + self._get_information_schema_where(table_name))
 
         return {
             'engine': stats['ENGINE'],
             'rows': stats['TABLE_ROWS'],  # For InnoDB the row count is only a rough estimate
             'data_size': stats['DATA_LENGTH'],
             'index_size': stats['INDEX_LENGTH'],
-            'columns': columns,
         }
+
+    def get_table_columns(self, table_name):
+        """
+        Return the list of indices for a given table
+
+        :type table_name str
+        :rtype: dict
+        """
+        # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
+        return self.query_key_value(
+            "SELECT COLUMN_NAME, COLUMN_TYPE "
+            "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
 
     def get_table_indices(self, table_name):
         """
@@ -254,9 +262,7 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-index.html
         res = self.query_dict_rows(
             "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY "
-            "FROM information_schema.STATISTICS "
-            "WHERE TABLE_SCHEMA='{db}' AND TABLE_NAME='{table_name}'".format(
-                db=self._connection_params['db'], table_name=table_name))
+            "FROM information_schema.STATISTICS " + self._get_information_schema_where(table_name))
 
         index_columns = defaultdict(list)
         index_meta = OrderedDict()

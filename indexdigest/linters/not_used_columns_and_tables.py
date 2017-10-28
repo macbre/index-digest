@@ -99,7 +99,7 @@ def check_not_used_columns(database, queries):
 
     for table in used_tables:
         logger.info("Checking %s table", table)
-        table_columns = database.get_table_metadata(table)['columns']
+        table_columns = database.get_table_columns(table)
 
         # now get the difference and report them
         not_used_columns = [
