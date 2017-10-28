@@ -1,5 +1,5 @@
 """
-Data structures and utilities for handling table indices
+Data structures for handling schema-related things like indices and columns
 """
 
 

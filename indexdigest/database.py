@@ -8,7 +8,7 @@ import MySQLdb
 from MySQLdb.cursors import DictCursor
 from _mysql_exceptions import OperationalError
 
-from indexdigest.indices import Index
+from indexdigest.schema import Index
 from indexdigest.utils import parse_dsn, IndexDigestError
 
 

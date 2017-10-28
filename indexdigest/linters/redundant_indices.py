@@ -10,7 +10,7 @@ from indexdigest.utils import LinterEntry
 
 def get_redundant_indices(indices):
     """
-    :type indices list[indexdigest.indices.Index]
+    :type indices list[indexdigest.schema.Index]
     :rtype: list[tuple]
     """
     redundant_indices = []
