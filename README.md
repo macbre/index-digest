@@ -186,6 +186,12 @@ select * from 0002_not_used_indices where bar = 'foo'
 * `not_used_tables`: checks which tables are not used by SELECT queries
 * `queries_not_using_index`: reports SELECT queries that do not use any index
 
+## Sucess stories
+
+> Want to add your entry here? Submit a pull request
+
+* By running `index-digest` at [Wikia](http://wikia.com) on shared database clusters (with tables storing ~450 mm of rows with 300+ GiB of data) we were able to reclaim 1.1 TiB of MySQL storage space across all replicas.
+
 ## Read more
 
 * [High Performance MySQL, 3rd Edition by Vadim Tkachenko, Peter Zaitsev, Baron Schwartz](https://www.safaribooksonline.com/library/view/high-performance-mysql/9781449332471/ch05.html)
