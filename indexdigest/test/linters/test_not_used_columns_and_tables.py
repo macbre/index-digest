@@ -33,14 +33,17 @@ class TestNotUsedTables(TestCase):
         self.assertEqual(reports[0].table_name, '0006_not_used_tables')
 
     def test_get_used_tables_from_queries(self):
-        with open('sql/0006-not-used-columns-and-tables-log') as fp:
-            queries = fp.readlines()
+        queries = [
+            'SELECT /* a comment */ foo FROM `0006_not_used_columns` WHERE id = 1;',
+            'SELECT 1 FROM `0006_not_used_tables` WHERE id = 3;',
+        ]
 
-        tables = get_used_tables_from_queries(database=self.connection, queries=queries)
+        tables = get_used_tables_from_queries(
+            database=self.connection, queries=queries)
 
         print(tables)
 
-        self.assertListEqual(tables, ['0006_not_used_columns'])
+        self.assertListEqual(tables, ['0006_not_used_columns', '0006_not_used_tables'])
 
         # assert False
 
