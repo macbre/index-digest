@@ -8,7 +8,7 @@ import MySQLdb
 from MySQLdb.cursors import DictCursor
 from _mysql_exceptions import OperationalError
 
-from indexdigest.schema import Index
+from indexdigest.schema import Column, Index
 from indexdigest.utils import parse_dsn, IndexDigestError
 
 
@@ -222,7 +222,7 @@ class Database(DatabaseBase):
 
     def get_table_metadata(self, table_name):
         """
-        Return table's metadata: columns and stats.
+        Return table's metadata
 
         :type table_name str
         :rtype: dict
@@ -244,12 +244,17 @@ class Database(DatabaseBase):
         Return the list of indices for a given table
 
         :type table_name str
-        :rtype: dict
+        :rtype: list[Column]
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
-        return self.query_key_value(
-            "SELECT COLUMN_NAME, COLUMN_TYPE "
+        rows = self.query_dict_rows(
+            "SELECT COLUMN_NAME as NAME, COLUMN_TYPE as TYPE, CHARACTER_SET_NAME "
             "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
+
+        return [
+            Column(name=row['NAME'], type=row['TYPE'], character_set=row['CHARACTER_SET_NAME'])
+            for row in rows
+        ]
 
     def get_table_indices(self, table_name):
         """

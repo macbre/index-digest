@@ -153,13 +153,21 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         columns = self.connection.get_table_columns(self.TABLE_NAME)
         print(columns)
 
+        column_names = [column.name for column in columns]
+
         # columns
-        self.assertTrue('id' in columns)
-        self.assertTrue('id' in columns)
-        self.assertTrue('foo' in columns)
-        self.assertEqual(columns['id'], 'int(9)')
-        self.assertEqual(columns['foo'], 'varchar(16)')
-        self.assertEqual(len(columns.keys()), 2)
+        self.assertTrue('id' in column_names)
+        self.assertTrue('foo' in column_names)
+
+        self.assertEqual(columns[0].name, 'id')
+        self.assertEqual(columns[0].type, 'int(9)')
+        self.assertIsNone(columns[0].character_set)  # numeric column
+
+        self.assertEqual(columns[1].name, 'foo')
+        self.assertEqual(columns[1].type, 'varchar(16)')
+        self.assertEqual(columns[1].character_set, 'utf8')
+
+        self.assertEqual(len(columns), 2)
 
         # assert False
 
