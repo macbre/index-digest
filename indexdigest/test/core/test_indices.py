@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from indexdigest.indices import Index
+from indexdigest.schema import Index
 
 
 class TestIndex(TestCase):
