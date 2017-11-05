@@ -27,7 +27,7 @@ def filter_explain_extra(database, queries, check):
             context['explain_extra'] = explain_row['Extra']
             context['explain_rows'] = explain_row['rows']
             context['explain_filtered'] = explain_row.get('filtered')  # can be not set
-            context['explain_possible_keys'] = explain_row['possible_keys']
+            context['explain_key'] = explain_row['key']
 
             yield (query, table_used, context)
 
@@ -54,5 +54,26 @@ def check_queries_using_filesort(database, queries):
     for (query, table_used, context) in filtered:
         yield LinterEntry(linter_type='queries_using_filesort', table_name=table_used,
                           message='"{}" query used filesort'.
+                          format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                          context=context)
+
+
+def check_queries_using_temporary(database, queries):
+    """
+    Using temporary
+
+    To resolve the query, MySQL needs to create a temporary table to hold the result. This
+    typically happens if the query contains GROUP BY and ORDER BY clauses that list columns
+    differently.
+
+    :type database  indexdigest.database.Database
+    :type queries list[str]
+    :rtype: list[LinterEntry]
+    """
+    filtered = filter_explain_extra(database, queries, check='Using temporary')
+
+    for (query, table_used, context) in filtered:
+        yield LinterEntry(linter_type='queries_using_temporary', table_name=table_used,
+                          message='"{}" query used temporary'.
                           format('{}...'.format(query[:50]) if len(query) > 50 else query),
                           context=context)

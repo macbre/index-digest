@@ -2,7 +2,7 @@
 Contains linters used to check the database for improvements.
 """
 # expose linters
-from .filesort_temporary_table import check_queries_using_filesort
+from .filesort_temporary_table import check_queries_using_filesort, check_queries_using_temporary
 from .not_used_columns_and_tables import check_not_used_tables, check_not_used_columns
 from .not_used_indices import check_not_used_indices, check_queries_not_using_indices
 from .redundant_indices import check_redundant_indices
