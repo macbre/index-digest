@@ -252,7 +252,8 @@ class Database(DatabaseBase):
             "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
 
         return [
-            Column(name=row['NAME'], type=row['TYPE'], character_set=row['CHARACTER_SET_NAME'])
+            Column(name=row['NAME'], column_type=row['TYPE'],
+                   character_set=row['CHARACTER_SET_NAME'])
             for row in rows
         ]
 
