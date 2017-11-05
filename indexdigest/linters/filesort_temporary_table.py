@@ -42,7 +42,7 @@ def check_queries_using_filesort(database, queries):
     retrieved in sorted order.
 
     Percona says: The truth is, filesort is badly named. Anytime a sort can’t be performed from an
-    index, it’s a filesort. It has nothing to do with files. Filesort should be called “sort.”
+    index, it’s a filesort. It has nothing to do with files. Filesort should be called "sort."
     It is quicksort at heart.
 
     :type database  indexdigest.database.Database
