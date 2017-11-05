@@ -142,8 +142,4 @@ class Column(object):
         """
         :rtype: str
         """
-        return '{name} {type} ({character_set})'.format(
-            name=self._name,
-            type=self._type,
-            character_set=self._character_set
-        )
+        return self._name
