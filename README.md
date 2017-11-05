@@ -185,8 +185,10 @@ select * from 0002_not_used_indices where bar = 'foo'
 * `not_used_indices`: checks which indices are not used by SELECT queries
 * `not_used_tables`: checks which tables are not used by SELECT queries
 * `queries_not_using_index`: reports SELECT queries that do not use any index
+* `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
+* `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
 
-## Sucess stories
+## Success stories
 
 > Want to add your entry here? Submit a pull request
 
