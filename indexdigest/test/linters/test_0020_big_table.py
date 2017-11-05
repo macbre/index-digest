@@ -16,7 +16,7 @@ class TestBigTableLinters(BigTableTest):
             'SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val',
         ]
 
-        reports = check_queries_using_filesort(self.connection, queries)
+        reports = list(check_queries_using_filesort(self.connection, queries))
 
         # reports ordered is the same as schema columns order
         self.assertEqual(len(reports), 2)

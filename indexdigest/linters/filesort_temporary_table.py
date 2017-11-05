@@ -34,18 +34,25 @@ def filter_explain_extra(database, queries, check):
 
 def check_queries_using_filesort(database, queries):
     """
+    Using filesort
+
+    MySQL must do an extra pass to find out how to retrieve the rows in sorted order. The sort is
+    done by going through all rows according to the join type and storing the sort key and pointer
+    to the row for all rows that match the WHERE clause. The keys then are sorted and the rows are
+    retrieved in sorted order.
+
+    Percona says: The truth is, filesort is badly named. Anytime a sort can’t be performed from an
+    index, it’s a filesort. It has nothing to do with files. Filesort should be called “sort.”
+    It is quicksort at heart.
+
     :type database  indexdigest.database.Database
     :type queries list[str]
     :rtype: list[LinterEntry]
     """
-    reports = []
     filtered = filter_explain_extra(database, queries, check='Using filesort')
 
     for (query, table_used, context) in filtered:
-        reports.append(
-            LinterEntry(linter_type='queries_using_filesort', table_name=table_used,
-                        message='"{}" query used filesort'.
-                        format('{}...'.format(query[:50]) if len(query) > 50 else query),
-                        context=context))
-
-    return reports
+        yield LinterEntry(linter_type='queries_using_filesort', table_name=table_used,
+                          message='"{}" query used filesort'.
+                          format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                          context=context)
