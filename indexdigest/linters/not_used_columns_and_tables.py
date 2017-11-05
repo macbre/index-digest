@@ -99,18 +99,18 @@ def check_not_used_columns(database, queries):
 
     for table in used_tables:
         logger.info("Checking %s table", table)
-        table_columns = database.get_table_metadata(table)['columns']
+        table_columns = database.get_table_columns(table)
 
         # now get the difference and report them
         not_used_columns = [
-            column for column in table_columns.keys()
-            if column not in set(used_columns[table])
+            column for column in table_columns
+            if column.name not in set(used_columns[table])
         ]
 
         for column in not_used_columns:
             reports.append(
                 LinterEntry(linter_type='not_used_columns', table_name=table,
                             message='"{}" column was not used by provided queries'.format(column),
-                            context={'column_name': column, 'column_type': table_columns[column]}))
+                            context={'column_name': column.name, 'column_type': column.type}))
 
     return reports
