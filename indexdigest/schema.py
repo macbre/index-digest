@@ -93,3 +93,57 @@ class Index(object):
             name=self.name if not self.is_primary else '',
             columns=', '.join(self.columns)
         )
+
+
+class Column(object):
+    """
+    Keeps a single table column meta-data
+
+    @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
+    """
+    def __init__(self, name, type, character_set):
+        """
+        :type name str
+        :type type str
+        :type character_set str
+        """
+        self._name = name
+        self._type = type
+        self._character_set = character_set
+
+    @property
+    def name(self):
+        """
+        :rtype: str
+        """
+        return self._name
+
+    @property
+    def type(self):
+        """
+        :rtype: str
+        """
+        return self._type
+
+    @property
+    def character_set(self):
+        """
+        :rtype: str
+        """
+        return self._character_set
+
+    def __repr__(self):
+        """
+        :rtype: str
+        """
+        return '<{}> {}'.format(self.__class__.__name__, str(self))
+
+    def __str__(self):
+        """
+        :rtype: str
+        """
+        return '{name} {type} ({character_set})'.format(
+            name=self._name,
+            type=self._type,
+            character_set=self._character_set
+        )
