@@ -54,109 +54,83 @@ Visit <https://github.com/macbre/index-digest>
 
 ```
 $ index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log 
-Query <select * from 0002_not_used_indices where bar = 'foo'> does not use any index on `0002_not_used_indices` table
 ------------------------------------------------------------
-Found 12 issue(s) to report for "index_digest" database
+Found 15 issue(s) to report for "index_digest" database
 ------------------------------------------------------------
-redundant_indices / 0004_id_foo
-
-	"idx" index can be removed as redundant (covered by "PRIMARY")
-
-	- redundant: UNIQUE KEY idx (id, foo)
-	- covered_by: PRIMARY KEY (id, foo)
-	- schema: CREATE TABLE `0004_id_foo` (
-	    `id` int(9) NOT NULL AUTO_INCREMENT,
-	    `foo` varbinary(16) NOT NULL DEFAULT '',
-	    PRIMARY KEY (`id`,`foo`),
-	    UNIQUE KEY `idx` (`id`,`foo`)
-	  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
-	- table_data_size_mb: 0.015625
-	- table_index_size_mb: 0.015625
-
+MySQL v5.5.58-0+deb8u1 at debian
+index-digest v0.1.0
 ------------------------------------------------------------
-redundant_indices / 0004_id_foo_bar
+redundant_indices → table affected: 0004_id_foo
 
-	"idx_foo" index can be removed as redundant (covered by "idx_foo_bar")
+✗ "idx" index can be removed as redundant (covered by "PRIMARY")
 
-	- redundant: KEY idx_foo (foo)
-	- covered_by: KEY idx_foo_bar (foo, bar)
-	- schema: CREATE TABLE `0004_id_foo_bar` (
-	    `id` int(9) NOT NULL AUTO_INCREMENT,
-	    `foo` varbinary(16) NOT NULL DEFAULT '',
-	    `bar` varbinary(16) NOT NULL DEFAULT '',
-	    PRIMARY KEY (`id`),
-	    KEY `idx_foo` (`foo`),
-	    KEY `idx_foo_bar` (`foo`,`bar`),
-	    KEY `idx_id_foo` (`id`,`foo`)
-	  ) ENGINE=InnoDB DEFAULT CHARSET=latin1
-	- table_data_size_mb: 0.015625
-	- table_index_size_mb: 0.046875
+  - redundant: UNIQUE KEY idx (id, foo)
+  - covered_by: PRIMARY KEY (id, foo)
+  - schema: CREATE TABLE `0004_id_foo` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      `foo` varbinary(16) NOT NULL DEFAULT '',
+      PRIMARY KEY (`id`,`foo`),
+      UNIQUE KEY `idx` (`id`,`foo`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+  - table_data_size_mb: 0.015625
+  - table_index_size_mb: 0.015625
 
 ------------------------------------------------------------
-not_used_indices / 0002_not_used_indices
+redundant_indices → table affected: 0004_id_foo_bar
 
-	"test_id_idx" index was not used by provided queries
+✗ "idx_foo" index can be removed as redundant (covered by "idx_foo_bar")
 
-	- not_used_index: KEY test_id_idx (test, id)
-
-------------------------------------------------------------
-not_used_tables / 0000_the_table
-
-	"0000_the_table" table was not used by provided queries
-
-------------------------------------------------------------
-not_used_tables / 0004_id_foo
-
-	"0004_id_foo" table was not used by provided queries
-
-------------------------------------------------------------
-not_used_tables / 0004_id_foo_bar
-
-	"0004_id_foo_bar" table was not used by provided queries
+  - redundant: KEY idx_foo (foo)
+  - covered_by: KEY idx_foo_bar (foo, bar)
+  - schema: CREATE TABLE `0004_id_foo_bar` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      `foo` varbinary(16) NOT NULL DEFAULT '',
+      `bar` varbinary(16) NOT NULL DEFAULT '',
+      PRIMARY KEY (`id`),
+      KEY `idx_foo` (`foo`),
+      KEY `idx_foo_bar` (`foo`,`bar`),
+      KEY `idx_id_foo` (`id`,`foo`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+  - table_data_size_mb: 0.015625
+  - table_index_size_mb: 0.046875
 
 ------------------------------------------------------------
-not_used_tables / 0006_not_used_columns
+not_used_indices → table affected: 0002_not_used_indices
 
-	"0006_not_used_columns" table was not used by provided queries
+✗ "test_id_idx" index was not used by provided queries
 
-------------------------------------------------------------
-not_used_tables / 0006_not_used_tables
-
-	"0006_not_used_tables" table was not used by provided queries
+  - not_used_index: KEY test_id_idx (test, id)
 
 ------------------------------------------------------------
-not_used_columns / 0002_not_used_indices
+not_used_tables → table affected: 0000_the_table
 
-	"id" column was not used by provided queries
-
-	- column_type: int
-	- column_name: id
+✗ "0000_the_table" table was not used by provided queries
 
 ------------------------------------------------------------
-not_used_columns / 0002_not_used_indices
 
-	"foo" column was not used by provided queries
-
-	- column_type: varchar
-	- column_name: foo
+(...)
 
 ------------------------------------------------------------
-not_used_columns / 0002_not_used_indices
+queries_using_filesort → table affected: 0020_big_table
 
-	"test" column was not used by provided queries
+✗ "SELECT val, count(*) FROM 0020_big_table WHERE id ..." query used filesort
 
-	- column_type: varchar
-	- column_name: test
-
-------------------------------------------------------------
-not_used_columns / 0002_not_used_indices
-
-	"bar" column was not used by provided queries
-
-	- column_type: varchar
-	- column_name: bar
+  - query: SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val
+  - explain_extra: Using where; Using temporary; Using filesort
+  - explain_rows: 11
+  - explain_filtered: None
+  - explain_key: PRIMARY
 
 ------------------------------------------------------------
+queries_using_temporary → table affected: 0020_big_table
+
+✗ "SELECT val, count(*) FROM 0020_big_table WHERE id ..." query used temporary
+
+  - query: SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val
+  - explain_extra: Using where; Using temporary; Using filesort
+  - explain_rows: 11
+  - explain_filtered: None
+  - explain_key: PRIMARY
 ```
 
 ## SQL query log
@@ -185,8 +159,10 @@ select * from 0002_not_used_indices where bar = 'foo'
 * `not_used_indices`: checks which indices are not used by SELECT queries
 * `not_used_tables`: checks which tables are not used by SELECT queries
 * `queries_not_using_index`: reports SELECT queries that do not use any index
+* `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
+* `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
 
-## Sucess stories
+## Success stories
 
 > Want to add your entry here? Submit a pull request
 

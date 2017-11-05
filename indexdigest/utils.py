@@ -37,6 +37,23 @@ def is_select_query(query):
     return query.lstrip().lower().startswith('select')
 
 
+def explain_queries(database, queries):
+    """
+    Yields EXPLAIN result rows for given queries
+
+    :type database  indexdigest.database.Database
+    :type queries list[str]
+    :rtype: tuple[str,str,str,str]
+    """
+    # analyze only SELECT queries from the log
+    for query in filter(is_select_query, queries):
+        for row in database.explain_query(query):
+            table_used = row['table']
+            index_used = row['key']
+
+            yield (query, table_used, index_used, row)
+
+
 class LinterEntry(object):
     """
     Wraps a single linter entry. Various formatters may display this data differently.
