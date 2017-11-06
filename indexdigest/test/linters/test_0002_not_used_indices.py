@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.not_used_indices import check_not_used_indices, \
+from indexdigest.linters.linter_0002_not_used_indices import check_not_used_indices, \
     check_queries_not_using_indices
 from indexdigest.test import DatabaseTestMixin, read_queries_from_log
 

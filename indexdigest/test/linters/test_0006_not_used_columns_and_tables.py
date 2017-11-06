@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
+from indexdigest.linters.linter_0006_not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
     get_used_tables_from_queries
 from indexdigest.database import Database, IndexDigestQueryError
 from indexdigest.test import DatabaseTestMixin, read_queries_from_log
