@@ -79,24 +79,24 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertFalse('version_compile_os' in variables)  # this variable does not match given like
         self.assertTrue('innodb_version' in variables)
 
-    def test_explain_query(self):
+    def test_explain_and_utf_query(self):
         """
-        mysql> EXPLAIN SELECT * FROM 0000_the_table WHERE id = 2;
-        +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
-        | id | select_type | table          | type | possible_keys | key     | key_len | ref   | rows | Extra       |
-        +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
-        |  1 | SIMPLE      | 0000_the_table | ref  | PRIMARY,idx   | PRIMARY | 4       | const |    1 | Using index |
-        +----+-------------+----------------+------+---------------+---------+---------+-------+------+-------------+
+        mysql> explain SELECT * FROM 0000_the_table WHERE foo = "foo ąęź";
+        +----+-------------+----------------+------+---------------+---------+---------+-------+------+--------------------------+
+        | id | select_type | table          | type | possible_keys | key     | key_len | ref   | rows | Extra                    |
+        +----+-------------+----------------+------+---------------+---------+---------+-------+------+--------------------------+
+        |  1 | SIMPLE      | 0000_the_table | ref  | idx_foo       | idx_foo | 50      | const |    1 | Using where; Using index |
+        +----+-------------+----------------+------+---------------+---------+---------+-------+------+--------------------------+
         1 row in set (0.00 sec)
         """
-        res = list(self.connection.explain_query('SELECT * FROM {} WHERE id = 2'.format(self.TABLE_NAME)))
+        res = list(self.connection.explain_query('SELECT * FROM {} WHERE foo = "foo ąęź"'.format(self.TABLE_NAME)))
         row = res[0]
         print(row)
 
         self.assertEqual(len(res), 1)
-        self.assertEqual(row['key'], 'PRIMARY')
+        self.assertEqual(row['key'], 'idx_foo')
         self.assertEqual(row['table'], self.TABLE_NAME)
-        self.assertEqual(row['Extra'], 'Using index')
+        self.assertEqual(row['Extra'], 'Using where; Using index')
 
     def test_get_table_indices(self):
         """
