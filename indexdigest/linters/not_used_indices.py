@@ -24,22 +24,16 @@ def check_not_used_indices(database, queries):
             logger.info("Query <%s> uses %s index on `%s` table", query, index_used, table_used)
             used_indices[table_used].append(index_used)
 
-    # generate reports
-    reports = []
-
     # analyze all tables used by the above queries
     # print(used_indices)
     for table_name in used_indices.keys():
         for index in database.get_table_indices(table_name):
 
             if index.name not in used_indices[table_name]:
-                reports.append(
-                    LinterEntry(linter_type='not_used_indices', table_name=table_name,
-                                message='"{}" index was not used by provided queries'.
-                                format(index.name),
-                                context={"not_used_index": index}))
-
-    return reports
+                yield LinterEntry(linter_type='not_used_indices', table_name=table_name,
+                                  message='"{}" index was not used by provided queries'.
+                                  format(index.name),
+                                  context={"not_used_index": index})
 
 
 def check_queries_not_using_indices(database, queries):
@@ -48,8 +42,6 @@ def check_queries_not_using_indices(database, queries):
     :type queries list[str]
     :rtype: list[LinterEntry]
     """
-    reports = []
-
     for (query, table_used, index_used, explain_row) in explain_queries(database, queries):
         # print(query, explain_row)
 
@@ -63,10 +55,7 @@ def check_queries_not_using_indices(database, queries):
             context['explain_filtered'] = explain_row.get('filtered')  # can be not set
             context['explain_possible_keys'] = explain_row['possible_keys']
 
-            reports.append(
-                LinterEntry(linter_type='queries_not_using_index', table_name=table_used,
-                            message='"{}" query did not make use of any index'.
-                            format('{}...'.format(query[:50]) if len(query) > 50 else query),
-                            context=context))
-
-    return reports
+            yield LinterEntry(linter_type='queries_not_using_index', table_name=table_used,
+                              message='"{}" query did not make use of any index'.
+                              format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                              context=context)

@@ -29,7 +29,6 @@ def check_redundant_indices(database):
     :rtype: list[LinterEntry]
     """
     logger = logging.getLogger(__name__)
-    reports = []
 
     for table in database.get_tables():
         logger.info("Checking %s table", table)
@@ -46,10 +45,7 @@ def check_redundant_indices(database):
             context['table_data_size_mb'] = 1. * meta['data_size'] / 1024 / 1024
             context['table_index_size_mb'] = 1. * meta['index_size'] / 1024 / 1024
 
-            reports.append(
-                LinterEntry(linter_type='redundant_indices', table_name=table,
-                            message='"{}" index can be removed as redundant (covered by "{}")'.
-                            format(redundant_index.name, suggested_index.name),
-                            context=context))
-
-    return reports
+            yield LinterEntry(linter_type='redundant_indices', table_name=table,
+                              message='"{}" index can be removed as redundant (covered by "{}")'.
+                              format(redundant_index.name, suggested_index.name),
+                              context=context)

@@ -10,8 +10,8 @@ from indexdigest.test import DatabaseTestMixin, read_queries_from_log
 class TestNotUsedIndices(TestCase, DatabaseTestMixin):
 
     def test_not_used_indices(self):
-        reports = check_not_used_indices(
-            database=self.connection, queries=read_queries_from_log('0002-not-used-indices-log'))
+        reports = list(check_not_used_indices(
+            database=self.connection, queries=read_queries_from_log('0002-not-used-indices-log')))
 
         print(reports)
 
@@ -26,8 +26,8 @@ class TestNotUsedIndices(TestCase, DatabaseTestMixin):
 class TestQueriesNotUsingIndices(TestCase, DatabaseTestMixin):
 
     def test_queries(self):
-        reports = check_queries_not_using_indices(
-            database=self.connection, queries=read_queries_from_log('0019-queries-not-using-indices-log'))
+        reports = list(check_queries_not_using_indices(
+            database=self.connection, queries=read_queries_from_log('0019-queries-not-using-indices-log')))
 
         # print(reports)
 
