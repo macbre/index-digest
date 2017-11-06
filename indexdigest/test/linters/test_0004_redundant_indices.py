@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.redundant_indices import get_redundant_indices, check_redundant_indices
+from indexdigest.linters.linter_0004_redundant_indices import get_redundant_indices, check_redundant_indices
 from indexdigest.test import DatabaseTestMixin
 
 

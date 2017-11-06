@@ -23,11 +23,14 @@ Visit <https://github.com/macbre/index-digest>
 from __future__ import print_function, unicode_literals
 
 import logging
+from itertools import chain
+
 from docopt import docopt
 from termcolor import colored, cprint
 
 import indexdigest
 from indexdigest.database import Database
+from indexdigest.utils import LinterEntry
 from indexdigest.linters import \
     check_queries_using_filesort, check_queries_using_temporary, \
     check_not_used_indices, check_queries_not_using_indices, \
@@ -76,16 +79,24 @@ def main():
         queries = None
 
     # run all checks
-    reports = check_redundant_indices(database)
+    reports = chain(
+        check_redundant_indices(database)
+    )
 
     # checks that use SQL log
     if queries:
-        reports += check_not_used_indices(database, queries=queries)
-        reports += check_not_used_tables(database, queries=queries)
-        reports += check_not_used_columns(database, queries=queries)
-        reports += check_queries_not_using_indices(database, queries=queries)
-        reports += list(check_queries_using_filesort(database, queries=queries))
-        reports += list(check_queries_using_temporary(database, queries=queries))
+        reports = chain(
+            reports,
+            check_not_used_indices(database, queries=queries),
+            check_not_used_tables(database, queries=queries),
+            check_not_used_columns(database, queries=queries),
+            check_queries_not_using_indices(database, queries=queries),
+            check_queries_using_filesort(database, queries=queries),
+            check_queries_using_temporary(database, queries=queries)
+        )
+
+    # cast to a list (to be able to count reports)
+    reports = list(reports)
 
     # emit results
     line = '-' * 60
@@ -100,6 +111,8 @@ def main():
     # TODO: implement formatters
     if reports:
         for report in reports:
+            assert isinstance(report, LinterEntry)
+
             print(
                 colored(report.linter_type, color='blue', attrs=['bold']) +
                 ' → table affected: ' +

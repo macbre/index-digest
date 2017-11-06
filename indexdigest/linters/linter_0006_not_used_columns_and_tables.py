@@ -57,13 +57,9 @@ def check_not_used_tables(database, queries):
     not_used_tables = [table for table in tables if table not in used_tables]
 
     # generate reports
-    reports = []
     for table in not_used_tables:
-        reports.append(
-            LinterEntry(linter_type='not_used_tables', table_name=table,
-                        message='"{}" table was not used by provided queries'.format(table)))
-
-    return reports
+        yield LinterEntry(linter_type='not_used_tables', table_name=table,
+                          message='"{}" table was not used by provided queries'.format(table))
 
 
 def check_not_used_columns(database, queries):
@@ -95,8 +91,6 @@ def check_not_used_columns(database, queries):
         used_columns[table] += columns
 
     # analyze table schemas and report not used columns for each table
-    reports = []
-
     for table in used_tables:
         logger.info("Checking %s table", table)
         table_columns = database.get_table_columns(table)
@@ -108,9 +102,6 @@ def check_not_used_columns(database, queries):
         ]
 
         for column in not_used_columns:
-            reports.append(
-                LinterEntry(linter_type='not_used_columns', table_name=table,
-                            message='"{}" column was not used by provided queries'.format(column),
-                            context={'column_name': column.name, 'column_type': column.type}))
-
-    return reports
+            yield LinterEntry(linter_type='not_used_columns', table_name=table,
+                              message='"{}" column was not used by provided queries'.format(column),
+                              context={'column_name': column.name, 'column_type': column.type})

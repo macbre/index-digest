@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
+from indexdigest.linters.linter_0006_not_used_columns_and_tables import check_not_used_tables, check_not_used_columns, \
     get_used_tables_from_queries
 from indexdigest.database import Database, IndexDigestQueryError
 from indexdigest.test import DatabaseTestMixin, read_queries_from_log
@@ -23,8 +23,8 @@ class TestNotUsedTables(TestCase):
         return LimitedViewDatabase.connect_dsn(DatabaseTestMixin.DSN)
 
     def test_not_used_tables(self):
-        reports = check_not_used_tables(
-            database=self.connection, queries=read_queries_from_log('0006-not-used-columns-and-tables-log'))
+        reports = list(check_not_used_tables(
+            database=self.connection, queries=read_queries_from_log('0006-not-used-columns-and-tables-log')))
 
         print(reports)
 
@@ -59,7 +59,7 @@ class TestNotUsedColumns(TestCase):
             'SELECT test, id FROM `0006_not_used_columns` WHERE foo = "a"'
         ]
 
-        reports = check_not_used_columns(database=self.connection, queries=queries)
+        reports = list(check_not_used_columns(database=self.connection, queries=queries))
 
         self.assertEqual(len(reports), 1)
         self.assertEqual(str(reports[0]), '0006_not_used_columns: "bar" column was not used by provided queries')
@@ -74,7 +74,7 @@ class TestNotUsedColumns(TestCase):
             'SELECT test FROM `0006_not_used_columns` WHERE foo = "a"'
         ]
 
-        reports = check_not_used_columns(database=self.connection, queries=queries)
+        reports = list(check_not_used_columns(database=self.connection, queries=queries))
 
         # reports ordered is the same as schema columns order
         self.assertEqual(len(reports), 2)
@@ -92,4 +92,4 @@ class TestNotUsedColumns(TestCase):
 
         with self.assertRaises(IndexDigestQueryError):
             # this should raise Database error #1054: Unknown column 'test' in 'field list'
-            check_not_used_columns(database=self.connection, queries=queries)
+            list(check_not_used_columns(database=self.connection, queries=queries))
