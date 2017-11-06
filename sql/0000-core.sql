@@ -7,4 +7,4 @@ CREATE TABLE `0000_the_table` (
 	KEY `idx_foo` (`foo`)
 ) CHARACTER SET utf8;
 
-INSERT INTO 0000_the_table VALUES(1, 'test'), (2, 'foo'), (3, 'foo');
+INSERT INTO 0000_the_table VALUES(1, 'test'), (2, 'foo'), (3, 'foo ąęź');
