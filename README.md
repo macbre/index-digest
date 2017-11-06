@@ -166,7 +166,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 
 > Want to add your entry here? Submit a pull request
 
-* By running `index-digest` at [Wikia](http://wikia.com) on shared database clusters (with tables storing ~450 mm of rows with 300+ GiB of data) we were able to reclaim 1.1 TiB of MySQL storage space across all replicas.
+* By running `index-digest` at [Wikia](http://wikia.com) on shared database clusters (including tables storing ~450 mm of rows with 300+ GiB of data) we were able to [reclaim around 1.25 TiB of MySQL storage space across all replicas](https://medium.com/legacy-systems-diary/linting-your-database-schema-cd8947835a52).
 
 ## Read more
 
