@@ -30,6 +30,7 @@ from termcolor import colored, cprint
 
 import indexdigest
 from indexdigest.database import Database
+from indexdigest.utils import LinterEntry
 from indexdigest.linters import \
     check_queries_using_filesort, check_queries_using_temporary, \
     check_not_used_indices, check_queries_not_using_indices, \
@@ -110,6 +111,8 @@ def main():
     # TODO: implement formatters
     if reports:
         for report in reports:
+            assert isinstance(report, LinterEntry)
+
             print(
                 colored(report.linter_type, color='blue', attrs=['bold']) +
                 ' → table affected: ' +
