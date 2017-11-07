@@ -137,8 +137,18 @@ class Column(object):
         :rtype: bool
         """
         base_type = self.type.split('(')[0].upper()
+        # @see https://dev.mysql.com/doc/refman/5.7/en/string-types.html
         return base_type in \
                ['CHAR', 'VARCHAR', 'BINARY', 'VARBINARY', 'BLOB', 'TEXT', 'ENUM', 'SET']
+
+    def is_timestamp_type(self):
+        """
+        :rtype: bool
+        """
+        base_type = self.type.upper()
+        # @see https://dev.mysql.com/doc/refman/5.7/en/date-and-time-types.html
+        return base_type in \
+               ['DATE', 'TIME', 'DATETIME', 'TIMESTAMP', 'YEAR']
 
     def __repr__(self):
         """
