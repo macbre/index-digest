@@ -132,6 +132,14 @@ class Column(object):
         """
         return self._character_set
 
+    def is_text_type(self):
+        """
+        :rtype: bool
+        """
+        base_type = self.type.split('(')[0].upper()
+        return base_type in \
+               ['CHAR', 'VARCHAR', 'BINARY', 'VARBINARY', 'BLOB', 'TEXT', 'ENUM', 'SET']
+
     def __repr__(self):
         """
         :rtype: str
