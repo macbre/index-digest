@@ -10,7 +10,7 @@ Analyses your database queries and schema and suggests indices improvements. You
 * if provided with SQL queries log (via `--sql-log` option) it:
   * checks if all tables, columns and indices are used by these queries
   * reports queries that do not use indices
-  * reports queries that use filesort or temporary file
+  * reports queries that use filesort, temporary file or full table scan
 
 This tool **supports MySQL 5.5, 5.6 and 5.7**.
 
@@ -131,6 +131,14 @@ queries_using_temporary → table affected: 0020_big_table
   - explain_rows: 11
   - explain_filtered: None
   - explain_key: PRIMARY
+
+------------------------------------------------------------
+queries_using_full_table_scan → table affected: 0020_big_table
+
+✗ "SELECT * FROM 0020_big_table" query triggered full table scan
+
+  - query: SELECT * FROM 0020_big_table
+  - explain_rows: 9041
 ```
 
 ## SQL query log
@@ -161,6 +169,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 * `queries_not_using_index`: reports SELECT queries that do not use any index
 * `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
 * `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
+* `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
 
 ## Success stories
 
