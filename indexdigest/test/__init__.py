@@ -20,6 +20,9 @@ class DatabaseTestMixin(object):
 
     @property
     def connection(self):
+        """
+        :rtype: Database
+        """
         return Database.connect_dsn(self.DSN)
 
 
