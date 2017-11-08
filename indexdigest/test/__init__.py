@@ -20,6 +20,9 @@ class DatabaseTestMixin(object):
 
     @property
     def connection(self):
+        """
+        :rtype: Database
+        """
         return Database.connect_dsn(self.DSN)
 
 
@@ -34,9 +37,9 @@ class BigTableTest(TestCase, DatabaseTestMixin):
         super(BigTableTest, self).setUp()
 
         # prepare the big table only once
-        if not self.PREPARED:
+        if not BigTableTest.PREPARED:
             self._prepare_big_table()
-            self.PREPARED = True
+            BigTableTest.PREPARED = True
 
         assert self.table_populated(), 'Table 0020_big_table should be populated with values'
 

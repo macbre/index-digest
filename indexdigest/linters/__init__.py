@@ -7,3 +7,4 @@ from .linter_0006_not_used_columns_and_tables import check_not_used_tables, chec
 from .linter_0004_redundant_indices import check_redundant_indices
 from .linter_0020_filesort_temporary_table import \
     check_queries_using_filesort, check_queries_using_temporary
+from .linter_0026_full_table_scan import check_full_table_scan

@@ -5,7 +5,7 @@ import logging
 
 from collections import defaultdict, OrderedDict
 
-from indexdigest.utils import LinterEntry, explain_queries
+from indexdigest.utils import LinterEntry, explain_queries, shorten_query
 
 
 def check_not_used_indices(database, queries):
@@ -57,5 +57,5 @@ def check_queries_not_using_indices(database, queries):
 
             yield LinterEntry(linter_type='queries_not_using_index', table_name=table_used,
                               message='"{}" query did not make use of any index'.
-                              format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                              format(shorten_query(query)),
                               context=context)

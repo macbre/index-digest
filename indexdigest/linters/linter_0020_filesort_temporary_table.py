@@ -3,7 +3,7 @@ This linter checks for SELECT queries whether they trigger filesort or temporary
 """
 from collections import OrderedDict
 
-from indexdigest.utils import explain_queries, LinterEntry
+from indexdigest.utils import explain_queries, LinterEntry, shorten_query
 
 
 def filter_explain_extra(database, queries, check):
@@ -53,8 +53,7 @@ def check_queries_using_filesort(database, queries):
 
     for (query, table_used, context) in filtered:
         yield LinterEntry(linter_type='queries_using_filesort', table_name=table_used,
-                          message='"{}" query used filesort'.
-                          format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                          message='"{}" query used filesort'.format(shorten_query(query)),
                           context=context)
 
 
@@ -74,6 +73,5 @@ def check_queries_using_temporary(database, queries):
 
     for (query, table_used, context) in filtered:
         yield LinterEntry(linter_type='queries_using_temporary', table_name=table_used,
-                          message='"{}" query used temporary'.
-                          format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                          message='"{}" query used temporary'.format(shorten_query(query)),
                           context=context)
