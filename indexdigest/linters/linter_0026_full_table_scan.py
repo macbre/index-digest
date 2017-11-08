@@ -3,7 +3,7 @@ This linter checks for SELECT queries that use full table scan
 """
 from collections import OrderedDict
 
-from indexdigest.utils import explain_queries, LinterEntry
+from indexdigest.utils import explain_queries, LinterEntry, shorten_query
 
 
 def check_full_table_scan(database, queries):
@@ -32,5 +32,5 @@ def check_full_table_scan(database, queries):
 
         yield LinterEntry(linter_type='queries_using_full_table_scan', table_name=table_used,
                           message='"{}" query triggered full table scan'.
-                          format('{}...'.format(query[:50]) if len(query) > 50 else query),
+                          format(shorten_query(query)),
                           context=context)

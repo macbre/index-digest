@@ -54,6 +54,15 @@ def explain_queries(database, queries):
             yield (query, table_used, index_used, row)
 
 
+def shorten_query(query, max_len=50):
+    """
+    :type query str
+    :type max_len int
+    :rtype: str
+    """
+    return '{}...'.format(query[:max_len]) if len(query) > max_len else query
+
+
 class LinterEntry(object):
     """
     Wraps a single linter entry. Various formatters may display this data differently.
