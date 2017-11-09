@@ -15,6 +15,14 @@ def check_queries_not_using_indices(database, queries):
     for (query, table_used, index_used, explain_row) in explain_queries(database, queries):
         # print(query, explain_row)
 
+        # EXPLAIN can return no matching row in const table in Extra column.
+        # Do not consider this query as not using an index. -- see #44
+        if explain_row['Extra'] in [
+                'Impossible WHERE noticed after reading const tables',
+                'no matching row in const table',
+        ]:
+            continue
+
         if index_used is None:
             context = OrderedDict()
             context['query'] = query
