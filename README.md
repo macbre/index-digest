@@ -44,6 +44,7 @@ Options:
   --version         Show version.
 
 Examples:
+  index_digest mysql://username:password@localhost/dbname
   index_digest mysql://index_digest:qwerty@localhost/index_digest
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
 
