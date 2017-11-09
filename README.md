@@ -17,7 +17,7 @@ This tool **supports MySQL 5.5, 5.6 and 5.7**.
 ## Requirements & install
 
 ```
-sudo apt-get install libmysqlclient-dev python-dev
+sudo apt-get install libmysqlclient-dev python-dev virtualenv
 
 virtualenv env
 source env/bin/activate
