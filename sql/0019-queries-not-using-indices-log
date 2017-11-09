@@ -5,3 +5,5 @@ SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test" AND id = 1;
 -- these do not use index
 SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test" OR id > 1;
 SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test"
+-- no matching row in const table (#44)
+SELECT foo FROM 0019_queries_not_using_indices WHERE id = 5;

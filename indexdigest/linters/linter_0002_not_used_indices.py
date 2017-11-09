@@ -3,9 +3,9 @@ This linter checks for not used indices by going through SELECT queries
 """
 import logging
 
-from collections import defaultdict, OrderedDict
+from collections import defaultdict
 
-from indexdigest.utils import LinterEntry, explain_queries, shorten_query
+from indexdigest.utils import LinterEntry, explain_queries
 
 
 def check_not_used_indices(database, queries):
@@ -34,28 +34,3 @@ def check_not_used_indices(database, queries):
                                   message='"{}" index was not used by provided queries'.
                                   format(index.name),
                                   context={"not_used_index": index})
-
-
-def check_queries_not_using_indices(database, queries):
-    """
-    :type database  indexdigest.database.Database
-    :type queries list[str]
-    :rtype: list[LinterEntry]
-    """
-    for (query, table_used, index_used, explain_row) in explain_queries(database, queries):
-        # print(query, explain_row)
-
-        if index_used is None:
-            context = OrderedDict()
-            context['query'] = query
-
-            # https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain-extra-information
-            context['explain_extra'] = explain_row['Extra']
-            context['explain_rows'] = explain_row['rows']
-            context['explain_filtered'] = explain_row.get('filtered')  # can be not set
-            context['explain_possible_keys'] = explain_row['possible_keys']
-
-            yield LinterEntry(linter_type='queries_not_using_index', table_name=table_used,
-                              message='"{}" query did not make use of any index'.
-                              format(shorten_query(query)),
-                              context=context)
