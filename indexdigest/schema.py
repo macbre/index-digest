@@ -59,8 +59,8 @@ class Index(object):
             if self.is_unique and index.is_primary:
                 # the unique key adds a uniqueness bit to the primary key - #49
                 return False
-            else:
-                return True
+
+            return True
 
         return False
 
