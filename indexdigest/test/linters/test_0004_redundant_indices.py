@@ -30,7 +30,7 @@ class TestRedundantIndices(TestCase, DatabaseTestMixin):
             reports
         ))
 
-        print(reports)
+        print(list(map(str,reports)))
 
         self.assertEqual(len(reports), 3)
         self.assertEqual(str(reports[0]), '0004_id_foo: "idx" index can be removed as redundant (covered by "PRIMARY")')

@@ -46,8 +46,8 @@ class TestIndex(TestCase):
         # @see https://github.com/macbre/index-digest/issues/49
 
         # second key adds a uniqueness constraint, keep it
-        first = Index(name='base', columns=['id', 'bar', 'foo'], primary=True)
-        second = Index(name='base', columns=['bar', 'foo'], unique=True)
+        first = Index(name='base', columns=['bar', 'foo'], primary=True)
+        second = Index(name='base', columns=['bar'], unique=True)
 
         self.assertFalse(first.is_covered_by(second))
         self.assertFalse(second.is_covered_by(first))

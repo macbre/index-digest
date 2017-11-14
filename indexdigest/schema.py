@@ -56,7 +56,11 @@ class Index(object):
         columns_cnt = len(self.columns)
 
         if self.columns == index.columns[:columns_cnt]:
-            return True
+            if self.is_unique and index.is_primary:
+                # the unique key adds a uniqueness bit to the primary key - #49
+                return False
+            else:
+                return True
 
         return False
 
