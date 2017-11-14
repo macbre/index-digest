@@ -255,12 +255,12 @@ class Database(DatabaseBase):
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
         rows = self.query_dict_rows(
-            "SELECT COLUMN_NAME as NAME, COLUMN_TYPE as TYPE, CHARACTER_SET_NAME "
+            "SELECT COLUMN_NAME as NAME, COLUMN_TYPE as TYPE, CHARACTER_SET_NAME, COLLATION_NAME "
             "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
 
         return [
             Column(name=row['NAME'], column_type=row['TYPE'],
-                   character_set=row['CHARACTER_SET_NAME'])
+                   character_set=row['CHARACTER_SET_NAME'], collation=row['COLLATION_NAME'])
             for row in rows
         ]
 
