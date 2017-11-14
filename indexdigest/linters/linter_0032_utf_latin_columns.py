@@ -1,5 +1,5 @@
 """
-This linter reports text columns that have characters encoding set latin1
+This linter reports text columns that have characters encoding set to latin1
 """
 from collections import OrderedDict
 
