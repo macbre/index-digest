@@ -36,7 +36,8 @@ from indexdigest.linters import \
     check_not_used_indices, check_queries_not_using_indices, \
     check_not_used_tables, check_not_used_columns, \
     check_redundant_indices, \
-    check_full_table_scan
+    check_full_table_scan, \
+    check_latin_columns
 
 
 def format_context(context):
@@ -81,7 +82,8 @@ def main():
 
     # run all checks
     reports = chain(
-        check_redundant_indices(database)
+        check_redundant_indices(database),
+        check_latin_columns(database),
     )
 
     # checks that use SQL log
