@@ -41,3 +41,34 @@ class TestIndex(TestCase):
 
         self.assertFalse(first.is_covered_by(second))
         self.assertFalse(second.is_covered_by(first))
+
+    def test_primary_and_unique_keys_coverage(self):
+        # @see https://github.com/macbre/index-digest/issues/49
+
+        # second key adds a uniqueness constraint, keep it
+        first = Index(name='base', columns=['id', 'bar', 'foo'], primary=True)
+        second = Index(name='base', columns=['bar', 'foo'], unique=True)
+
+        self.assertFalse(first.is_covered_by(second))
+        self.assertFalse(second.is_covered_by(first))
+
+        # these keys are the same (primary is unique)
+        first = Index(name='base', columns=['bar', 'foo'], primary=True)
+        second = Index(name='base', columns=['bar', 'foo'], unique=True)
+
+        self.assertFalse(first.is_covered_by(second))
+        self.assertTrue(second.is_covered_by(first))
+
+        # prefer unique over non-unique
+        first = Index(name='base', columns=['bar', 'foo'], unique=True)
+        second = Index(name='base', columns=['bar', 'foo'])
+
+        self.assertFalse(first.is_covered_by(second))
+        self.assertTrue(second.is_covered_by(first))
+
+        # identical unique indices
+        first = Index(name='base', columns=['bar', 'foo'], unique=True)
+        second = Index(name='base', columns=['bar', 'foo'], unique=True)
+
+        self.assertTrue(first.is_covered_by(second))
+        self.assertTrue(second.is_covered_by(first))
