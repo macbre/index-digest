@@ -115,15 +115,17 @@ class Column(object):
 
     @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
     """
-    def __init__(self, name, column_type, character_set):
+    def __init__(self, name, column_type, character_set=None, collation=None):
         """
         :type name str
         :type column_type str
         :type character_set str
+        :type collation str
         """
         self._name = name
         self._type = column_type
         self._character_set = character_set
+        self._collation = collation
 
     @property
     def name(self):
@@ -145,6 +147,13 @@ class Column(object):
         :rtype: str
         """
         return self._character_set
+
+    @property
+    def collation(self):
+        """
+        :rtype: str
+        """
+        return self._collation
 
     def is_text_type(self):
         """

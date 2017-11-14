@@ -108,6 +108,15 @@ not_used_tables → table affected: 0000_the_table
 ✗ "0000_the_table" table was not used by provided queries
 
 ------------------------------------------------------------
+non_utf_columns → table affected: 0032_latin1_table
+
+✗ "name" text column has "latin1" character set defined
+
+  - column: name
+  - column_character_set: latin1
+  - column_collation: latin1_swedish_ci
+
+------------------------------------------------------------
 
 (...)
 
@@ -159,6 +168,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 ## Checks
 
 * `redundant_indices`: reports indices that are redundant and covered by other
+* `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
 
 ### Additional checks performed on SQL log
 
