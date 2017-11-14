@@ -42,10 +42,24 @@ class Index(object):
         if self.is_primary or self == index:
             return False
 
+        # equal indices - prefer unique over non unique indices
+        # and primary keys over unique ones
+        # @see https://github.com/macbre/index-digest/issues/49
+        if self.columns == index.columns and self.is_unique:
+            # we're covered by the same unique key or a primary key
+            if index.is_unique or index.is_primary:
+                return True
+
+            return False
+
         # now take the subset of columns from the index we're comparing ourselves too
         columns_cnt = len(self.columns)
 
         if self.columns == index.columns[:columns_cnt]:
+            if self.is_unique and index.is_primary:
+                # the unique key adds a uniqueness bit to the primary key - #49
+                return False
+
             return True
 
         return False
