@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `0020_big_table`;
 CREATE TABLE `0020_big_table` (
 	`id` int(9) NOT NULL AUTO_INCREMENT,
 	`val` int(9) NOT NULL,
-	`text` char(3) NOT NULL DEFAULT 'aaa',
+	`text` char(5) NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY text_idx (`text`)
-);
+) CHARSET=utf8;
