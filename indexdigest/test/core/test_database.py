@@ -97,7 +97,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertEqual(len(res), 1)
         self.assertEqual(row['key'], 'idx_foo')
         self.assertEqual(row['table'], self.TABLE_NAME)
-        self.assertEqual(row['Extra'], 'Using where; Using index')
+        self.assertTrue('Using index' in row['Extra'])
 
     def test_get_table_indices(self):
         """
