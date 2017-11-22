@@ -15,11 +15,11 @@ before_script:
   - sudo docker run -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d -p 3306:3306 mysql:5.7
   - sudo docker ps
   # set up a database
-  - mysql -u root -e "CREATE DATABASE index_digest;"
-  - mysql -u root -e "CREATE USER 'index_digest'@'localhost' IDENTIFIED BY 'qwerty';"
-  - mysql -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'localhost';"
+  - mysql --protocol=tcp -u root -e "CREATE DATABASE index_digest;"
+  - mysql --protocol=tcp -u root -e "CREATE USER 'index_digest'@'0.0.0.0' IDENTIFIED BY 'qwerty';"
+  - mysql --protocol=tcp -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'0.0.0.0';"
   - "./sql/populate.sh" # import the test schema files
-  - mysql -hlocalhost -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
+  - mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
 
 install: make install
 script: make coverage && make lint && make demo
