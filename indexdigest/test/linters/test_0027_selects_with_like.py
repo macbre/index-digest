@@ -22,24 +22,17 @@ class TestSelectsWithLike(TestCase, DatabaseTestMixin):
         self.assertFalse(query_uses_leftmost_like("SELECT * FROM foo WHERE bar LIKE 'ba%';"))
 
     def test_queries(self):
-        return
-
         reports = list(check_selects_with_like(
             database=self.connection, queries=read_queries_from_log('0027-selects-with-like-log')))
 
-        print(reports)
+        print(reports, reports[0].context)
 
         self.assertEqual(len(reports), 1)
 
-        self.assertEqual(str(reports[0]), '0019_queries_not_using_indices: "SELECT id FROM 0019_queries_not_using_indices WHER..." query did not make use of any index')
-        self.assertEqual(reports[0].table_name, '0019_queries_not_using_indices')
-        self.assertEqual(str(reports[0].context['query']), 'SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test" OR id > 1;')
+        self.assertEqual(str(reports[0]), '0020_big_table: "SELECT * FROM 0020_big_table WHERE text LIKE \'%00\'" query uses LIKE with left-most wildcard')
+        self.assertEqual(reports[0].table_name, '0020_big_table')
+        self.assertEqual(str(reports[0].context['query']), 'SELECT * FROM 0020_big_table WHERE text LIKE \'%00\'')
         self.assertEqual(str(reports[0].context['explain_extra']), 'Using where')
-        self.assertEqual(str(reports[0].context['explain_rows']), '3')
+        self.assertTrue(reports[0].context['explain_rows'] > 100000)
 
-        self.assertEqual(reports[1].table_name, '0019_queries_not_using_indices')
-        self.assertEqual(str(reports[1].context['query']), 'SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test"')
-        self.assertEqual(str(reports[1].context['explain_extra']), 'Using where')
-        self.assertEqual(str(reports[1].context['explain_rows']), '3')
-
-        assert False
+        # assert False
