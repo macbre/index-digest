@@ -33,6 +33,6 @@ class TestSelectsWithLike(TestCase, DatabaseTestMixin):
         self.assertEqual(reports[0].table_name, '0020_big_table')
         self.assertEqual(str(reports[0].context['query']), 'SELECT * FROM 0020_big_table WHERE text LIKE \'%00\'')
         self.assertEqual(str(reports[0].context['explain_extra']), 'Using where')
-        self.assertTrue(reports[0].context['explain_rows'] > 100000)
+        self.assertTrue(reports[0].context['explain_rows'] > 10000)
 
         # assert False
