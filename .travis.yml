@@ -12,15 +12,15 @@ before_script:
   # @see https://medium.com/@mtparet/install-mysql-server-5-7-on-travis-96f2ebc0f339
   # @see https://hub.docker.com/_/mysql/
   - sudo service mysql stop  # stop any running MySQL server
-  - sudo docker run -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d -p 127.0.0.1:3306:3306 mysql:5.7
+  - sudo docker run -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d -p 3306:3306 mysql:5.7
   - sleep 15 # wait for MySQL server to be fully set up
   - sudo docker ps
   # set up a database
-  - mysql -h127.0.0.1 -u root -e "CREATE DATABASE index_digest;"
-  - mysql -h127.0.0.1 -u root -e "CREATE USER 'index_digest'@'%' IDENTIFIED BY 'qwerty';"
-  - mysql -h127.0.0.1 -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'%';"
+  - mysql --protocol=tcp -u root -e "CREATE DATABASE index_digest;"
+  - mysql --protocol=tcp -u root -e "CREATE USER 'index_digest'@'%' IDENTIFIED BY 'qwerty';"
+  - mysql --protocol=tcp -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'%';"
   - "./sql/populate.sh" # import the test schema files
-  - mysql -h127.0.0.1 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
+  - mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
 
 install: make install
 script: make coverage && make lint && make demo

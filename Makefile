@@ -24,7 +24,7 @@ publish:
 	python setup.py sdist upload -r pypi
 
 demo:
-	index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log
+	index_digest mysql://index_digest:qwerty@127.0.0.1/index_digest --sql-log sql/0002-not-used-indices-log
 
 sql-console:
-	mysql -hlocalhost -uindex_digest -pqwerty index_digest
+	mysql --protocol=tcp -uindex_digest -pqwerty index_digest
