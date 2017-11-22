@@ -28,8 +28,8 @@ class DatabaseTestMixin(object):
 
 class BigTableTest(TestCase, DatabaseTestMixin):
 
-    ROWS = 10000  # how many rows to generate
-    BATCH = 500  # perform INSERT in batches
+    ROWS = 100000  # how many rows to generate
+    BATCH = 5000  # perform INSERT in batches
 
     PREPARED = False
 
@@ -63,7 +63,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
             return
 
         # @see https://dev.mysql.com/doc/refman/5.7/en/insert.html
-        cursor.executemany('INSERT INTO 0020_big_table(id,val) VALUES(%s,%s)', values)
+        cursor.executemany('INSERT INTO 0020_big_table(id,val,text) VALUES(%s,%s,%s)', values)
         # print(values[0], cursor.lastrowid)
 
     def _prepare_big_table(self):
@@ -84,7 +84,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
 
         # no? populate it
         for row in self._rows():
-            values.append((row, val))
+            values.append((row, val, '{:05x}'.format(row)[:5]))
 
             if row % 5 == 0:
                 val += 1
@@ -98,6 +98,10 @@ class BigTableTest(TestCase, DatabaseTestMixin):
 
         # save changes to the database
         connection.connection.commit()
+
+        # update table statistics
+        connection.query('OPTIMIZE TABLE 0020_big_table')
+
         cursor.close()
 
     def table_populated(self):

@@ -37,7 +37,8 @@ from indexdigest.linters import \
     check_not_used_tables, check_not_used_columns, \
     check_redundant_indices, \
     check_full_table_scan, \
-    check_latin_columns
+    check_latin_columns, \
+    check_selects_with_like
 
 
 def format_context(context):
@@ -97,6 +98,7 @@ def main():
             check_queries_using_filesort(database, queries=queries),
             check_queries_using_temporary(database, queries=queries),
             check_full_table_scan(database, queries=queries),
+            check_selects_with_like(database, queries=queries),
         )
 
     # cast to a list (to be able to count reports)

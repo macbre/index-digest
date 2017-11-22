@@ -1,0 +1,6 @@
+-- uses an index
+SELECT * FROM 0020_big_table WHERE text LIKE '00%'
+-- does not use an index
+SELECT * FROM 0020_big_table WHERE text LIKE '%00'
+-- does not use an index, but is not a LIKE query
+SELECT * FROM 0020_big_table WHERE val > 50
