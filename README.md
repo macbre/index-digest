@@ -190,7 +190,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 * `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
 * `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
 * `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
-* `selects_with_like`: reports SELECT queries that use LIKE '%foo' conditions (they can not use an index)
+* `selects_with_like`: reports SELECT queries that use `LIKE '%foo'` conditions (they can not use an index)
 
 ## Success stories
 
