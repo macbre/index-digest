@@ -10,7 +10,7 @@ from indexdigest.database import DatabaseBase
 class TestDatabaseBase(TestCase, DatabaseTestMixin):
 
     def test_database_connect(self):
-        conn = DatabaseBase(host='localhost', user='index_digest', passwd='qwerty', db='index_digest')
+        conn = DatabaseBase(host='127.0.0.1', user='index_digest', passwd='qwerty', db='index_digest')
         self.assertIsInstance(conn, DatabaseBase)
 
     def test_database_connect_dsn(self):
