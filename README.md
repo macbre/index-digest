@@ -149,6 +149,15 @@ queries_using_full_table_scan → table affected: 0020_big_table
 
   - query: SELECT * FROM 0020_big_table
   - explain_rows: 9041
+
+------------------------------------------------------------
+selects_with_like → table affected: 0020_big_table
+
+✗ "SELECT * FROM 0020_big_table WHERE text LIKE '%00'" query uses LIKE with left-most wildcard
+
+  - query: SELECT * FROM 0020_big_table WHERE text LIKE '%00'
+  - explain_extra: Using where
+  - explain_rows: 100623
 ```
 
 ## SQL query log
@@ -181,6 +190,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 * `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
 * `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
 * `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
+* `selects_with_like`: reports SELECT queries that use LIKE '%foo' conditions (they can not use an index)
 
 ## Success stories
 
