@@ -17,8 +17,8 @@ before_script:
   - sudo docker ps
   # set up a database
   - mysql -h127.0.0.1 -u root -e "CREATE DATABASE index_digest;"
-  - mysql -h127.0.0.1 -u root -e "CREATE USER 'index_digest'@'0.0.0.0' IDENTIFIED BY 'qwerty';"
-  - mysql -h127.0.0.1 -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'0.0.0.0';"
+  - mysql -h127.0.0.1 -u root -e "CREATE USER 'index_digest'@'%' IDENTIFIED BY 'qwerty';"
+  - mysql -h127.0.0.1 -u root -e "GRANT ALL ON index_digest.* TO 'index_digest'@'%';"
   - "./sql/populate.sh" # import the test schema files
   - mysql -h127.0.0.1 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES;'
 
