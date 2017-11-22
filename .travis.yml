@@ -13,6 +13,7 @@ before_script:
   # @see https://hub.docker.com/_/mysql/
   - sudo service mysql stop  # stop any running MySQL server
   - sudo docker run -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d -p 3306:3306 mysql:5.7
+  - sleep 5 # wait for MySQL server to be fully set up
   - sudo docker ps
   # set up a database
   - mysql --protocol=tcp -u root -e "CREATE DATABASE index_digest;"
