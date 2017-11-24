@@ -274,8 +274,9 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-index.html
         res = self.query_dict_rows(
-            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY "
-            "FROM information_schema.STATISTICS " + self._get_information_schema_where(table_name))
+            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY " +
+            "FROM information_schema.STATISTICS " + self._get_information_schema_where(table_name) +
+            " ORDER BY INDEX_NAME")
 
         index_columns = defaultdict(list)
         index_meta = OrderedDict()
