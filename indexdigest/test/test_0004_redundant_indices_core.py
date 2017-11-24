@@ -30,8 +30,8 @@ class RedundantIndicesTest(TestCase, DatabaseTestMixin):
         self.assertEqual(idx_foo_bar.name, 'idx_foo_bar')
         self.assertEqual(idx_id_foo.name, 'idx_id_foo')
 
-        self.assertTrue(idx_foo.is_covered_by(idx_id_foo))
+        self.assertTrue(idx_foo.is_covered_by(idx_foo_bar))
 
+        self.assertFalse(idx_foo.is_covered_by(idx_id_foo))
         self.assertFalse(idx_foo.is_covered_by(primary))
-        self.assertFalse(idx_foo.is_covered_by(idx_foo_bar))
         self.assertFalse(primary.is_covered_by(idx_foo))

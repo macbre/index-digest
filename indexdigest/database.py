@@ -276,7 +276,7 @@ class Database(DatabaseBase):
         res = self.query_dict_rows(
             "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY " +
             "FROM information_schema.STATISTICS " + self._get_information_schema_where(table_name) +
-            " ORDER BY INDEX_NAME")
+            " ORDER BY INDEX_NAME, SEQ_IN_INDEX")
 
         index_columns = defaultdict(list)
         index_meta = OrderedDict()
