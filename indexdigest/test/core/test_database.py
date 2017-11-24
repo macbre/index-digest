@@ -56,9 +56,11 @@ class TestDatabase(TestCase, DatabaseTestMixin):
     TABLE_NAME = '0000_the_table'
 
     def test_database_version(self):
-        version = self.connection.get_server_version()  # 5.5.57-0+deb8u1
+        version = self.connection.get_server_version()  # 5.5.57-0+deb8u1 / 8.0.3-rc-log
 
-        self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
+        self.assertTrue(
+            version.startswith('5.') or version.startswith('8.'),
+            'MySQL server should be from 5.x or 8.x line')
 
     def test_get_tables(self):
         tables = list(self.connection.get_tables())
