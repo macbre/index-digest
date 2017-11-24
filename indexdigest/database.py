@@ -256,7 +256,8 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
         rows = self.query_dict_rows(
             "SELECT COLUMN_NAME as NAME, COLUMN_TYPE as TYPE, CHARACTER_SET_NAME, COLLATION_NAME "
-            "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
+            "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name) +
+            " ORDER BY COLUMN_NAME")
 
         return [
             Column(name=row['NAME'], column_type=row['TYPE'],
