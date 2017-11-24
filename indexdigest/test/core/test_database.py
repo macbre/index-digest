@@ -117,16 +117,16 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         indices = self.connection.get_table_indices(self.TABLE_NAME)
         print(indices)
 
-        self.assertEqual(indices[0].name, 'PRIMARY')
-        self.assertEqual(indices[1].name, 'idx_foo')
+        self.assertEqual(indices[0].name, 'idx_foo')
+        self.assertEqual(indices[1].name, 'PRIMARY')
 
-        self.assertListEqual(indices[0].columns, ['id', 'foo'])
-        self.assertListEqual(indices[1].columns, ['foo'])
+        self.assertListEqual(indices[0].columns, ['foo'])
+        self.assertListEqual(indices[1].columns, ['id', 'foo'])
 
-        self.assertTrue(indices[0].is_primary)
-        self.assertTrue(indices[0].is_unique)
-        self.assertFalse(indices[1].is_primary)
-        self.assertFalse(indices[1].is_unique)
+        self.assertFalse(indices[0].is_primary)
+        self.assertFalse(indices[0].is_unique)
+        self.assertTrue(indices[1].is_primary)
+        self.assertTrue(indices[1].is_unique)
 
         # assert False
 
@@ -162,13 +162,13 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertTrue('id' in column_names)
         self.assertTrue('foo' in column_names)
 
-        self.assertEqual(columns[0].name, 'id')
-        self.assertEqual(columns[0].type, 'int(9)')
-        self.assertIsNone(columns[0].character_set)  # numeric column
+        self.assertEqual(columns[0].name, 'foo')
+        self.assertEqual(columns[0].type, 'varchar(16)')
+        self.assertEqual(columns[0].character_set, 'utf8')
 
-        self.assertEqual(columns[1].name, 'foo')
-        self.assertEqual(columns[1].type, 'varchar(16)')
-        self.assertEqual(columns[1].character_set, 'utf8')
+        self.assertEqual(columns[1].name, 'id')
+        self.assertEqual(columns[1].type, 'int(9)')
+        self.assertIsNone(columns[1].character_set)  # numeric column
 
         self.assertEqual(len(columns), 2)
 
