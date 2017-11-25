@@ -30,8 +30,6 @@ def check_selects_with_like(database, queries):
     :rtype: list[LinterEntry]
     """
     for (query, table_used, index_used, explain_row) in explain_queries(database, queries):
-        print(query, explain_row)
-
         if index_used is None and query_uses_leftmost_like(query):
             context = OrderedDict()
             context['query'] = query
