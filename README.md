@@ -9,10 +9,11 @@ Analyses your database queries and schema and suggests indices improvements. You
 * it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices)
 * if provided with SQL queries log (via `--sql-log` option) it:
   * checks if all tables, columns and indices are used by these queries
+  * reports text columns with character set different than `utf`
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
 
-This tool **supports MySQL 5.5, 5.6 and 5.7**.
+This tool **supports MySQL 5.5, 5.6, 5.7 and 8.0**.
 
 ## Requirements & install
 

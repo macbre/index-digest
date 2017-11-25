@@ -11,7 +11,7 @@ class RedundantIndicesTest(TestCase, DatabaseTestMixin):
         indices = self.connection.get_table_indices('0004_id_foo')
         print(indices)
 
-        (primary, idx) = indices
+        (idx, primary) = indices
 
         self.assertEqual(primary.name, 'PRIMARY')
         self.assertEqual(idx.name, 'idx')
@@ -23,7 +23,7 @@ class RedundantIndicesTest(TestCase, DatabaseTestMixin):
         indices = self.connection.get_table_indices('0004_id_foo_bar')
         print(indices)
 
-        (primary, idx_foo, idx_foo_bar, idx_id_foo) = indices
+        (idx_foo, idx_foo_bar, idx_id_foo, primary) = indices
 
         self.assertEqual(primary.name, 'PRIMARY')
         self.assertEqual(idx_foo.name, 'idx_foo')
@@ -32,6 +32,6 @@ class RedundantIndicesTest(TestCase, DatabaseTestMixin):
 
         self.assertTrue(idx_foo.is_covered_by(idx_foo_bar))
 
-        self.assertFalse(idx_foo.is_covered_by(primary))
         self.assertFalse(idx_foo.is_covered_by(idx_id_foo))
+        self.assertFalse(idx_foo.is_covered_by(primary))
         self.assertFalse(primary.is_covered_by(idx_foo))

@@ -253,15 +253,28 @@ class Database(DatabaseBase):
         :type table_name str
         :rtype: list[Column]
         """
+        # @see https://dev.mysql.com/doc/refman/5.7/en/show-columns.html
+        columns = [
+            row['Field']
+            for row in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name))
+        ]
+
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
         rows = self.query_dict_rows(
             "SELECT COLUMN_NAME as NAME, COLUMN_TYPE as TYPE, CHARACTER_SET_NAME, COLLATION_NAME "
             "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
 
+        meta = dict()
+
+        for row in rows:
+            meta[row['NAME']] = Column(name=row['NAME'], column_type=row['TYPE'],
+                                       character_set=row['CHARACTER_SET_NAME'],
+                                       collation=row['COLLATION_NAME'])
+
+        # keep the order taken from SHOW COLUMNS
         return [
-            Column(name=row['NAME'], column_type=row['TYPE'],
-                   character_set=row['CHARACTER_SET_NAME'], collation=row['COLLATION_NAME'])
-            for row in rows
+            meta[column]
+            for column in columns
         ]
 
     def get_table_indices(self, table_name):
@@ -274,8 +287,9 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-index.html
         res = self.query_dict_rows(
-            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY "
-            "FROM information_schema.STATISTICS " + self._get_information_schema_where(table_name))
+            "SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY " +
+            "FROM information_schema.STATISTICS " + self._get_information_schema_where(table_name) +
+            " ORDER BY INDEX_NAME, SEQ_IN_INDEX")
 
         index_columns = defaultdict(list)
         index_meta = OrderedDict()
@@ -286,7 +300,7 @@ class Database(DatabaseBase):
 
             if index_name not in index_meta:
                 index_meta[index_name] = {
-                    'unique': row['NON_UNIQUE'] == 0,
+                    'unique': int(row['NON_UNIQUE']) == 0,
                     'primary': row['INDEX_NAME'] == 'PRIMARY',
                 }
 

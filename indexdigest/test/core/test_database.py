@@ -56,9 +56,11 @@ class TestDatabase(TestCase, DatabaseTestMixin):
     TABLE_NAME = '0000_the_table'
 
     def test_database_version(self):
-        version = self.connection.get_server_version()  # 5.5.57-0+deb8u1
+        version = self.connection.get_server_version()  # 5.5.57-0+deb8u1 / 8.0.3-rc-log
 
-        self.assertTrue(version.startswith('5.'), 'MySQL server should be from 5.x line')
+        self.assertTrue(
+            version.startswith('5.') or version.startswith('8.'),
+            'MySQL server should be from 5.x or 8.x line')
 
     def test_get_tables(self):
         tables = list(self.connection.get_tables())
@@ -101,30 +103,31 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
     def test_get_table_indices(self):
         """
-        mysql> SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY FROM INFORMATION_SCHEMA.STATISTICS
-         WHERE table_name = '0000_the_table';
+        mysql> SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, CARDINALITY
+        FROM INFORMATION_SCHEMA.STATISTICS WHERE table_name = '0000_the_table'
+        ORDER BY INDEX_NAME, SEQ_IN_INDEX;
         +------------+------------+--------------+-------------+-------------+
         | INDEX_NAME | NON_UNIQUE | SEQ_IN_INDEX | COLUMN_NAME | CARDINALITY |
         +------------+------------+--------------+-------------+-------------+
-        | PRIMARY    |          0 |            1 | id          |           3 |
-        | PRIMARY    |          0 |            2 | foo         |           3 |
-        | idx_foo    |          1 |            1 | foo         |           3 |
+        | idx_foo    | 1          |            1 | foo         |           3 |
+        | PRIMARY    | 0          |            1 | id          |           3 |
+        | PRIMARY    | 0          |            2 | foo         |           3 |
         +------------+------------+--------------+-------------+-------------+
         3 rows in set (0.00 sec)
         """
-        indices = self.connection.get_table_indices(self.TABLE_NAME)
-        print(indices)
+        (idx, primary) = self.connection.get_table_indices(self.TABLE_NAME)
+        print(idx, primary)
 
-        self.assertEqual(indices[0].name, 'PRIMARY')
-        self.assertEqual(indices[1].name, 'idx_foo')
+        self.assertEqual(idx.name, 'idx_foo')
+        self.assertEqual(primary.name, 'PRIMARY')
 
-        self.assertListEqual(indices[0].columns, ['id', 'foo'])
-        self.assertListEqual(indices[1].columns, ['foo'])
+        self.assertListEqual(idx.columns, ['foo'])
+        self.assertListEqual(primary.columns, ['id', 'foo'])
 
-        self.assertTrue(indices[0].is_primary)
-        self.assertTrue(indices[0].is_unique)
-        self.assertFalse(indices[1].is_primary)
-        self.assertFalse(indices[1].is_unique)
+        self.assertFalse(idx.is_primary)
+        self.assertFalse(idx.is_unique)
+        self.assertTrue(primary.is_primary, 'Primary key is correctly detected')
+        self.assertTrue(primary.is_unique, 'Primary key should be treated as a unique one')
 
         # assert False
 
@@ -154,6 +157,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         columns = self.connection.get_table_columns(self.TABLE_NAME)
         print(columns)
 
+        # the columns order is maintained
         column_names = [column.name for column in columns]
 
         # columns
