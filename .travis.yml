@@ -2,17 +2,24 @@ language: python
 dist: trusty
 python:
   - "2.7"
-  - "3.3"
+  #- "3.3"
   - "3.4"
-  - "3.5"
+  #- "3.5"
   - "3.6"
 services:
   - docker
+env:
+  # @see https://docs.travis-ci.com/user/environment-variables/#Defining-Multiple-Variables-per-Item
+  # @see https://hub.docker.com/_/mysql/
+  - MYSQL_VERSION=5.5
+  - MYSQL_VERSION=5.6
+  - MYSQL_VERSION=5.7
+  - MYSQL_VERSION=8.0
 before_script:
   # @see https://medium.com/@mtparet/install-mysql-server-5-7-on-travis-96f2ebc0f339
   # @see https://hub.docker.com/_/mysql/
   - sudo service mysql stop  # stop any running MySQL server
-  - sudo docker run -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d -p 3306:3306 mysql:5.7
+  - sudo docker run -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d -p 3306:3306 mysql:$MYSQL_VERSION
   - sleep 15 # wait for MySQL server to be fully set up
   - sudo docker ps
   # set up a database
