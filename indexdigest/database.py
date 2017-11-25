@@ -3,6 +3,7 @@ Database connector wrapper
 """
 import logging
 from collections import OrderedDict, defaultdict
+from warnings import filterwarnings
 
 import MySQLdb
 from MySQLdb.cursors import DictCursor
@@ -42,6 +43,9 @@ class DatabaseBase(object):
         self._connection_params = dict(host=host, user=user, passwd=passwd, db=db)
         self._connection = None
         self.db_name = db
+
+        # Suppress MySQL warnings when EXPLAIN is run (#63)
+        filterwarnings('ignore', category=MySQLdb.Warning)
 
     @classmethod
     def connect_dsn(cls, dsn):
