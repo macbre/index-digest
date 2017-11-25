@@ -288,7 +288,7 @@ class Database(DatabaseBase):
 
             if index_name not in index_meta:
                 index_meta[index_name] = {
-                    'unique': row['NON_UNIQUE'] == 0,
+                    'unique': int(row['NON_UNIQUE']) == 0,
                     'primary': row['INDEX_NAME'] == 'PRIMARY',
                 }
 
