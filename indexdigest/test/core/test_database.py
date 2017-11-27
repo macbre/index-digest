@@ -186,3 +186,27 @@ class TestsWithDatabaseMocked(TestCase):
     def test_database_version(self):
         db = DatabaseWithMockedRow(mocked_row=['5.5.58-0+deb8u1'])
         self.assertEquals(db.get_server_version(), '5.5.58-0+deb8u1')
+
+
+class TestMemoization(TestCase):
+
+    def test_get_queries(self):
+        db = DatabaseWithMockedRow(mocked_row=['foo'])
+
+        # query method is not memoized, so let's count all queries (even the same ones)
+        for _ in range(5):
+            self.assertEquals(db.query_row('SELECT FOO'), ['foo'])
+
+        self.assertEquals(len(db.get_queries()), 5)
+        self.assertEquals(db.get_queries()[0], 'SELECT FOO')
+
+    def test_cached_get_tables(self):
+        tables_list = ['foo']
+        db = DatabaseWithMockedRow(mocked_row=tables_list)
+
+        # this would made five queries to database if not memoization in get_tables
+        for _ in range(5):
+            self.assertEquals(db.get_tables(), tables_list)
+
+        # however, only one is made :)
+        self.assertEquals(len(db.get_queries()), 1)
