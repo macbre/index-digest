@@ -6,6 +6,8 @@ try:
 except ImportError:
     from urllib.parse import urlparse  # Python3
 
+import functools
+
 
 def parse_dsn(dsn):
     """
@@ -61,6 +63,29 @@ def shorten_query(query, max_len=50):
     :rtype: str
     """
     return '{}...'.format(query[:max_len]) if len(query) > max_len else query
+
+
+def memoize(func):
+    """
+    Memoization pattern implemented
+
+    :type func
+    :rtype func
+    """
+    # @see https://medium.com/@nkhaja/memoization-and-decorators-with-python-32f607439f84
+    cache = func.cache = {}
+
+    @functools.wraps(func)
+    def memoized_func(*args, **kwargs):
+        """
+        :type args
+        :type kwargs
+        """
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = func(*args, **kwargs)
+        return cache[key]
+    return memoized_func
 
 
 class LinterEntry(object):

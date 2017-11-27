@@ -186,3 +186,92 @@ class TestsWithDatabaseMocked(TestCase):
     def test_database_version(self):
         db = DatabaseWithMockedRow(mocked_row=['5.5.58-0+deb8u1'])
         self.assertEquals(db.get_server_version(), '5.5.58-0+deb8u1')
+
+
+class TestMemoization(TestCase, DatabaseTestMixin):
+
+    def test_get_queries(self):
+        db = DatabaseWithMockedRow(mocked_row=['foo'])
+
+        # query method is not memoized, so let's count all queries (even the same ones)
+        for _ in range(5):
+            self.assertEquals(db.query_row('SELECT FOO'), ['foo'])
+
+        self.assertEquals(len(db.get_queries()), 5)
+        self.assertEquals(db.get_queries()[0], 'SELECT FOO')
+
+    def test_cached_get_tables(self):
+        tables_list = ['foo']
+        db = DatabaseWithMockedRow(mocked_row=tables_list)
+
+        # this would made five queries to database if not memoization in get_tables
+        for _ in range(5):
+            self.assertEquals(db.get_tables(), tables_list)
+
+        # however, only one is made :)
+        self.assertEquals(len(db.get_queries()), 1)
+
+    def test_cached_explain_query(self):
+        db = self.connection
+
+        # this would made ten queries to database if not memoization in explain_query
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            (row,) = db.explain_query('SELECT * FROM 0000_the_table')
+            self.assertEquals(row['table'], '0000_the_table')
+
+            (row,) = db.explain_query('SELECT * FROM 0002_not_used_indices')
+            self.assertEquals(row['table'], '0002_not_used_indices')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only two are made :)
+        self.assertEquals(len(queries), 2)
+
+        self.assertTrue('EXPLAIN SELECT * FROM 0000_the_table' in str(queries[0]))
+        self.assertTrue('EXPLAIN SELECT * FROM 0002_not_used_indices' in str(queries[1]))
+
+    def test_cached_get_indices(self):
+        db = self.connection
+
+        # this would made ten queries to database if not memoization in get_tables
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            (_, primary) = db.get_table_indices(table_name='0000_the_table')
+            self.assertTrue(primary.is_primary)
+
+            (idx, _, _) = db.get_table_indices(table_name='0002_not_used_indices')
+            self.assertEquals(idx.name, 'foo_id_idx')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only two are made :)
+        self.assertEquals(len(queries), 2)
+
+        self.assertTrue('0000_the_table' in str(queries[0]))
+        self.assertTrue('0002_not_used_indices' in str(queries[1]))
+
+    def test_cached_get_columns(self):
+        db = self.connection
+
+        # this would made ten queries to database if not memoization in get_table_columns
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            (col, _) = db.get_table_columns(table_name='0000_the_table')
+            self.assertEquals(col.name, 'id')
+
+            (_, col, _, _) = db.get_table_columns(table_name='0002_not_used_indices')
+            self.assertEquals(col.name, 'foo')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only four are made :)
+        self.assertEquals(len(queries), 4)
+
+        self.assertTrue("SHOW COLUMNS FROM 0000_the_table" in str(queries[0]))
+        self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0000_the_table'" in str(queries[1]))
+        self.assertTrue("SHOW COLUMNS FROM 0002_not_used_indices" in str(queries[2]))
+        self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0002_not_used_indices'" in str(queries[3]))

@@ -134,5 +134,8 @@ def main():
 
             print()
             print(line)
+
+        print('Queries performed: {}'.format(len(database.get_queries())))
+        # print('\n'.join(map(str, database.get_queries())))
     else:
         print('Jolly, good! No issues to report')

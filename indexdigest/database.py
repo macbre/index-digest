@@ -10,7 +10,7 @@ from MySQLdb.cursors import DictCursor
 from _mysql_exceptions import OperationalError
 
 from indexdigest.schema import Column, Index
-from indexdigest.utils import parse_dsn, IndexDigestError
+from indexdigest.utils import parse_dsn, memoize, IndexDigestError
 
 
 class IndexDigestQueryError(IndexDigestError):
@@ -47,6 +47,9 @@ class DatabaseBase(object):
         # Suppress MySQL warnings when EXPLAIN is run (#63)
         filterwarnings('ignore', category=MySQLdb.Warning)
 
+        # register queries
+        self._queries = []
+
     @classmethod
     def connect_dsn(cls, dsn):
         """
@@ -70,6 +73,12 @@ class DatabaseBase(object):
             self._connection = MySQLdb.connect(**self._connection_params)
 
         return self._connection
+
+    def get_queries(self):
+        """
+        :rtype: list[str]
+        """
+        return self._queries
 
     def query(self, sql, cursor_class=None):
         """
@@ -95,6 +104,9 @@ class DatabaseBase(object):
             (code, message) = ex.args  # e.g. (1054, "Unknown column 'test' in 'field list'")
             self.query_logger.error('Database error #%d: %s', code, message)
             raise IndexDigestQueryError(message)
+
+        # register the query
+        self._queries.append(sql)
 
         return cursor
 
@@ -167,6 +179,7 @@ class Database(DatabaseBase):
     Database wrapper extended with some stats-related queries
     """
 
+    @memoize
     def get_server_version(self):
         """
         Returns server version (e.g. "5.5.57-0+deb8u1")
@@ -182,13 +195,14 @@ class Database(DatabaseBase):
         """
         return self.get_variables(like='hostname').get('hostname')
 
+    @memoize
     def get_tables(self):
         """
-        Returns an iterator with the list of tables.
+        Returns the list of tables.
 
         :rtype: list[str]
         """
-        return self.query_list('SHOW TABLES')
+        return list(self.query_list('SHOW TABLES'))
 
     def get_variables(self, like=None):
         """
@@ -203,6 +217,7 @@ class Database(DatabaseBase):
 
         return self.query_key_value(sql)
 
+    @memoize
     def explain_query(self, sql):
         """
         Runs EXPLAIN query for a given SQL
@@ -211,7 +226,7 @@ class Database(DatabaseBase):
         :rtype: list
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/explain-output.html
-        return self.query_dict_rows('EXPLAIN {}'.format(sql))
+        return list(self.query_dict_rows('EXPLAIN {}'.format(sql)))
 
     def get_table_schema(self, table_name):
         """
@@ -250,6 +265,7 @@ class Database(DatabaseBase):
             'index_size': stats['INDEX_LENGTH'],
         }
 
+    @memoize
     def get_table_columns(self, table_name):
         """
         Return the list of indices for a given table
@@ -281,6 +297,7 @@ class Database(DatabaseBase):
             for column in columns
         ]
 
+    @memoize
     def get_table_indices(self, table_name):
         """
         Return the list of indices for a given table

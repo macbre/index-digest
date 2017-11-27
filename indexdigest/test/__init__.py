@@ -122,9 +122,11 @@ class DatabaseWithMockedRow(Database):
         raise Exception('Class {} needs to mock the query_* method'.format(self.__class__.__name__))
 
     def query(self, sql, cursor=None):
+        self._queries.append(sql)
         self.query_logger.info(sql)
         return [self.row]
 
     def query_row(self, sql):
+        self._queries.append(sql)
         self.query_logger.info(sql)
         return self.row
