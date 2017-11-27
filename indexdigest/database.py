@@ -10,7 +10,7 @@ from MySQLdb.cursors import DictCursor
 from _mysql_exceptions import OperationalError
 
 from indexdigest.schema import Column, Index
-from indexdigest.utils import parse_dsn, IndexDigestError
+from indexdigest.utils import parse_dsn, memoize, IndexDigestError
 
 
 class IndexDigestQueryError(IndexDigestError):
@@ -182,13 +182,14 @@ class Database(DatabaseBase):
         """
         return self.get_variables(like='hostname').get('hostname')
 
+    @memoize
     def get_tables(self):
         """
-        Returns an iterator with the list of tables.
+        Returns the list of tables.
 
         :rtype: list[str]
         """
-        return self.query_list('SHOW TABLES')
+        return list(self.query_list('SHOW TABLES'))
 
     def get_variables(self, like=None):
         """
