@@ -116,24 +116,17 @@ class DatabaseWithMockedRow(Database):
     def __init__(self, mocked_row):
         super(DatabaseWithMockedRow, self).__init__(db='', host='', passwd='', user='')
         self.row = mocked_row
-        self.queries = []
 
     @property
     def connection(self):
         raise Exception('Class {} needs to mock the query_* method'.format(self.__class__.__name__))
 
     def query(self, sql, cursor=None):
-        self.queries.append(sql)
+        self._queries.append(sql)
         self.query_logger.info(sql)
         return [self.row]
 
     def query_row(self, sql):
-        self.queries.append(sql)
+        self._queries.append(sql)
         self.query_logger.info(sql)
         return self.row
-
-    def get_queries(self):
-        """
-        :rtype: list[str]
-        """
-        return self.queries

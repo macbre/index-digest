@@ -47,6 +47,9 @@ class DatabaseBase(object):
         # Suppress MySQL warnings when EXPLAIN is run (#63)
         filterwarnings('ignore', category=MySQLdb.Warning)
 
+        # register queries
+        self._queries = []
+
     @classmethod
     def connect_dsn(cls, dsn):
         """
@@ -70,6 +73,12 @@ class DatabaseBase(object):
             self._connection = MySQLdb.connect(**self._connection_params)
 
         return self._connection
+
+    def get_queries(self):
+        """
+        :rtype: list[str]
+        """
+        return self._queries
 
     def query(self, sql, cursor_class=None):
         """
@@ -95,6 +104,9 @@ class DatabaseBase(object):
             (code, message) = ex.args  # e.g. (1054, "Unknown column 'test' in 'field list'")
             self.query_logger.error('Database error #%d: %s', code, message)
             raise IndexDigestQueryError(message)
+
+        # register the query
+        self._queries.append(sql)
 
         return cursor
 
