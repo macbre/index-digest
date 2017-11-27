@@ -231,3 +231,26 @@ class TestMemoization(TestCase, DatabaseTestMixin):
 
         self.assertTrue('0000_the_table' in str(queries[0]))
         self.assertTrue('0002_not_used_indices' in str(queries[1]))
+
+    def test_cached_get_columns(self):
+        db = self.connection
+
+        # this would made ten queries to database if not memoization in get_table_columns
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            (col, _) = db.get_table_columns(table_name='0000_the_table')
+            self.assertEquals(col.name, 'id')
+
+            (_, col, _, _) = db.get_table_columns(table_name='0002_not_used_indices')
+            self.assertEquals(col.name, 'foo')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only four are made :)
+        self.assertEquals(len(queries), 4)
+
+        self.assertTrue("SHOW COLUMNS FROM 0000_the_table" in str(queries[0]))
+        self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0000_the_table'" in str(queries[1]))
+        self.assertTrue("SHOW COLUMNS FROM 0002_not_used_indices" in str(queries[2]))
+        self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0002_not_used_indices'" in str(queries[3]))
