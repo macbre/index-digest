@@ -216,6 +216,7 @@ class Database(DatabaseBase):
 
         return self.query_key_value(sql)
 
+    @memoize
     def explain_query(self, sql):
         """
         Runs EXPLAIN query for a given SQL
@@ -224,7 +225,7 @@ class Database(DatabaseBase):
         :rtype: list
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/explain-output.html
-        return self.query_dict_rows('EXPLAIN {}'.format(sql))
+        return list(self.query_dict_rows('EXPLAIN {}'.format(sql)))
 
     def get_table_schema(self, table_name):
         """
