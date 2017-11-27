@@ -211,6 +211,27 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # however, only one is made :)
         self.assertEquals(len(db.get_queries()), 1)
 
+    def test_cached_explain_query(self):
+        db = self.connection
+
+        # this would made ten queries to database if not memoization in explain_query
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            (row,) = db.explain_query('SELECT * FROM 0000_the_table')
+            self.assertEquals(row['table'], '0000_the_table')
+
+            (row,) = db.explain_query('SELECT * FROM 0002_not_used_indices')
+            self.assertEquals(row['table'], '0002_not_used_indices')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only two are made :)
+        self.assertEquals(len(queries), 2)
+
+        self.assertTrue('EXPLAIN SELECT * FROM 0000_the_table' in str(queries[0]))
+        self.assertTrue('EXPLAIN SELECT * FROM 0002_not_used_indices' in str(queries[1]))
+
     def test_cached_get_indices(self):
         db = self.connection
 
