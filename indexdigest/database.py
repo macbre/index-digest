@@ -179,6 +179,7 @@ class Database(DatabaseBase):
     Database wrapper extended with some stats-related queries
     """
 
+    @memoize
     def get_server_version(self):
         """
         Returns server version (e.g. "5.5.57-0+deb8u1")
