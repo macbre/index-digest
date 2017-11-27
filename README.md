@@ -13,7 +13,7 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
 
-This tool **supports MySQL 5.5, 5.6, 5.7 and 8.0**.
+This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** .
 
 ## Requirements & install
 
