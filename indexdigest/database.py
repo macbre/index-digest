@@ -263,6 +263,7 @@ class Database(DatabaseBase):
             'index_size': stats['INDEX_LENGTH'],
         }
 
+    @memoize
     def get_table_columns(self, table_name):
         """
         Return the list of indices for a given table
