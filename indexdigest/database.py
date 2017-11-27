@@ -294,6 +294,7 @@ class Database(DatabaseBase):
             for column in columns
         ]
 
+    @memoize
     def get_table_indices(self, table_name):
         """
         Return the list of indices for a given table
