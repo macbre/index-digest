@@ -188,7 +188,7 @@ class TestsWithDatabaseMocked(TestCase):
         self.assertEquals(db.get_server_version(), '5.5.58-0+deb8u1')
 
 
-class TestMemoization(TestCase):
+class TestMemoization(TestCase, DatabaseTestMixin):
 
     def test_get_queries(self):
         db = DatabaseWithMockedRow(mocked_row=['foo'])
@@ -210,3 +210,24 @@ class TestMemoization(TestCase):
 
         # however, only one is made :)
         self.assertEquals(len(db.get_queries()), 1)
+
+    def test_cached_get_indices(self):
+        db = self.connection
+
+        # this would made ten queries to database if not memoization in get_tables
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            (_, primary) = db.get_table_indices(table_name='0000_the_table')
+            self.assertTrue(primary.is_primary)
+
+            (idx, _, _) = db.get_table_indices(table_name='0002_not_used_indices')
+            self.assertEquals(idx.name, 'foo_id_idx')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only two are made :)
+        self.assertEquals(len(queries), 2)
+
+        self.assertTrue('0000_the_table' in str(queries[0]))
+        self.assertTrue('0002_not_used_indices' in str(queries[1]))
