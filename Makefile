@@ -28,3 +28,7 @@ demo:
 
 sql-console:
 	mysql --protocol=tcp -uindex_digest -pqwerty index_digest
+
+publish:
+	# run git tag -a v0.0.0 before running make publish
+	python setup.py sdist upload -r pypi

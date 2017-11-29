@@ -8,6 +8,7 @@ setup(
     version=VERSION,
     author='Maciej Brencz',
     author_email='maciej.brencz@gmail.com',
+    license='MIT',
     description='Analyses your database queries and schema and suggests indices improvements',
     url='https://github.com/macbre/index-digest',
     packages=find_packages(),
