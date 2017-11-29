@@ -1,5 +1,6 @@
 # index-digest
 
+[![PyPI](https://img.shields.io/pypi/v/indexdigest.svg)](https://pypi.python.org/pypi/indexdigest)
 [![Build Status](https://travis-ci.org/macbre/index-digest.svg?branch=master)](https://travis-ci.org/macbre/index-digest)
 
 Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as **your database linter**. The goal is to **provide the user with actionable reports** instead of just a list of statistics and schema details. Inspired by [Percona's `pt-index-usage`](https://www.percona.com/doc/percona-toolkit/LATEST/pt-index-usage.html).
@@ -13,11 +14,20 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
 
-This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** .
+This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4 and 3.6**.
 
 ## Requirements & install
 
+### From `pypi`
+
 ```
+pip install indexdigest
+```
+
+### From git
+
+```
+git clone git@github.com:macbre/index-digest.git && cd index-digest
 sudo apt-get install libmysqlclient-dev python-dev virtualenv
 
 virtualenv env
