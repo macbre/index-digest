@@ -19,10 +19,6 @@ coverage:
 lint:
 	pylint $(project_name)/ --ignore=test
 
-publish:
-	python setup.py register -r pypi
-	python setup.py sdist upload -r pypi
-
 demo:
 	index_digest mysql://index_digest:qwerty@127.0.0.1/index_digest --sql-log sql/0002-not-used-indices-log
 
