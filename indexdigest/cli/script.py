@@ -38,7 +38,8 @@ from indexdigest.linters import \
     check_redundant_indices, \
     check_full_table_scan, \
     check_latin_columns, \
-    check_selects_with_like
+    check_selects_with_like, \
+    check_missing_primary_index
 
 
 def format_context(context):
@@ -85,6 +86,7 @@ def main():
     reports = chain(
         check_redundant_indices(database),
         check_latin_columns(database),
+        check_missing_primary_index(database),
     )
 
     # checks that use SQL log
