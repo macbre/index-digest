@@ -7,7 +7,7 @@ Analyses your database queries and schema and suggests indices improvements. You
 
 `index-digest` does the following:
 
-* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices)
+* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication)
 * if provided with SQL queries log (via `--sql-log` option) it:
   * checks if all tables, columns and indices are used by these queries
   * reports text columns with character set different than `utf`
@@ -107,6 +107,19 @@ redundant_indices → table affected: 0004_id_foo_bar
   - table_index_size_mb: 0.046875
 
 ------------------------------------------------------------
+missing_primary_index → table affected: 0034_querycache
+
+✗ "0034_querycache" table does not have any primary or unique index
+
+  - schema: CREATE TABLE `0034_querycache` (
+      `qc_type` varbinary(32) NOT NULL,
+      `qc_value` int(10) unsigned NOT NULL DEFAULT '0',
+      `qc_namespace` int(11) NOT NULL DEFAULT '0',
+      `qc_title` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+      KEY `qc_type` (`qc_type`,`qc_value`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+------------------------------------------------------------
 not_used_indices → table affected: 0002_not_used_indices
 
 ✗ "test_id_idx" index was not used by provided queries
@@ -189,6 +202,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
+* `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
 
 ### Additional checks performed on SQL log
 
