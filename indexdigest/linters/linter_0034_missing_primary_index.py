@@ -15,10 +15,10 @@ def check_missing_primary_index(database):
         # list non-primary (and non-unique) indices only
         # @see https://bugs.mysql.com/bug.php?id=76252
         # @see https://github.com/Wikia/app/pull/9863
-        indices = list(filter(
-            lambda index: index.is_primary or index.is_unique,
-            database.get_table_indices(table)
-        ))
+        indices = [
+            index for index in database.get_table_indices(table)
+            if index.is_primary or index.is_unique
+        ]
 
         if indices:
             # so we have at least one primary or unique index defined
