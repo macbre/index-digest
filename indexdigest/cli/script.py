@@ -20,7 +20,7 @@ Examples:
 
 Visit <https://github.com/macbre/index-digest>
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function
 
 import logging
 from itertools import chain
@@ -94,6 +94,6 @@ def main():
     logger.info("Using formatter: %s", formatter)
 
     if formatter == 'plain':
-        format_plain(database, reports)
+        print(format_plain(database, reports))
     else:
         raise IndexDigestError('Unknown formatter provided: {}'.format(formatter))

@@ -2,8 +2,6 @@
 """
 Provides --format=plain results formatter
 """
-from sys import stdout
-
 import indexdigest
 from indexdigest.utils import LinterEntry
 
@@ -24,49 +22,51 @@ def format_context(context):
     ])
 
 
-def format_plain(database, reports, out=stdout):
+def format_plain(database, reports):
     """
     :type database indexdigest.database.Database
     :type reports list
-    :type out StringIO.StringIO
+    :rtype: str
     """
+    out = ''
+
     # cast to a list (to be able to count reports)
     reports = list(reports)
 
     # emit results
     line = '-' * 60 + "\n"
 
-    out.write(line)
-    out.write('Found {} issue(s) to report for "{}" database\n'.format(
-        len(reports), database.db_name))
-    out.write(line)
-    out.write('MySQL v{} at {}\n'.format(
-        database.get_server_version(), database.get_server_hostname()))
-    out.write('index-digest v{}\n'.format(indexdigest.VERSION))
-    out.write(line)
+    out += line
+    out += 'Found {} issue(s) to report for "{}" database\n'.format(
+        len(reports), database.db_name)
+    out += line
+    out += 'MySQL v{} at {}\n'.format(
+        database.get_server_version(), database.get_server_hostname())
+    out += 'index-digest v{}\n'.format(indexdigest.VERSION)
+    out += line
 
     if reports:
         for report in reports:
             assert isinstance(report, LinterEntry)
 
-            out.write(
-                colored(report.linter_type, color='blue', attrs=['bold']) +
-                ' → table affected: ' +
-                colored(report.table_name, attrs=['bold']) +
+            out += colored(report.linter_type, color='blue', attrs=['bold']) + \
+                ' → table affected: ' + \
+                colored(report.table_name, attrs=['bold']) + \
                 '\n'
-            )
 
-            out.write(colored(
+            out += colored(
                 '\n{} {}\n'.format(colored('✗', color='red', attrs=['bold']), report.message),
-                color='white'))
+                color='white')
 
             if report.context is not None:
-                out.write('\n  {}\n'.format(format_context(report.context)))
+                out += '\n  {}\n'.format(format_context(report.context))
 
-            out.write('\n')
-            out.write(line)
+            out += '\n'
+            out += line
 
-        out.write('Queries performed: {}\n'.format(len(database.get_queries())))
-        # out.write('\n'.join(map(str, database.get_queries())))
+        out += 'Queries performed: {}\n'.format(len(database.get_queries()))
+        # out += '\n'.join(map(str, database.get_queries())))
     else:
-        out.write('Jolly, good! No issues to report\n')
+        out += 'Jolly, good! No issues to report\n'
+
+    return out
