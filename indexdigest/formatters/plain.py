@@ -64,9 +64,9 @@ def format_plain(database, reports):
             out += '\n'
             out += line
 
-        out += 'Queries performed: {}\n'.format(len(database.get_queries()))
+        out += 'Queries performed: {}'.format(len(database.get_queries()))
         # out += '\n'.join(map(str, database.get_queries())))
     else:
-        out += 'Jolly, good! No issues to report\n'
+        out += 'Jolly, good! No issues to report'
 
     return out
