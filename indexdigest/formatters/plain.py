@@ -2,10 +2,10 @@
 """
 Provides --format=plain results formatter
 """
+from termcolor import colored
+
 import indexdigest
 from indexdigest.utils import LinterEntry
-
-from termcolor import colored
 
 
 def format_context(context):
