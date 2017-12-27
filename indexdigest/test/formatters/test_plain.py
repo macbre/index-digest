@@ -15,3 +15,7 @@ class TestPlainFormatter(TestCase, FormatterTestMixin):
 
         assert 'Something is fishy here' in out
         assert 'An index is missing' in out
+
+    def test_format_plain_no_results(self):
+        out = format_plain(self.get_database_mock(), [])
+        assert out.endswith('Jolly, good! No issues to report\n')
