@@ -204,7 +204,7 @@ select * from 0002_not_used_indices where bar = 'foo'
 
 ### plain
 
-Emits human-readable report to a console
+Emits human-readable report to a console. You can disable colored and bold text by setting env variable `ANSI_COLORS_DISABLED=1`.
 
 ## Checks
 
