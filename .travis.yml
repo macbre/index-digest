@@ -2,22 +2,18 @@ language: python
 dist: trusty
 python:
   - "2.7"
-  #- "3.3"
-  - "3.4"
-  #- "3.5"
+  - "3.5"
   - "3.6"
 services:
   - docker
 env:
   # @see https://docs.travis-ci.com/user/environment-variables/#Defining-Multiple-Variables-per-Item
   # @see https://hub.docker.com/_/mysql/
-  - DOCKER_IMAGE=mysql:5.5
   - DOCKER_IMAGE=mysql:5.6
   - DOCKER_IMAGE=mysql:5.7
   - DOCKER_IMAGE=mysql:8.0
   # @see https://hub.docker.com/_/mariadb/
   - DOCKER_IMAGE=mariadb:10.0  # used by Wikipedia
-  - DOCKER_IMAGE=mariadb:10.2
 before_script:
   # @see https://medium.com/@mtparet/install-mysql-server-5-7-on-travis-96f2ebc0f339
   # @see https://hub.docker.com/_/mysql/
