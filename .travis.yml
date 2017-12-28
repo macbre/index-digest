@@ -2,6 +2,7 @@ language: python
 dist: trusty
 python:
   - "2.7"
+  - "3.4"
   - "3.5"
   - "3.6"
 services:
@@ -9,11 +10,54 @@ services:
 env:
   # @see https://docs.travis-ci.com/user/environment-variables/#Defining-Multiple-Variables-per-Item
   # @see https://hub.docker.com/_/mysql/
+  - DOCKER_IMAGE=mysql:5.5
   - DOCKER_IMAGE=mysql:5.6
   - DOCKER_IMAGE=mysql:5.7
   - DOCKER_IMAGE=mysql:8.0
   # @see https://hub.docker.com/_/mariadb/
   - DOCKER_IMAGE=mariadb:10.0  # used by Wikipedia
+  - DOCKER_IMAGE=mariadb:10.2
+
+# * run various Python versions tests on MySQL 5.7
+# * run all MySQL versions tests on Python 3.6
+# @see https://docs.travis-ci.com/user/customizing-the-build/#Build-Matrix
+matrix:
+  exclude:
+    - python: 2.7
+      env: DOCKER_IMAGE=mysql:5.5
+    - python: 3.4
+      env: DOCKER_IMAGE=mysql:5.5
+    - python: 3.5
+      env: DOCKER_IMAGE=mysql:5.5
+
+    - python: 2.7
+      env: DOCKER_IMAGE=mysql:5.6
+    - python: 3.4
+      env: DOCKER_IMAGE=mysql:5.6
+    - python: 3.5
+      env: DOCKER_IMAGE=mysql:5.6
+
+    - python: 2.7
+      env: DOCKER_IMAGE=mysql:8.0
+    - python: 3.4
+      env: DOCKER_IMAGE=mysql:8.0
+    - python: 3.5
+      env: DOCKER_IMAGE=mysql:8.0
+
+    - python: 2.7
+      env: DOCKER_IMAGE=mariadb:10.0
+    - python: 3.4
+      env: DOCKER_IMAGE=mariadb:10.0
+    - python: 3.5
+      env: DOCKER_IMAGE=mariadb:10.0
+
+    - python: 2.7
+      env: DOCKER_IMAGE=mariadb:10.2
+    - python: 3.4
+      env: DOCKER_IMAGE=mariadb:10.2
+    - python: 3.5
+      env: DOCKER_IMAGE=mariadb:10.2
+
 before_script:
   # @see https://medium.com/@mtparet/install-mysql-server-5-7-on-travis-96f2ebc0f339
   # @see https://hub.docker.com/_/mysql/
