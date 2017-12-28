@@ -2,16 +2,14 @@ import yaml
 
 from unittest import TestCase
 
-from indexdigest.schema import Index
-from indexdigest.utils import LinterEntry
-from indexdigest.formatters import format_yaml
+from indexdigest.formatters import format_yaml as formatter
 from . import FormatterTestMixin
 
 
-class TestPlainFormatter(TestCase, FormatterTestMixin):
+class TestFormatter(TestCase, FormatterTestMixin):
 
     def test_formatter(self):
-        out = format_yaml(self.get_database_mock(), self.get_reports_mock())
+        out = formatter(self.get_database_mock(), self.get_reports_mock())
         print(out)
 
         # first check that it's a valid YAML
@@ -33,26 +31,7 @@ class TestPlainFormatter(TestCase, FormatterTestMixin):
         # assert False
 
     def test_formatter_no_results(self):
-        out = format_yaml(self.get_database_mock(), [])
+        out = formatter(self.get_database_mock(), [])
         print(out)
 
         assert out.endswith('reports: []\n...\n')
-
-    def test_index_representer(self):
-        reports = [
-            LinterEntry(
-                linter_type='foo',
-                table_name='foo',
-                message='foo',
-                context={
-                    'index': Index('foo', ['bar'], primary=True)
-                }
-            )
-        ]
-
-        out = format_yaml(self.get_database_mock(), reports)
-        print(out)
-
-        assert '  context:\n    index: !index \'PRIMARY KEY (bar)\'' in out
-
-        # assert False

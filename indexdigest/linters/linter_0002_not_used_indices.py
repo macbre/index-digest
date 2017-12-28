@@ -33,4 +33,4 @@ def check_not_used_indices(database, queries):
                 yield LinterEntry(linter_type='not_used_indices', table_name=table_name,
                                   message='"{}" index was not used by provided queries'.
                                   format(index.name),
-                                  context={"not_used_index": index})
+                                  context={"not_used_index": str(index)})

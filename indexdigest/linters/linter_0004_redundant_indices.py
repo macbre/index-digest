@@ -45,8 +45,8 @@ def check_redundant_indices(database):
                 continue
 
             context = OrderedDict()
-            context['redundant'] = redundant_index
-            context['covered_by'] = suggested_index
+            context['redundant'] = str(redundant_index)
+            context['covered_by'] = str(suggested_index)
             context['schema'] = schema
             context['table_data_size_mb'] = 1. * meta['data_size'] / 1024 / 1024
             context['table_index_size_mb'] = 1. * meta['index_size'] / 1024 / 1024

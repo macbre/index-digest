@@ -10,7 +10,7 @@ Usage:
 Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
-  --format=<formatter>  Use a given results formatter (plain, yaml)
+  --format=<formatter>  Use a given results formatter (plain, syslog, yaml)
   -h --help         Show this screen.
   --version         Show version.
 
@@ -24,6 +24,7 @@ from __future__ import print_function
 
 import logging
 from itertools import chain
+from os import getenv
 
 from docopt import docopt
 
@@ -32,6 +33,7 @@ from indexdigest.database import Database
 from indexdigest.utils import IndexDigestError
 from indexdigest.formatters import \
     format_plain, \
+    format_syslog, \
     format_yaml
 from indexdigest.linters import \
     check_queries_using_filesort, check_queries_using_temporary, \
@@ -97,6 +99,10 @@ def main():
 
     if formatter == 'plain':
         print(format_plain(database, reports))
+    elif formatter == 'syslog':
+        ident = getenv('SYSLOG_IDENT', 'index-digest')
+        logger.info('Using syslog ident: %s', ident)
+        print(format_syslog(database, reports, ident))
     elif formatter == 'yaml':
         print(format_yaml(database, reports))
     else:
