@@ -10,7 +10,7 @@ Usage:
 Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
-  --format=<formatter>  Use a given results formatter (plain)
+  --format=<formatter>  Use a given results formatter (plain, yaml)
   -h --help         Show this screen.
   --version         Show version.
 
@@ -30,7 +30,9 @@ from docopt import docopt
 import indexdigest
 from indexdigest.database import Database
 from indexdigest.utils import IndexDigestError
-from indexdigest.formatters import format_plain
+from indexdigest.formatters import \
+    format_plain, \
+    format_yaml
 from indexdigest.linters import \
     check_queries_using_filesort, check_queries_using_temporary, \
     check_not_used_indices, check_queries_not_using_indices, \
@@ -95,5 +97,7 @@ def main():
 
     if formatter == 'plain':
         print(format_plain(database, reports))
+    elif formatter == 'yaml':
+        print(format_yaml(database, reports))
     else:
         raise IndexDigestError('Unknown formatter provided: {}'.format(formatter))
