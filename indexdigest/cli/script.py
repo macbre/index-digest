@@ -43,7 +43,8 @@ from indexdigest.linters import \
     check_full_table_scan, \
     check_latin_columns, \
     check_selects_with_like, \
-    check_missing_primary_index
+    check_missing_primary_index, \
+    check_test_tables
 
 
 def main():
@@ -77,6 +78,7 @@ def main():
         check_redundant_indices(database),
         check_latin_columns(database),
         check_missing_primary_index(database),
+        check_test_tables(database),
     )
 
     # checks that use SQL log
