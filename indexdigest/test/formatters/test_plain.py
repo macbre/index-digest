@@ -3,11 +3,11 @@ import re
 
 from unittest import TestCase
 
-from indexdigest.formatters import format_plain
+from indexdigest.formatters import format_plain as formatter
 from . import FormatterTestMixin
 
 
-class TestPlainFormatter(TestCase, FormatterTestMixin):
+class TestFormatter(TestCase, FormatterTestMixin):
 
     @staticmethod
     def _remove_ansi_styles(text):
@@ -19,7 +19,7 @@ class TestPlainFormatter(TestCase, FormatterTestMixin):
         return re.sub(r'\033\[\d+m', '', text)
 
     def test_format_plain(self):
-        out = format_plain(self.get_database_mock(), self.get_reports_mock())
+        out = formatter(self.get_database_mock(), self.get_reports_mock())
         out = self._remove_ansi_styles(out)
         print(out)
 
@@ -37,5 +37,5 @@ class TestPlainFormatter(TestCase, FormatterTestMixin):
         # assert False
 
     def test_format_plain_no_results(self):
-        out = format_plain(self.get_database_mock(), [])
+        out = formatter(self.get_database_mock(), [])
         assert out.endswith('Jolly, good! No issues to report')
