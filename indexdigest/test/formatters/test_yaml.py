@@ -1,41 +1,37 @@
-# -*- coding: utf-8 -*-
-import re
+import yaml
 
 from unittest import TestCase
 
-from indexdigest.formatters import format_plain
+from indexdigest.formatters import format_yaml
 from . import FormatterTestMixin
 
 
 class TestPlainFormatter(TestCase, FormatterTestMixin):
 
-    @staticmethod
-    def _remove_ansi_styles(text):
-        """
-        :type text str
-        :rtype: str
-        """
-        # '\033[0m'
-        return re.sub(r'\033\[\d+m', '', text)
-
-    def test_format_plain(self):
-        out = format_plain(self.get_database_mock(), self.get_reports_mock())
-        out = self._remove_ansi_styles(out)
+    def test_formatter(self):
+        out = format_yaml(self.get_database_mock(), self.get_reports_mock())
         print(out)
 
-        assert 'Found 2 issue(s) to report for "test_database" database' in out
-        assert 'MySQL v1.2.3-test at test.local' in out
+        # first check that it's a valid YAML
+        res = yaml.safe_load(out)
+        assert 'meta' in res
+        assert 'reports' in res
 
-        assert 'foo_linter → table affected: table_001' in out
-        assert '✗ Something is fishy here' in out
-        assert '  - foo: 42\n  - test: bar' in out
+        assert 'version: index-digest v0.1.0\n  database_name: test_database\n' \
+            '  database_host: test.local\n  database_version: MySQL v1.2.3-test' in out
 
-        assert 'bar_linter → table affected: table_042' in out
-        assert '✗ An index is missing' in out
+        assert 'message: Something is fishy here' in out
 
-        assert out.endswith('Queries performed: 0')
+        # context fields order is maintained
+        assert '  context:\n    foo: 42\n    test: bar\n' in out
+
+        # properly marked YAML file
+        assert out.startswith('---')
+        assert out.endswith('...\n')
         # assert False
 
-    def test_format_plain_no_results(self):
-        out = format_plain(self.get_database_mock(), [])
-        assert out.endswith('Jolly, good! No issues to report')
+    def test_formatter_no_results(self):
+        out = format_yaml(self.get_database_mock(), [])
+        print(out)
+
+        assert out.endswith('reports: []\n...\n')

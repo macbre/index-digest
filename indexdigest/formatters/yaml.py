@@ -50,7 +50,7 @@ def format_yaml(database, reports):
     report['meta']['database_host'] = database.get_server_hostname()
     report['meta']['database_version'] = 'MySQL v{}'.format(database.get_server_version())
 
-    report['reports'] = [format_report(report) for report in reports]
+    report['reports'] = [format_report(item) for item in reports]
 
     # @see http://pyyaml.org/wiki/PyYAMLDocumentation
     yaml.add_representer(Index, index_representer)
