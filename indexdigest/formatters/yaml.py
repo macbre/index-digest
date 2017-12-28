@@ -9,14 +9,6 @@ import yaml
 import yamlordereddictloader
 
 import indexdigest
-from indexdigest.schema import Index
-
-
-def index_representer(dumper, data):
-    """
-    Provides a custom YAML formatter for indexdigest.schema.Index class
-    """
-    return dumper.represent_scalar('!index', str(data))
 
 
 def format_report(report):
@@ -51,9 +43,6 @@ def format_yaml(database, reports):
     report['meta']['database_version'] = 'MySQL v{}'.format(database.get_server_version())
 
     report['reports'] = [format_report(item) for item in reports]
-
-    # @see http://pyyaml.org/wiki/PyYAMLDocumentation
-    yaml.add_representer(Index, index_representer)
 
     return yaml.dump(report,
                      Dumper=yamlordereddictloader.Dumper,
