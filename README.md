@@ -13,8 +13,11 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports text columns with character set different than `utf`
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
+  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`)
 
-This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4 and 3.6**.
+This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
+
+Results can be reported in a human-readable form, as YAML or sent to syslog and later aggregated & processed using ELK stack.
 
 ## Requirements & install
 
@@ -117,6 +120,17 @@ missing_primary_index → table affected: 0034_querycache
       `qc_namespace` int(11) NOT NULL DEFAULT '0',
       `qc_title` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
       KEY `qc_type` (`qc_type`,`qc_value`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+------------------------------------------------------------
+test_tables → table affected: 0075_some_guy_test_table
+
+✗ "0075_some_guy_test_table" seems to be a test table
+
+  - schema: CREATE TABLE `0075_some_guy_test_table` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 ------------------------------------------------------------
@@ -224,6 +238,7 @@ Outputs YML file with results and metadata.
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
 * `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
+* `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
 
 ### Additional checks performed on SQL log
 
