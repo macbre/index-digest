@@ -51,7 +51,7 @@ Usage:
 Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
-  --format=<formatter>  Use a given results formatter (plain, yaml)
+  --format=<formatter>  Use a given results formatter (plain, syslog, yaml)
   -h --help         Show this screen.
   --version         Show version.
 
@@ -205,6 +205,15 @@ select * from 0002_not_used_indices where bar = 'foo'
 ### plain
 
 Emits human-readable report to a console. You can disable colored and bold text by setting env variable `ANSI_COLORS_DISABLED=1`.
+
+### syslog
+
+Pushes JSON-formatted messages via syslog, so they can be aggregated using ELK stack.
+Use `SYSLOG_IDENT` env variable to customize syslog's `ident` messages are sent with (defaults to `index-digest`).
+
+```
+Dec 28 15:59:58 debian index-digest[17485]: {"meta": {"version": "index-digest v0.1.0", "database_name": "index_digest", "database_host": "debian", "database_version": "MySQL v5.7.20"}, "report": {"type": "redundant_indices", "table": "0004_id_foo", "message": "\"idx\" index can be removed as redundant (covered by \"PRIMARY\")", "context": {"redundant": "UNIQUE KEY idx (id, foo)", "covered_by": "PRIMARY KEY (id, foo)", "schema": "CREATE TABLE `0004_id_foo` (\n  `id` int(9) NOT NULL AUTO_INCREMENT,\n  `foo` varbinary(16) NOT NULL DEFAULT '',\n  PRIMARY KEY (`id`,`foo`),\n  UNIQUE KEY `idx` (`id`,`foo`)\n) ENGINE=InnoDB DEFAULT CHARSET=latin1", "table_data_size_mb": 0.015625, "table_index_size_mb": 0.015625}}}
+```
 
 ### yaml
 
