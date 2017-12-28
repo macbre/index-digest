@@ -51,7 +51,7 @@ Usage:
 Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
-  --format=<formatter>  Use a given results formatter (plain)
+  --format=<formatter>  Use a given results formatter (plain, yaml)
   -h --help         Show this screen.
   --version         Show version.
 
@@ -205,6 +205,10 @@ select * from 0002_not_used_indices where bar = 'foo'
 ### plain
 
 Emits human-readable report to a console. You can disable colored and bold text by setting env variable `ANSI_COLORS_DISABLED=1`.
+
+### yaml
+
+Outputs YML file with results and metadata.
 
 ## Checks
 
