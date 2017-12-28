@@ -56,6 +56,5 @@ def format_yaml(database, reports):
     return yaml.dump(report,
                      Dumper=yamlordereddictloader.Dumper,
                      default_flow_style=False,
-                     tags=False,
                      explicit_start=True,
                      explicit_end=True)
