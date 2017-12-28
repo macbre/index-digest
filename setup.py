@@ -17,9 +17,11 @@ setup(
         'coverage==4.4.2',
         'pylint==1.8.1',
         'pytest==3.2.3',
+        'PyYAML==3.12',
         'mysqlclient==1.3.12',
         'sqlparse==0.2.4',
         'termcolor==1.1.0',
+        'yamlordereddictloader==0.4.0'
     ],
     entry_points={
         'console_scripts': [
