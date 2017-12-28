@@ -1,36 +1,36 @@
-# -*- coding: utf-8 -*-
 """index_digest
 
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>]
   index_digest (-h | --help)
   index_digest --version
 
 Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
+  --format=<formatter>  Use a given results formatter (plain)
   -h --help         Show this screen.
   --version         Show version.
 
 Examples:
-  index_digest mysql://index_digest:qwerty@localhost/index_digest
+  index_digest mysql://username:password@localhost/dbname
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
 
 Visit <https://github.com/macbre/index-digest>
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function
 
 import logging
 from itertools import chain
 
 from docopt import docopt
-from termcolor import colored, cprint
 
 import indexdigest
 from indexdigest.database import Database
-from indexdigest.utils import LinterEntry
+from indexdigest.utils import IndexDigestError
+from indexdigest.formatters import format_plain
 from indexdigest.linters import \
     check_queries_using_filesort, check_queries_using_temporary, \
     check_not_used_indices, check_queries_not_using_indices, \
@@ -40,20 +40,6 @@ from indexdigest.linters import \
     check_latin_columns, \
     check_selects_with_like, \
     check_missing_primary_index
-
-
-def format_context(context):
-    """
-    :type context dict
-    :rtype: str
-    """
-    return '\n  '.join([
-        "- {key}: {value}".format(
-            key=colored(key, color='green', attrs=['bold']),
-            value=str(value).replace("\n", "\n    ")
-        )
-        for (key, value) in context.items()
-    ])
 
 
 def main():
@@ -103,41 +89,11 @@ def main():
             check_selects_with_like(database, queries=queries),
         )
 
-    # cast to a list (to be able to count reports)
-    reports = list(reports)
+    # handle --format
+    formatter = arguments.get('--format') or 'plain'
+    logger.info("Using formatter: %s", formatter)
 
-    # emit results
-    line = '-' * 60
-
-    print(line)
-    print('Found {} issue(s) to report for "{}" database'.format(len(reports), database.db_name))
-    print(line)
-    print('MySQL v{} at {}'.format(database.get_server_version(), database.get_server_hostname()))
-    print('index-digest v{}'.format(indexdigest.VERSION))
-    print(line)
-
-    # TODO: implement formatters
-    if reports:
-        for report in reports:
-            assert isinstance(report, LinterEntry)
-
-            print(
-                colored(report.linter_type, color='blue', attrs=['bold']) +
-                ' → table affected: ' +
-                colored(report.table_name, attrs=['bold'])
-            )
-
-            cprint(
-                '\n{} {}'.format(colored('✗', color='red', attrs=['bold']), report.message),
-                color='white')
-
-            if report.context is not None:
-                print('\n  ' + format_context(report.context))
-
-            print()
-            print(line)
-
-        print('Queries performed: {}'.format(len(database.get_queries())))
-        # print('\n'.join(map(str, database.get_queries())))
+    if formatter == 'plain':
+        print(format_plain(database, reports))
     else:
-        print('Jolly, good! No issues to report')
+        raise IndexDigestError('Unknown formatter provided: {}'.format(formatter))

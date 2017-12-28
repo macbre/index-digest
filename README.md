@@ -44,19 +44,19 @@ index_digest
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>]
   index_digest (-h | --help)
   index_digest --version
 
 Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
+  --format=<formatter>  Use a given results formatter (plain)
   -h --help         Show this screen.
   --version         Show version.
 
 Examples:
   index_digest mysql://username:password@localhost/dbname
-  index_digest mysql://index_digest:qwerty@localhost/index_digest
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
 
 Visit <https://github.com/macbre/index-digest>
@@ -197,6 +197,14 @@ select * from 0002_not_used_indices where foo = 'foo' and id = 2
 select count(*) from 0002_not_used_indices where foo = 'foo'
 select * from 0002_not_used_indices where bar = 'foo'
 ```
+
+## Formatters
+
+`index-digest` can return results in various formats (use `--format` to choose one).
+
+### plain
+
+Emits human-readable report to a console. You can disable colored and bold text by setting env variable `ANSI_COLORS_DISABLED=1`.
 
 ## Checks
 
