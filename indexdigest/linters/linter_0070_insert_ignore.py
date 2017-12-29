@@ -33,7 +33,7 @@ def is_insert_ignore_query(sql):
     :type sql str
     :rtype: bool
     """
-    return re.match(r'^INSERT\s+IGNORE\s', remove_comments(sql), flags=re.IGNORECASE) is not None
+    return re.match(r'^INSERT\s+IGNORE\s', remove_comments(sql).lstrip(), flags=re.IGNORECASE) is not None
 
 
 def check_insert_ignore_queries(database, queries):

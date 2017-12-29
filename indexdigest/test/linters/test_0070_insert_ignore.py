@@ -23,6 +23,7 @@ class TestInsertIgnore(TestCase, DatabaseTestMixin):
     def test_is_insert_ignore_query(self):
         assert is_insert_ignore_query("INSERT IGNORE INTO 0070_insert_ignore VALUES ('2017-01-01', 9, 123);") is True
         assert is_insert_ignore_query("Insert /* foo */ Ignore INTO 0070_insert_ignore VALUES ('2017-01-01', 9, 123);") is True
+        assert is_insert_ignore_query("/* foo */ INSERT IGNORE INTO `0070_insert_ignore` VALUES (9, '123', '2017-01-01');") is True
 
         assert is_insert_ignore_query("/* INSERT IGNORE */ INSERT INTO 0070_insert_ignore VALUES ('2017-01-01', 9, 123);") is False
         assert is_insert_ignore_query("INSERT INTO 0070_insert_ignore VALUES ('INSERT IGNORE', 9, 123);") is False
