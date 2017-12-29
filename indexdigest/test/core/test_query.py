@@ -48,4 +48,11 @@ class TestUtils(TestCase):
         self.assertListEqual(['events'],
                              get_query_tables("SELECT COUNT( 0 ) AS cnt, date_format(event_date, '%Y-%m-%d') AS date 	 FROM events 	 WHERE event_date BETWEEN '2017-10-18 00:00:00' 	 AND '2017-10-24 23:59:59'  	 AND wiki_id = '1289985' GROUP BY date WITH ROLLUP"))
 
+        # INSERT queries
+        self.assertListEqual(['0070_insert_ignore_table'],
+                             get_query_tables("INSERT IGNORE INTO `0070_insert_ignore_table` VALUES (9, '123', '2017-01-01');"))
+
+        self.assertListEqual(['0070_insert_ignore_table'],
+                             get_query_tables("INSERT into `0070_insert_ignore_table` VALUES (9, '123', '2017-01-01');"))
+
         # assert False

@@ -59,7 +59,12 @@ def get_query_tables(query):
     last_keyword = None
     last_token = None
 
-    table_syntax_keywords = ['FROM', 'WHERE', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON']
+    table_syntax_keywords = [
+        # SELECT queries
+        'FROM', 'WHERE', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON',
+        # INSERT queries
+        'INTO', 'VALUES'
+    ]
 
     for token in get_query_tokens(query):
         # print([token, token.ttype])
@@ -70,7 +75,7 @@ def get_query_tables(query):
         elif token.ttype is Name or token.is_keyword:
             # print([last_keyword, last_token, token.value])
             # analyze the name tokens, column names and where condition values
-            if last_keyword in ['FROM', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN'] \
+            if last_keyword in ['FROM', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INTO'] \
                     and last_token not in ['AS']:
                 if token.value not in tables:
                     tables.append(token.value.strip('`'))

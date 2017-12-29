@@ -146,6 +146,19 @@ not_used_tables → table affected: 0000_the_table
 ✗ "0000_the_table" table was not used by provided queries
 
 ------------------------------------------------------------
+insert_ignore → table affected: 0070_insert_ignore
+
+✗ "INSERT IGNORE INTO `0070_insert_ignore` VALUES (9,..." query uses a risky INSERT IGNORE
+
+  - query: INSERT IGNORE INTO `0070_insert_ignore` VALUES (9, '123', '2017-01-01');
+  - schema: CREATE TABLE `0070_insert_ignore` (
+      `id` int(9) NOT NULL,
+      `text` char(5) NOT NULL,
+      `time` datetime DEFAULT NULL,
+      UNIQUE KEY `id` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+------------------------------------------------------------
 non_utf_columns → table affected: 0032_latin1_table
 
 ✗ "name" text column has "latin1" character set defined
@@ -252,6 +265,7 @@ Outputs YML file with results and metadata.
 * `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
 * `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
 * `selects_with_like`: reports SELECT queries that use `LIKE '%foo'` conditions (they can not use an index)
+* `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
 
 ## Success stories
 
