@@ -12,4 +12,5 @@ from .linter_0026_full_table_scan import check_full_table_scan
 from .linter_0027_selects_with_like import check_selects_with_like
 from .linter_0032_utf_latin_columns import check_latin_columns
 from .linter_0034_missing_primary_index import check_missing_primary_index
+from .linter_0070_insert_ignore import check_insert_ignore_queries
 from .linter_0075_test_tables import check_test_tables

@@ -44,7 +44,8 @@ from indexdigest.linters import \
     check_latin_columns, \
     check_selects_with_like, \
     check_missing_primary_index, \
-    check_test_tables
+    check_test_tables, \
+    check_insert_ignore_queries
 
 
 def main():
@@ -93,6 +94,7 @@ def main():
             check_queries_using_temporary(database, queries=queries),
             check_full_table_scan(database, queries=queries),
             check_selects_with_like(database, queries=queries),
+            check_insert_ignore_queries(database, queries=queries),
         )
 
     # handle --format
