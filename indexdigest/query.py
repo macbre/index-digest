@@ -59,7 +59,12 @@ def get_query_tables(query):
     last_keyword = None
     last_token = None
 
-    table_syntax_keywords = ['FROM', 'WHERE', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON', 'INTO', 'VALUES']
+    table_syntax_keywords = [
+        # SELECT queries
+        'FROM', 'WHERE', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON',
+        # INSERT queries
+        'INTO', 'VALUES'
+    ]
 
     for token in get_query_tokens(query):
         # print([token, token.ttype])

@@ -6,9 +6,11 @@ For example, without IGNORE, a row that duplicates an existing UNIQUE index or P
 in the table causes a duplicate-key error and the statement is aborted. With IGNORE, the row is
 discarded and no error occurs. Ignored errors generate warnings instead.
 
-Data conversions that would trigger errors abort the statement if IGNORE is not specified. With IGNORE,
-invalid values are adjusted to the closest values and inserted; warnings are produced but the
-statement does not abort.
+Data conversions that would trigger errors abort the statement if IGNORE is not specified.
+With IGNORE, invalid values are adjusted to the closest values and inserted; warnings
+are produced but the statement does not abort.
+
+@see https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b
 """
 import re
 
