@@ -1,0 +1,8 @@
+-- inserts with IGNORE flag
+INSERT IGNORE INTO `0070_insert_ignore` VALUES (9, '123', '2017-01-01');
+/* foo */ INSERT IGNORE INTO `0070_insert_ignore` VALUES (9, '123', '2017-01-01');
+INSERT  IGNORE INTO `0070_insert_ignore` VALUES ('123', 9, '2017-01-01');
+INSERT /* foo */ IGNORE INTO `0070_insert_ignore` VALUES ('2017-01-01', 9, 123);
+-- no IGNORE flag
+/* INSERT IGNORE */ INSERT INTO `0070_insert_ignore` VALUES ('2017-01-01', 9, 123);
+INSERT INTO `0070_insert_ignore` VALUES ('INSERT IGNORE', 9, 123);
