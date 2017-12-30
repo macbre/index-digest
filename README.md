@@ -7,13 +7,13 @@ Analyses your database queries and schema and suggests indices improvements. You
 
 `index-digest` does the following:
 
-* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication)
+* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication, dropping tables with just a single column)
 * if provided with SQL queries log (via `--sql-log` option) it:
   * checks if all tables, columns and indices are used by these queries
   * reports text columns with character set different than `utf`
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
-  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`)
+  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`)
 
 This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
 
