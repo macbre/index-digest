@@ -45,7 +45,8 @@ from indexdigest.linters import \
     check_selects_with_like, \
     check_missing_primary_index, \
     check_test_tables, \
-    check_insert_ignore_queries
+    check_insert_ignore_queries, \
+    check_single_column
 
 
 def main():
@@ -80,6 +81,7 @@ def main():
         check_latin_columns(database),
         check_missing_primary_index(database),
         check_test_tables(database),
+        check_single_column(database),
     )
 
     # checks that use SQL log
