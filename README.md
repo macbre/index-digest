@@ -134,6 +134,16 @@ test_tables → table affected: 0075_some_guy_test_table
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 ------------------------------------------------------------
+single_column → table affected: 0074_bag_of_ints
+
+✗ "0074_bag_of_ints" has just a single column
+
+  - schema: CREATE TABLE `0074_bag_of_ints` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+------------------------------------------------------------
 not_used_indices → table affected: 0002_not_used_indices
 
 ✗ "test_id_idx" index was not used by provided queries
@@ -252,6 +262,7 @@ Outputs YML file with results and metadata.
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
 * `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
 * `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
+* `single_column`: reports tables with just a single column
 
 ### Additional checks performed on SQL log
 
