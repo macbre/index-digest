@@ -3,6 +3,7 @@ import re
 
 from unittest import TestCase
 
+from indexdigest import VERSION
 from indexdigest.formatters import format_plain as formatter
 from . import FormatterTestMixin
 
@@ -25,6 +26,7 @@ class TestFormatter(TestCase, FormatterTestMixin):
 
         assert 'Found 2 issue(s) to report for "test_database" database' in out
         assert 'MySQL v1.2.3-test at test.local' in out
+        assert 'index-digest v' + VERSION in out
 
         assert 'foo_linter → table affected: table_001' in out
         assert '✗ Something is fishy here' in out
