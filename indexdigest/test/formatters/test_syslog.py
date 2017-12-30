@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from indexdigest import VERSION
 from indexdigest.formatters.syslog import format_report
 from . import FormatterTestMixin
 
@@ -12,7 +13,7 @@ class TestFormatter(TestCase, FormatterTestMixin):
         print(out, report)
 
         self.assertEquals(
-            '{"meta": {"version": "index-digest v0.1.0", "database_name": "test_database", '
+            '{"meta": {"version": "index-digest v' + VERSION + '", "database_name": "test_database", '
             '"database_host": "test.local", "database_version": "MySQL v1.2.3-test"}, '
             '"report": {"type": "foo_linter", "table": "table_001", "message": "Something is fishy here", '
             '"context": {"foo": 42, "test": "bar"}}}',

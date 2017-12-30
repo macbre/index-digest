@@ -2,6 +2,7 @@ import yaml
 
 from unittest import TestCase
 
+from indexdigest import VERSION
 from indexdigest.formatters import format_yaml as formatter
 from . import FormatterTestMixin
 
@@ -17,7 +18,7 @@ class TestFormatter(TestCase, FormatterTestMixin):
         assert 'meta' in res
         assert 'reports' in res
 
-        assert 'version: index-digest v0.1.0\n  database_name: test_database\n' \
+        assert 'version: index-digest v' + VERSION + '\n  database_name: test_database\n' \
             '  database_host: test.local\n  database_version: MySQL v1.2.3-test' in out
 
         assert 'message: Something is fishy here' in out

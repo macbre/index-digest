@@ -70,10 +70,10 @@ Visit <https://github.com/macbre/index-digest>
 ```
 $ index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log 
 ------------------------------------------------------------
-Found 15 issue(s) to report for "index_digest" database
+Found 48 issue(s) to report for "index_digest" database
 ------------------------------------------------------------
-MySQL v5.5.58-0+deb8u1 at debian
-index-digest v0.1.0
+MySQL v5.7.20 at debian
+index-digest v0.2.0
 ------------------------------------------------------------
 redundant_indices → table affected: 0004_id_foo
 
@@ -219,6 +219,11 @@ selects_with_like → table affected: 0020_big_table
   - query: SELECT * FROM 0020_big_table WHERE text LIKE '%00'
   - explain_extra: Using where
   - explain_rows: 100623
+
+(...)
+
+------------------------------------------------------------
+Queries performed: 100
 ```
 
 ## SQL query log
