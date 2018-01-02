@@ -19,6 +19,8 @@ def format_report(database, report):
     """
     res = OrderedDict()
 
+    res['appname'] = 'index-digest'
+
     res['meta'] = OrderedDict()
     res['meta']['version'] = 'index-digest v{}'.format(indexdigest.VERSION)
     res['meta']['database_name'] = database.db_name
