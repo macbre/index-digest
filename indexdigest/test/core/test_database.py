@@ -276,3 +276,24 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0000_the_table'" in str(queries[1]))
         self.assertTrue("SHOW COLUMNS FROM 0002_not_used_indices" in str(queries[2]))
         self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0002_not_used_indices'" in str(queries[3]))
+
+    def test_cached_get_table_schema(self):
+        db = DatabaseWithMockedRow(mocked_row=[None, 'CREATE TABLE foo;'])
+
+        # this would made ten queries to database if not memoization in get_table_schema
+        # also test that @memoize decorator correctly handles different arguments
+        for _ in range(5):
+            schema = db.get_table_schema('0000_the_table')
+            self.assertEquals(schema, 'CREATE TABLE foo;')
+
+            schema = db.get_table_schema('0002_not_used_indices')
+            self.assertEquals(schema, 'CREATE TABLE foo;')
+
+        queries = db.get_queries()
+        print(queries)
+
+        # however, only two are made :)
+        self.assertEquals(len(queries), 2)
+
+        self.assertEquals('SHOW CREATE TABLE 0000_the_table', str(queries[0]))
+        self.assertEquals('SHOW CREATE TABLE 0002_not_used_indices', str(queries[1]))
