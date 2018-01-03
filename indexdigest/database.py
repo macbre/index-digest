@@ -228,6 +228,7 @@ class Database(DatabaseBase):
         # @see https://dev.mysql.com/doc/refman/5.7/en/explain-output.html
         return list(self.query_dict_rows('EXPLAIN {}'.format(sql)))
 
+    @memoize
     def get_table_schema(self, table_name):
         """
         Run SHOW CREATE TABLE query for a given table
