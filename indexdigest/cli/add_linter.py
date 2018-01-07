@@ -54,8 +54,8 @@ def add_linter(linter_id, linter_name):
     # /indexdigest/linters directory
     logger.info("Add Python code ...")
 
-    with open('indexdigest/linters/linter_{}_{}.py'.format(linter_id_fmt, linter_name), 'wt') \
-            as file:
+    with open('indexdigest/linters/linter_{}_{}.py'.
+              format(linter_id_fmt, linter_name.replace('-', '_')), 'wt') as file:
         file.writelines([
             '"""\n',
             'This linter checks for ...\n',
@@ -76,6 +76,29 @@ def add_linter(linter_id, linter_name):
             '                      message=\'"{}" ...\'.\n',
             '                      format("foo"),\n',
             '                      context={"foo": str("bar")})\n',
+        ])
+
+        logger.info('... %s created', file.name)
+
+    logger.info("Add a test ...")
+
+    with open('indexdigest/test/linters/test_{}_{}.py'.format(linter_id_fmt, linter_name), 'wt') \
+            as file:
+        name = linter_name.replace('-', '_')
+
+        file.writelines([
+            'from __future__ import print_function\n',
+            '\n',
+            'from unittest import TestCase\n',
+            '\n',
+            'from indexdigest.linters.linter_{}_{} import check_foo\n'.format(linter_id_fmt, name),
+            'from indexdigest.test import DatabaseTestMixin, read_queries_from_log\n',
+            '\n',
+            '\n',
+            'class TestLinter(TestCase, DatabaseTestMixin):\n',
+            '\n',
+            '    def test_{}(self):\n'.format(name),
+            '        pass\n',
         ])
 
         logger.info('... %s created', file.name)
