@@ -247,6 +247,7 @@ class Database(DatabaseBase):
         return "WHERE TABLE_SCHEMA='{db}' AND TABLE_NAME='{table_name}'".format(
             db=self._connection_params['db'], table_name=table_name)
 
+    @memoize
     def get_table_metadata(self, table_name):
         """
         Return table's metadata
