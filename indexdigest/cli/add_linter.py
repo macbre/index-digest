@@ -51,6 +51,35 @@ def add_linter(linter_id, linter_name):
 
         logger.info('... %s created', file.name)
 
+    # /indexdigest/linters directory
+    logger.info("Add Python code ...")
+
+    with open('indexdigest/linters/linter_{}_{}.py'.format(linter_id_fmt, linter_name), 'wt') \
+            as file:
+        file.writelines([
+            '"""\n',
+            'This linter checks for ...\n',
+            '"""\n',
+            'from collections import defaultdict\n',
+            '\n',
+            'from indexdigest.utils import LinterEntry, explain_queries\n',
+            '\n',
+            '\n',
+            'def check_not_used_indices(database, queries):\n',
+            '    """\n',
+            '    :type database  indexdigest.database.Database\n',
+            '    :type queries list[str]\n',
+            '    :rtype: list[LinterEntry]\n',
+            '    """\n',
+            '    yield LinterEntry(linter_type=\'{}\', table_name=table_name,\n'.
+            format(linter_name),
+            '                      message=\'"{}" ...\'.\n',
+            '                      format("foo"),\n',
+            '                      context={"foo": str("bar")})\n',
+        ])
+
+        logger.info('... %s created', file.name)
+
 
 def main():
     """
