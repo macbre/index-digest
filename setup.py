@@ -50,6 +50,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
+            'add_linter=indexdigest.cli.add_linter:main',  # creates a new linter from a template
             'index_digest=indexdigest.cli.script:main',
         ],
     }
