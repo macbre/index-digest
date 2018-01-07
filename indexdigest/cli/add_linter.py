@@ -52,10 +52,11 @@ def add_linter(linter_id, linter_name):
         logger.info('... %s created', file_name.name)
 
     # /indexdigest/linters directory
-    logger.info("Add Python code ...")
+    linter_name = linter_name.replace('-', '_')
+    logger.info("Add a Python code for %s linter ...", linter_name)
 
     with open('indexdigest/linters/linter_{}_{}.py'.
-              format(linter_id_fmt, linter_name.replace('-', '_')), 'wt') as file_name:
+              format(linter_id_fmt, linter_name), 'wt') as file_name:
         file_name.writelines([
             '"""\n',
             'This linter checks for ...\n',
@@ -65,7 +66,7 @@ def add_linter(linter_id, linter_name):
             'from indexdigest.utils import LinterEntry, explain_queries\n',
             '\n',
             '\n',
-            'def check_not_used_indices(database, queries):\n',
+            'def check_{}(database, queries):\n'.format(linter_name),
             '    """\n',
             '    :type database  indexdigest.database.Database\n',
             '    :type queries list[str]\n',
@@ -84,20 +85,19 @@ def add_linter(linter_id, linter_name):
 
     with open('indexdigest/test/linters/test_{}_{}.py'.format(linter_id_fmt, linter_name), 'wt') \
             as file_name:
-        name = linter_name.replace('-', '_')
-
         file_name.writelines([
             'from __future__ import print_function\n',
             '\n',
             'from unittest import TestCase\n',
             '\n',
-            'from indexdigest.linters.linter_{}_{} import check_foo\n'.format(linter_id_fmt, name),
+            'from indexdigest.linters.linter_{0}_{1} import check_{1}\n'.
+            format(linter_id_fmt, linter_name),
             'from indexdigest.test import DatabaseTestMixin, read_queries_from_log\n',
             '\n',
             '\n',
             'class TestLinter(TestCase, DatabaseTestMixin):\n',
             '\n',
-            '    def test_{}(self):\n'.format(name),
+            '    def test_{}(self):\n'.format(linter_name),
             '        pass\n',
         ])
 
