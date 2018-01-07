@@ -7,7 +7,7 @@ Analyses your database queries and schema and suggests indices improvements. You
 
 `index-digest` does the following:
 
-* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication, dropping tables with just a single column)
+* it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication, dropping tables with just a single column or no rows)
 * if provided with SQL queries log (via `--sql-log` option) it:
   * checks if all tables, columns and indices are used by these queries
   * reports text columns with character set different than `utf`
@@ -144,6 +144,16 @@ single_column → table affected: 0074_bag_of_ints
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 ------------------------------------------------------------
+empty_tables → table affected: 0089_empty_table
+
+✗ "0089_empty_table" table has no rows, is it really needed?
+
+  - schema: CREATE TABLE `0089_empty_table` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+------------------------------------------------------------
 not_used_indices → table affected: 0002_not_used_indices
 
 ✗ "test_id_idx" index was not used by provided queries
@@ -268,6 +278,7 @@ Outputs YML file with results and metadata.
 * `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
 * `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
 * `single_column`: reports tables with just a single column
+* `empty_tables`: reports tables with no rows
 
 ### Additional checks performed on SQL log
 

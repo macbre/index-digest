@@ -15,3 +15,4 @@ from .linter_0034_missing_primary_index import check_missing_primary_index
 from .linter_0070_insert_ignore import check_insert_ignore_queries
 from .linter_0074_single_column import check_single_column
 from .linter_0075_test_tables import check_test_tables
+from .linter_0089_empty_tables import check_empty_tables
