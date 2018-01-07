@@ -28,11 +28,11 @@ def add_linter(linter_id, linter_name):
     sql_name = 'sql/{}-{}'.format(linter_id_fmt, linter_name.replace('_', '-'))
     logger.info("Add SQL schema and log files (%s) ...", sql_name)
 
-    with open(sql_name + '.sql', 'wt') as file:
+    with open(sql_name + '.sql', 'wt') as file_name:
         # 0002_not_used_indices
         table_name = '{}_{}'.format(linter_id_fmt, linter_name.replace('-', '_'))
 
-        file.writelines([
+        file_name.writelines([
             '-- Report ...\n',
             '--\n',
             '-- https://github.com/macbre/index-digest/issues/{}\n'.format(linter_id),
@@ -42,21 +42,21 @@ def add_linter(linter_id, linter_name):
             ');\n',
         ])
 
-        logger.info('... %s created', file.name)
+        logger.info('... %s created', file_name.name)
 
-    with open(sql_name + '-log', 'wt') as file:
-        file.writelines([
+    with open(sql_name + '-log', 'wt') as file_name:
+        file_name.writelines([
             '-- \n',
         ])
 
-        logger.info('... %s created', file.name)
+        logger.info('... %s created', file_name.name)
 
     # /indexdigest/linters directory
     logger.info("Add Python code ...")
 
     with open('indexdigest/linters/linter_{}_{}.py'.
-              format(linter_id_fmt, linter_name.replace('-', '_')), 'wt') as file:
-        file.writelines([
+              format(linter_id_fmt, linter_name.replace('-', '_')), 'wt') as file_name:
+        file_name.writelines([
             '"""\n',
             'This linter checks for ...\n',
             '"""\n',
@@ -78,15 +78,15 @@ def add_linter(linter_id, linter_name):
             '                      context={"foo": str("bar")})\n',
         ])
 
-        logger.info('... %s created', file.name)
+        logger.info('... %s created', file_name.name)
 
     logger.info("Add a test ...")
 
     with open('indexdigest/test/linters/test_{}_{}.py'.format(linter_id_fmt, linter_name), 'wt') \
-            as file:
+            as file_name:
         name = linter_name.replace('-', '_')
 
-        file.writelines([
+        file_name.writelines([
             'from __future__ import print_function\n',
             '\n',
             'from unittest import TestCase\n',
@@ -101,7 +101,7 @@ def add_linter(linter_id, linter_name):
             '        pass\n',
         ])
 
-        logger.info('... %s created', file.name)
+        logger.info('... %s created', file_name.name)
 
 
 def main():
