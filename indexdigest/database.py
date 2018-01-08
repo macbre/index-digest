@@ -335,3 +335,13 @@ class Database(DatabaseBase):
                 name=index_name, columns=columns, primary=meta['primary'], unique=meta['unique']))
 
         return ret
+
+    @memoize
+    def get_table_rows_estimate(self, table_name):
+        """
+        Estimate table's rows count by running EXPLAIN SELECT COUNT(*) FROM foo
+        :type table_name str
+        :rtype int
+        """
+        explain = self.explain_query("SELECT COUNT(*) FROM `{}`".format(table_name))
+        return int(explain[0]['rows'])
