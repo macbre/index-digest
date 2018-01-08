@@ -180,9 +180,6 @@ class TestDatabase(TestCase, DatabaseTestMixin):
     def test_get_table_rows_estimate(self):
         self.assertEquals(self.connection.get_table_rows_estimate(self.TABLE_NAME), 3)
 
-        # this table has 100000, but assume the returned estimate is above 75k
-        self.assertGreater(self.connection.get_table_rows_estimate('0020_big_table'), 75000)
-
 
 class TestsWithDatabaseMocked(TestCase):
 
