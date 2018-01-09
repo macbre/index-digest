@@ -177,6 +177,9 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
         # assert False
 
+    def test_get_table_rows_estimate(self):
+        self.assertEquals(self.connection.get_table_rows_estimate(self.TABLE_NAME), 3)
+
 
 class TestsWithDatabaseMocked(TestCase):
 

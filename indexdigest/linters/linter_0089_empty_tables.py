@@ -11,7 +11,10 @@ def check_empty_tables(database):
     """
     empty_tables = [
         table for table in database.get_tables()
+        # use both "information_schema" and "explain select count(*)" based methods
+        # to get the rows count estimate
         if database.get_table_metadata(table).get('rows') == 0
+        or database.get_table_rows_estimate(table) == 0
     ]
 
     for table in empty_tables:

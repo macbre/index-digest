@@ -6,6 +6,10 @@ from indexdigest.test import BigTableTest, read_queries_from_log
 
 class TestBigTableLinters(BigTableTest):
 
+    def test_get_table_rows_estimate(self):
+        # this table has 100000, but assume the returned estimate is above 75k
+        self.assertGreater(self.connection.get_table_rows_estimate('0020_big_table'), 75000)
+
     def test_filesort(self):
         reports = list(check_queries_using_filesort(self.connection, read_queries_from_log('0020-big-table-log')))
 
