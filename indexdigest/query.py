@@ -1,10 +1,27 @@
 """
 This module provides SQL query parsing functions
 """
+import re
+
 import sqlparse
 
 from sqlparse.sql import TokenList
 from sqlparse.tokens import Name, Whitespace, Wildcard
+
+
+def preprocess_query(query):
+    """
+    Perform initial query cleanup
+
+    :type query str
+    :rtype str
+    """
+    # 1. remove aliases
+    # FROM `dimension_wikis` `dw`
+    # INNER JOIN `fact_wam_scores` `fwN`
+    query = re.sub(r'(\s(FROM|JOIN)\s`[^`]+`)\s`[^`]+`', r'\1', query, flags=re.IGNORECASE)
+
+    return query
 
 
 def get_query_tokens(query):
@@ -12,6 +29,8 @@ def get_query_tokens(query):
     :type query str
     :rtype: list[sqlparse.sql.Token]
     """
+    query = preprocess_query(query)
+
     tokens = TokenList(sqlparse.parse(query)[0].tokens).flatten()
     # print([(token.value, token.ttype) for token in tokens])
 
@@ -76,9 +95,11 @@ def get_query_tables(query):
             # print([last_keyword, last_token, token.value])
             # analyze the name tokens, column names and where condition values
             if last_keyword in ['FROM', 'JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INTO'] \
-                    and last_token not in ['AS']:
-                if token.value not in tables:
-                    tables.append(token.value.strip('`'))
+                    and last_token not in ['AS'] \
+                    and token.value not in ['AS']:
+                table_name = token.value.strip('`')
+                if table_name not in tables:
+                    tables.append(table_name)
 
         last_token = token.value.upper()
 
