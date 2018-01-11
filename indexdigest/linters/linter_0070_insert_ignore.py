@@ -15,8 +15,8 @@ are produced but the statement does not abort.
 import re
 
 from collections import OrderedDict
+from sql_metadata import get_query_tables
 
-from indexdigest.query import get_query_tables
 from indexdigest.utils import LinterEntry, shorten_query
 
 
