@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from indexdigest.query import preprocess_query, get_query_columns, get_query_tables
+from sql_metadata import preprocess_query, get_query_columns, get_query_tables
 
 
 class TestUtils(TestCase):
