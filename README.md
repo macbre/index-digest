@@ -13,7 +13,7 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports text columns with character set different than `utf`
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
-  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`)
+  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`, `HAVING` clause)
 
 This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
 
@@ -237,6 +237,13 @@ select_star → table affected: bar
 
   - query: SELECT t.* FROM bar AS t;
 
+------------------------------------------------------------
+having_clause → table affected: sales
+
+✗ "SELECT s.cust_id,count(s.cust_id) FROM SH.sales s ..." query uses HAVING clause
+
+  - query: SELECT s.cust_id,count(s.cust_id) FROM SH.sales s GROUP BY s.cust_id HAVING s.cust_id != '1660' AND s.cust_id != '2'
+
 (...)
 
 ------------------------------------------------------------
@@ -280,6 +287,8 @@ Outputs YML file with results and metadata.
 
 ## Checks
 
+> **Number of checks**: 17
+
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
 * `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
@@ -301,6 +310,7 @@ Outputs YML file with results and metadata.
 * `selects_with_like`: reports SELECT queries that use `LIKE '%foo'` conditions (they can not use an index)
 * `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
 * `select_star`: reports [queries using `SELECT *`](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3001.md)
+* `having_clause`: reports [queries using `HAVING` clause](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3012.md)
 
 ## Success stories
 
