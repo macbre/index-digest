@@ -108,7 +108,7 @@ def check_not_used_columns(database, queries):
         not_used_columns = [
             column for column in table_columns
             if column.name not in set(used_columns[table])
-        ]
+        ] if table_columns else []
 
         for column in not_used_columns:
             yield LinterEntry(linter_type='not_used_columns', table_name=table,

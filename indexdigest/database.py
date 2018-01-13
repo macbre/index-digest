@@ -278,10 +278,15 @@ class Database(DatabaseBase):
         :rtype: list[Column]
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-columns.html
-        columns = [
-            row['Field']
-            for row in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name))
-        ]
+        try:
+            columns = [
+                row['Field']
+                for row in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name))
+            ]
+        except IndexDigestQueryError:
+            logger = logging.getLogger('get_table_columns')
+            logger.error('Cannot get columns list for table: %s', table_name)
+            return None
 
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
         rows = self.query_dict_rows(

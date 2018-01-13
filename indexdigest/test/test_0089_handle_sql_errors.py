@@ -32,3 +32,9 @@ class ErrorsHandlingTest(TestCase, DatabaseTestMixin):
         self.assertEquals(table_used, 't')
 
         # assert False
+
+    def test_get_table_columns(self):
+        res = self.connection.get_table_columns('t')
+        self.assertIsNone(res)
+
+        # assert False
