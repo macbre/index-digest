@@ -34,9 +34,8 @@ def is_wildcard_query(query):
     return False
 
 
-def check_select_star(database, queries):
+def check_select_star(_, queries):
     """
-    :type database  indexdigest.database.Database
     :type queries list[str]
     :rtype: list[LinterEntry]
     """
