@@ -1,20 +1,9 @@
 from unittest import TestCase
 
-from sql_metadata import preprocess_query, get_query_columns, get_query_tables
+from sql_metadata import get_query_columns, get_query_tables
 
 
 class TestUtils(TestCase):
-
-    def test_preprocess_query(self):
-        self.assertEquals(
-            preprocess_query('SELECT DISTINCT dw.lang FROM `dimension_wikis` `dw` INNER JOIN `fact_wam_scores` `fwN` ON ((dw.wiki_id = fwN.wiki_id)) WHERE fwN.time_id = FROM_UNIXTIME(N) ORDER BY dw.lang ASC'),
-            'SELECT DISTINCT dw.lang FROM `dimension_wikis` INNER JOIN `fact_wam_scores` ON ((dw.wiki_id = fwN.wiki_id)) WHERE fwN.time_id = FROM_UNIXTIME(N) ORDER BY dw.lang ASC'
-        )
-
-        self.assertEquals(
-            preprocess_query("SELECT count(fwN.wiki_id) as wam_results_total FROM `fact_wam_scores` `fwN` left join `fact_wam_scores` `fwN` ON ((fwN.wiki_id = fwN.wiki_id) AND (fwN.time_id = FROM_UNIXTIME(N))) left join `dimension_wikis` `dw` ON ((fwN.wiki_id = dw.wiki_id)) WHERE (fwN.time_id = FROM_UNIXTIME(N)) AND (dw.url like X OR dw.title like X) AND fwN.vertical_id IN (XYZ) AND dw.lang = X AND (fwN.wiki_id NOT IN (XYZ)) AND ((dw.url IS NOT NULL AND dw.title IS NOT NULL))"),
-            "SELECT count(fwN.wiki_id) as wam_results_total FROM `fact_wam_scores` left join `fact_wam_scores` ON ((fwN.wiki_id = fwN.wiki_id) AND (fwN.time_id = FROM_UNIXTIME(N))) left join `dimension_wikis` ON ((fwN.wiki_id = dw.wiki_id)) WHERE (fwN.time_id = FROM_UNIXTIME(N)) AND (dw.url like X OR dw.title like X) AND fwN.vertical_id IN (XYZ) AND dw.lang = X AND (fwN.wiki_id NOT IN (XYZ)) AND ((dw.url IS NOT NULL AND dw.title IS NOT NULL))"
-        )
 
     def test_get_query_columns(self):
         self.assertListEqual(['*'],
@@ -26,7 +15,7 @@ class TestUtils(TestCase):
         self.assertListEqual(['id', 'foo'],
                              get_query_columns('SELECT id, foo FROM test_table WHERE id = 3'))
 
-        self.assertListEqual(['foo', 'count', 'id'],
+        self.assertListEqual(['foo', 'id'],
                              get_query_columns('SELECT foo, count(*) as bar FROM `test_table` WHERE id = 3'))
 
         self.assertListEqual(['foo', 'test'],
