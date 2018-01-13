@@ -28,7 +28,6 @@ class ErrorsHandlingTest(TestCase, DatabaseTestMixin):
         print(res)
 
         (_, table_used, _, _) = res[0]
-        self.assertEquals(len(res), 1)
         self.assertEquals(table_used, 't')
 
         # assert False
