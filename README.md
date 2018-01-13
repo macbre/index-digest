@@ -13,7 +13,7 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports text columns with character set different than `utf`
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
-  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`)
+  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`)
 
 This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
 
@@ -230,6 +230,13 @@ selects_with_like → table affected: 0020_big_table
   - explain_extra: Using where
   - explain_rows: 100623
 
+------------------------------------------------------------
+select_star → table affected: bar
+
+✗ "SELECT t.* FROM bar AS t" query uses SELECT *
+
+  - query: SELECT t.* FROM bar AS t;
+
 (...)
 
 ------------------------------------------------------------
@@ -293,6 +300,7 @@ Outputs YML file with results and metadata.
 * `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
 * `selects_with_like`: reports SELECT queries that use `LIKE '%foo'` conditions (they can not use an index)
 * `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
+* `select_star`: reports [queries using `SELECT *`](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3001.md)
 
 ## Success stories
 

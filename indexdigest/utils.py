@@ -67,6 +67,7 @@ def shorten_query(query, max_len=50):
     :type max_len int
     :rtype: str
     """
+    query = query.rstrip('; ')
     return '{}...'.format(query[:max_len]) if len(query) > max_len else query
 
 
