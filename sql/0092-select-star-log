@@ -1,0 +1,8 @@
+-- report these as select queries with *
+SELECT * FROM foo;
+SELECT t.* FROM bar AS t;
+
+-- false positives
+SELECT 3 * 3;
+SELECT count(*) FROM foo;
+SELECT /* foo */ test FROM foo;
