@@ -32,6 +32,12 @@ class TestNotUsedTables(TestCase):
         self.assertEqual(str(reports[0]), '0006_not_used_tables: "0006_not_used_tables" table was not used by provided queries')
         self.assertEqual(reports[0].table_name, '0006_not_used_tables')
 
+        assert str(reports[0].context['schema']).startswith('CREATE TABLE `0006_not_used_tables` (\n')
+
+        # these are estimates, can't assert a certain value
+        assert reports[0].context['table_size_mb'] > 0.0001
+        assert reports[0].context['rows_estimated'] > 0
+
     def test_get_used_tables_from_queries(self):
         queries = [
             'SELECT /* a comment */ foo FROM `0006_not_used_columns` WHERE id = 1;',
