@@ -29,11 +29,11 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
         assert len(reports) == 2
 
-        assert str(reports[0]) == 'foo: "SELECT * FROM foo;" query uses SELECT *'
+        assert str(reports[0]) == 'foo: "SELECT * FROM foo" query uses SELECT *'
         assert reports[0].table_name == 'foo'
         assert reports[0].context['query'] == 'SELECT * FROM foo;'
 
-        assert str(reports[1]) == 'bar: "SELECT t.* FROM bar AS t;" query uses SELECT *'
+        assert str(reports[1]) == 'bar: "SELECT t.* FROM bar AS t" query uses SELECT *'
         assert reports[1].table_name == 'bar'
         assert reports[1].context['query'] == 'SELECT t.* FROM bar AS t;'
 
