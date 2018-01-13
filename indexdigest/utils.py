@@ -7,6 +7,7 @@ except ImportError:
     from urllib.parse import urlparse  # Python3
 
 import functools
+import logging
 
 
 def parse_dsn(dsn):
@@ -49,11 +50,15 @@ def explain_queries(database, queries):
     """
     # analyze only SELECT queries from the log
     for query in filter(is_select_query, queries):
-        for row in database.explain_query(query):
-            table_used = row['table']
-            index_used = row['key']
+        try:
+            for row in database.explain_query(query):
+                table_used = row['table']
+                index_used = row['key']
 
-            yield (query, table_used, index_used, row)
+                yield (query, table_used, index_used, row)
+        except IndexDigestError:
+            logger = logging.getLogger('explain_queries')
+            logger.error('Cannot explain the query: %s', query)
 
 
 def shorten_query(query, max_len=50):

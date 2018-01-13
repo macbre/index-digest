@@ -6,6 +6,7 @@ import logging
 from collections import defaultdict
 from sql_metadata import get_query_columns, get_query_tables
 
+from indexdigest.database import IndexDigestQueryError
 from indexdigest.utils import LinterEntry, is_select_query
 
 
@@ -22,18 +23,22 @@ def get_used_tables_from_queries(database, queries):
 
     for query in queries:
         # run EXPLAIN for each query from the log
-        for row in database.explain_query(query):
-            if row.get('table') is not None:
-                if row['table'] not in used_tables:
-                    used_tables.append(row['table'])
-            else:
-                # EXPLAIN may return "no matching row in const table"
-                logger.warning('EXPLAIN %s returned no table, falling back to SQL parsing', query)
+        try:
+            for row in database.explain_query(query):
+                if row.get('table') is not None:
+                    if row['table'] not in used_tables:
+                        used_tables.append(row['table'])
+                else:
+                    # EXPLAIN may return "no matching row in const table"
+                    logger.warning('EXPLAIN %s returned no table, falling back to SQL parsing',
+                                   query)
 
-                # fall back to SQL query parsing
-                tables = get_query_tables(query)
-                if tables and tables[0] not in used_tables:
-                    used_tables.append(tables[0])
+                    # fall back to SQL query parsing
+                    tables = get_query_tables(query)
+                    if tables and tables[0] not in used_tables:
+                        used_tables.append(tables[0])
+        except IndexDigestQueryError:
+            logger.error('Cannot explain the query: %s', query)
 
     return used_tables
 
@@ -81,14 +86,18 @@ def check_not_used_columns(database, queries):
 
     # analyze given queries and collect used columns for each table
     for query in queries:
-        # FIXME: assume we're querying just a single table for now
-        table = get_query_tables(query)[0]
-        columns = get_query_columns(query)
+        tables = get_query_tables(query)
+        if tables:
+            columns = get_query_columns(query)
 
-        # print(query, table, columns)
+            # print(query, table, columns)
 
-        # add used columns per table
-        used_columns[table] += columns
+            # add used columns per table
+            # FIXME: assume we're querying just a single table for now
+            used_columns[tables[0]] += columns
+        else:
+            logger.error('Unable to extract tables and columns used from the query: %s',
+                         query)
 
     # analyze table schemas and report not used columns for each table
     for table in used_tables:
@@ -99,7 +108,7 @@ def check_not_used_columns(database, queries):
         not_used_columns = [
             column for column in table_columns
             if column.name not in set(used_columns[table])
-        ]
+        ] if table_columns else []
 
         for column in not_used_columns:
             yield LinterEntry(linter_type='not_used_columns', table_name=table,

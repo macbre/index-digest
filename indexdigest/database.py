@@ -7,7 +7,7 @@ from warnings import filterwarnings
 
 import MySQLdb
 from MySQLdb.cursors import DictCursor
-from _mysql_exceptions import OperationalError
+from _mysql_exceptions import OperationalError, ProgrammingError
 
 from indexdigest.schema import Column, Index
 from indexdigest.utils import parse_dsn, memoize, IndexDigestError
@@ -100,8 +100,10 @@ class DatabaseBase(object):
                 pass
 
             cursor.execute(sql)
-        except OperationalError as ex:
-            (code, message) = ex.args  # e.g. (1054, "Unknown column 'test' in 'field list'")
+        except (OperationalError, ProgrammingError) as ex:
+            # e.g. (1054, "Unknown column 'test' in 'field list'") - OperationalError
+            # e.g. (1146, "Table 'index_digest.t' doesn't exist") - ProgrammingError
+            (code, message) = ex.args
             self.query_logger.error('Database error #%d: %s', code, message)
             raise IndexDigestQueryError(message)
 
@@ -276,10 +278,15 @@ class Database(DatabaseBase):
         :rtype: list[Column]
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-columns.html
-        columns = [
-            row['Field']
-            for row in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name))
-        ]
+        try:
+            columns = [
+                row['Field']
+                for row in self.query_dict_rows("SHOW COLUMNS FROM {}".format(table_name))
+            ]
+        except IndexDigestQueryError:
+            logger = logging.getLogger('get_table_columns')
+            logger.error('Cannot get columns list for table: %s', table_name)
+            return None
 
         # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
         rows = self.query_dict_rows(

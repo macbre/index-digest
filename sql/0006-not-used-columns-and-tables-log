@@ -1,3 +1,5 @@
 INSERT INTO bar VALUES(1, 'foo', 'bar', 'test');
 SELECT /* a comment */ foo FROM `0006_not_used_columns` WHERE id = 1;
 SELECT test, id FROM `0006_not_used_columns` WHERE foo = 'a';
+-- query with an error: #1146 - "Table 'index_digest.t' doesn't exist"
+SELECT test FROM t;
