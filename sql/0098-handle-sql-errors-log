@@ -3,6 +3,7 @@ SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20;
 
 -- query with aliases
 SELECT t.val as value, count(*) FROM 0020_big_table as t WHERE id BETWEEN 10 AND 20 GROUP BY val;
+SELECT val as value, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val;
 
 -- invalid syntax
 SELEKT foo FROM bar;
