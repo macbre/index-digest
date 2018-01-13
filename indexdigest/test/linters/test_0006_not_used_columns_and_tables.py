@@ -85,11 +85,12 @@ class TestNotUsedColumns(TestCase):
 
         # assert False
 
-    def test_parsing_raises_exception(self):
+    def test_parsing_errors_handling(self):
         queries = [
             'SELECT test'
         ]
 
-        with self.assertRaises(IndexDigestQueryError):
-            # this should raise Database error #1054: Unknown column 'test' in 'field list'
-            list(check_not_used_columns(database=self.connection, queries=queries))
+        reports = list(check_not_used_columns(database=self.connection, queries=queries))
+        self.assertEquals(len(reports), 0)
+
+        # assert False

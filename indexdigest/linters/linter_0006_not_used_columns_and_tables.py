@@ -86,14 +86,18 @@ def check_not_used_columns(database, queries):
 
     # analyze given queries and collect used columns for each table
     for query in queries:
-        # FIXME: assume we're querying just a single table for now
-        table = get_query_tables(query)[0]
-        columns = get_query_columns(query)
+        tables = get_query_tables(query)
+        if tables:
+            columns = get_query_columns(query)
 
-        # print(query, table, columns)
+            # print(query, table, columns)
 
-        # add used columns per table
-        used_columns[table] += columns
+            # add used columns per table
+            # FIXME: assume we're querying just a single table for now
+            used_columns[tables[0]] += columns
+        else:
+            logger.error('Unable to extract tables and columns used from the query: %s',
+                         query)
 
     # analyze table schemas and report not used columns for each table
     for table in used_tables:
