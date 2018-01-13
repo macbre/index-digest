@@ -3,7 +3,7 @@ This linter checks for not used columns and tables by going through SELECT queri
 """
 import logging
 
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from sql_metadata import get_query_columns, get_query_tables
 
 from indexdigest.database import IndexDigestQueryError
@@ -63,8 +63,17 @@ def check_not_used_tables(database, queries):
 
     # generate reports
     for table in not_used_tables:
+        metadata = database.get_table_metadata(table)
+        context = OrderedDict()
+
+        context['schema'] = database.get_table_schema(table)
+        context['table_size_mb'] = \
+            1. * (metadata['data_size'] + metadata['index_size']) / 1024 / 1024
+        context['rows_estimated'] = database.get_table_rows_estimate(table)
+
         yield LinterEntry(linter_type='not_used_tables', table_name=table,
-                          message='"{}" table was not used by provided queries'.format(table))
+                          message='"{}" table was not used by provided queries'.format(table),
+                          context=context)
 
 
 def check_not_used_columns(database, queries):

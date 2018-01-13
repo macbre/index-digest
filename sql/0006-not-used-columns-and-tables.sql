@@ -22,4 +22,7 @@ CREATE TABLE `0006_not_used_tables` (
 	PRIMARY KEY (`id`)
 );
 
-INSERT INTO 0006_not_used_tables VALUES(1, 'foo');
+INSERT INTO 0006_not_used_tables VALUES
+    (1, 'foo'),
+    (2, 'foo'),
+    (3, 'foo');

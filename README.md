@@ -161,9 +161,19 @@ not_used_indices → table affected: 0002_not_used_indices
   - not_used_index: KEY test_id_idx (test, id)
 
 ------------------------------------------------------------
-not_used_tables → table affected: 0000_the_table
+not_used_tables → table affected: 0020_big_table
 
-✗ "0000_the_table" table was not used by provided queries
+✗ "0020_big_table" table was not used by provided queries
+
+  - schema: CREATE TABLE `0020_big_table` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      `val` int(9) NOT NULL,
+      `text` char(5) NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `text_idx` (`text`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=100001 DEFAULT CHARSET=utf8
+  - table_size_mb: 5.03125
+  - rows_estimated: 100405
 
 ------------------------------------------------------------
 insert_ignore → table affected: 0070_insert_ignore
