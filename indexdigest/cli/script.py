@@ -47,7 +47,8 @@ from indexdigest.linters import \
     check_test_tables, \
     check_insert_ignore_queries, \
     check_single_column, \
-    check_empty_tables
+    check_empty_tables, \
+    check_select_star
 
 
 def main():
@@ -99,6 +100,7 @@ def main():
             check_full_table_scan(database, queries=queries),
             check_selects_with_like(database, queries=queries),
             check_insert_ignore_queries(database, queries=queries),
+            check_select_star(database, queries=queries),
         )
 
     # handle --format
