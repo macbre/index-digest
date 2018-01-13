@@ -99,9 +99,6 @@ class BigTableTest(TestCase, DatabaseTestMixin):
         # save changes to the database
         connection.connection.commit()
 
-        # update table statistics
-        connection.query('OPTIMIZE TABLE 0020_big_table')
-
         cursor.close()
 
     def table_populated(self):
