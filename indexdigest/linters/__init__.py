@@ -17,3 +17,4 @@ from .linter_0074_single_column import check_single_column
 from .linter_0075_test_tables import check_test_tables
 from .linter_0089_empty_tables import check_empty_tables
 from .linter_0092_select_star import check_select_star
+from .linter_0093_having_clause import check_having_clause

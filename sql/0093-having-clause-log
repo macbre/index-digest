@@ -1,0 +1,4 @@
+-- Rewriting the query's HAVING clause into a predicate will enable the use of indexes during query processing.
+SELECT * FROM foo HAVING bar = 2;
+SELECT s.cust_id,count(s.cust_id) FROM SH.sales s GROUP BY s.cust_id HAVING s.cust_id != '1660' AND s.cust_id != '2'
+SELECT * FROM `0019_queries_not_using_indices` WHERE foo = 'foo' HAVING bar = 'test';
