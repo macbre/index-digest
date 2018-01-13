@@ -6,6 +6,7 @@ import logging
 from collections import defaultdict
 from sql_metadata import get_query_columns, get_query_tables
 
+from indexdigest.database import IndexDigestQueryError
 from indexdigest.utils import LinterEntry, is_select_query
 
 
@@ -22,18 +23,22 @@ def get_used_tables_from_queries(database, queries):
 
     for query in queries:
         # run EXPLAIN for each query from the log
-        for row in database.explain_query(query):
-            if row.get('table') is not None:
-                if row['table'] not in used_tables:
-                    used_tables.append(row['table'])
-            else:
-                # EXPLAIN may return "no matching row in const table"
-                logger.warning('EXPLAIN %s returned no table, falling back to SQL parsing', query)
+        try:
+            for row in database.explain_query(query):
+                if row.get('table') is not None:
+                    if row['table'] not in used_tables:
+                        used_tables.append(row['table'])
+                else:
+                    # EXPLAIN may return "no matching row in const table"
+                    logger.warning('EXPLAIN %s returned no table, falling back to SQL parsing',
+                                   query)
 
-                # fall back to SQL query parsing
-                tables = get_query_tables(query)
-                if tables and tables[0] not in used_tables:
-                    used_tables.append(tables[0])
+                    # fall back to SQL query parsing
+                    tables = get_query_tables(query)
+                    if tables and tables[0] not in used_tables:
+                        used_tables.append(tables[0])
+        except IndexDigestQueryError:
+            logger.error('Cannot explain the query: %s', query)
 
     return used_tables
 
