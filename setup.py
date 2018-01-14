@@ -9,7 +9,7 @@ setup(
     author='Maciej Brencz',
     author_email='maciej.brencz@gmail.com',
     license='MIT',
-    description='Analyses your database queries and schema and suggests indices improvements',
+    description='Analyses your database queries and schema and suggests indices and schema improvements',
     url='https://github.com/macbre/index-digest',
     # https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -17,7 +17,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
