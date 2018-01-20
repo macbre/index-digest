@@ -6,39 +6,22 @@ import logging
 from collections import defaultdict, OrderedDict
 from sql_metadata import get_query_columns, get_query_tables
 
-from indexdigest.database import IndexDigestQueryError
 from indexdigest.utils import LinterEntry, is_select_query
 
 
-def get_used_tables_from_queries(database, queries):
+def get_used_tables_from_queries(queries):
     """
-    :type database  indexdigest.database.Database
     :type queries list[str]
     :rtype: list[str]
     """
-    logger = logging.getLogger(__name__)
-
     used_tables = []
     queries = filter(is_select_query, queries)
 
     for query in queries:
-        # run EXPLAIN for each query from the log
-        try:
-            for row in database.explain_query(query):
-                if row.get('table') is not None:
-                    if row['table'] not in used_tables:
-                        used_tables.append(row['table'])
-                else:
-                    # EXPLAIN may return "no matching row in const table"
-                    logger.warning('EXPLAIN %s returned no table, falling back to SQL parsing',
-                                   query)
-
-                    # fall back to SQL query parsing
-                    tables = get_query_tables(query)
-                    if tables and tables[0] not in used_tables:
-                        used_tables.append(tables[0])
-        except IndexDigestQueryError:
-            logger.error('Cannot explain the query: %s', query)
+        # parse each query from the log
+        tables = get_query_tables(query)
+        if tables and tables[0] not in used_tables:
+            used_tables.append(tables[0])
 
     return used_tables
 
@@ -55,7 +38,7 @@ def check_not_used_tables(database, queries):
     tables = database.get_tables()
 
     # analyze only SELECT queries from the log
-    used_tables = get_used_tables_from_queries(database, queries)
+    used_tables = get_used_tables_from_queries(queries)
     logger.info("These tables were used by provided queries: %s", used_tables)
 
     # now check which tables were not used
@@ -88,7 +71,7 @@ def check_not_used_columns(database, queries):
     # analyze only SELECT queries from the log
     queries = list(filter(is_select_query, queries))
 
-    used_tables = get_used_tables_from_queries(database, queries)
+    used_tables = get_used_tables_from_queries(queries)
     used_columns = defaultdict(list)
 
     logger.info("Will check these tables: %s", used_tables)

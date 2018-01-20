@@ -1,9 +1,9 @@
 -- ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'index_digest.0020_big_table.val'; this is incompatible with sql_mode=only_full_group_by
-SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20;
+SELECT val, count(*) FROM `0020_big_table` WHERE id BETWEEN 10 AND 20;
 
 -- query with aliases
-SELECT t.val as value, count(*) FROM 0020_big_table as t WHERE id BETWEEN 10 AND 20 GROUP BY val;
-SELECT val as value, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val;
+SELECT t.val as value, count(*) FROM `0020_big_table` as t WHERE id BETWEEN 10 AND 20 GROUP BY val;
+SELECT val as value, count(*) FROM `0020_big_table` WHERE id BETWEEN 10 AND 20 GROUP BY val;
 
 -- invalid syntax
 SELEKT foo FROM bar;
