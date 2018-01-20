@@ -239,7 +239,7 @@ class Database(DatabaseBase):
         :rtype: str
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html
-        schema = self.query_row('SHOW CREATE TABLE {}'.format(table_name))[1]
+        schema = str(self.query_row('SHOW CREATE TABLE {}'.format(table_name))[1])
 
         # remove partitions definition (#107)
         schema = re.sub(r'/\*!50100[^*]+\*/', '', schema)
