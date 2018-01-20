@@ -2,6 +2,7 @@
 Database connector wrapper
 """
 import logging
+import re
 from collections import OrderedDict, defaultdict
 from warnings import filterwarnings
 
@@ -238,7 +239,12 @@ class Database(DatabaseBase):
         :rtype: str
         """
         # @see https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html
-        return self.query_row('SHOW CREATE TABLE {}'.format(table_name))[1]
+        schema = self.query_row('SHOW CREATE TABLE {}'.format(table_name))[1]
+
+        # remove partitions definition (#107)
+        schema = re.sub(r'/\*!50100[^*]+\*/', '', schema)
+
+        return schema.rstrip()
 
     def _get_information_schema_where(self, table_name):
         """
