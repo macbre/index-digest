@@ -15,9 +15,7 @@ class ErrorsHandlingTest(TestCase, DatabaseTestMixin):
         return read_queries_from_log('0098-handle-sql-errors-log')
 
     def test_get_used_tables_from_queries(self):
-        tables = get_used_tables_from_queries(
-            database=self.connection,
-            queries=self.queries)
+        tables = get_used_tables_from_queries(self.queries)
 
         print(tables)
 

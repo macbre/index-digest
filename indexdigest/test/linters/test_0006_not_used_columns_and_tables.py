@@ -40,12 +40,11 @@ class TestNotUsedTables(TestCase):
 
     def test_get_used_tables_from_queries(self):
         queries = [
-            'SELECT /* a comment */ foo FROM `0006_not_used_columns` WHERE id = 1;',
+            'SELECT /* a comment */ foo FROM `0006_not_used_columns` AS r WHERE id = 1;',  # table alias
             'SELECT 1 FROM `0006_not_used_tables` WHERE id = 3;',
         ]
 
-        tables = get_used_tables_from_queries(
-            database=self.connection, queries=queries)
+        tables = get_used_tables_from_queries(queries)
 
         print(tables)
 
