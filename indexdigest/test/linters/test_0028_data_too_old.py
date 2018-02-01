@@ -44,7 +44,7 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
     def test_data_too_old_with_custom_threshold(self):
         env = {
-            'INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS': 365 * 86400
+            'INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS': str(365 * 86400)
         }
 
         reports = list(check_data_too_old(self.connection, env))
