@@ -20,7 +20,7 @@ def check_data_not_updated_recently(database, env=None):
 
     # set up a diff threshold (in days)
     env = env if env else dict()
-    diff_threshold = env.get('INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS', 30)
+    diff_threshold = int(env.get('INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS', 30))
 
     for (table_name, column) in get_time_columns(database):
         timestamps = get_boundary_times(database, table_name, column)

@@ -22,7 +22,7 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
     def test_data_not_updated_recently_with_custom_threshold(self):
         env = {
-            'INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS': 60 * 86400
+            'INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS': str(60 * 86400)
         }
 
         reports = list(check_data_not_updated_recently(self.connection, env))
