@@ -10,6 +10,7 @@ CREATE TABLE `0028_data_too_old` (
      PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+
 -- table with old data (6 months old)
 INSERT INTO 0028_data_too_old VALUES
     (1, 12, NOW() - INTERVAL 6 MONTH),
@@ -31,3 +32,11 @@ INSERT INTO 0028_data_ok(cnt, `timestamp`) VALUES
 -- empty tables should be simply ignored
 DROP TABLE IF EXISTS `0028_data_empty`;
 CREATE TABLE `0028_data_empty` LIKE `0028_data_too_old`;
+
+-- table with no time columns
+DROP TABLE IF EXISTS `0028_no_time`;
+CREATE TABLE `0028_no_time` (
+    `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+    `cnt` int(8) unsigned NOT NULL,
+     PRIMARY KEY (`id`)
+) ENGINE=InnoDB;

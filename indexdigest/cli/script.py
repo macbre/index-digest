@@ -51,7 +51,8 @@ from indexdigest.linters import \
     check_empty_tables, \
     check_select_star, \
     check_having_clause, \
-    check_data_too_old
+    check_data_too_old, \
+    check_data_not_updated_recently
 
 
 def main():
@@ -114,6 +115,7 @@ def main():
         reports = chain(
             reports,
             check_data_too_old(database, env=environ),
+            check_data_not_updated_recently(database, env=environ),
         )
 
     # handle --format

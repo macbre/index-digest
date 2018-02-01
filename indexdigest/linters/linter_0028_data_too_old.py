@@ -59,7 +59,7 @@ def check_data_too_old(database, env=None):
 
     # set up a diff threshold (in days)
     env = env if env else dict()
-    diff_threshold = env.get('INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS', 3 * 30)
+    diff_threshold = int(env.get('INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS', 3 * 30))
 
     for (table_name, column) in get_time_columns(database):
         timestamps = get_boundary_times(database, table_name, column)
@@ -67,7 +67,7 @@ def check_data_too_old(database, env=None):
             continue
 
         diff = now - timestamps.get('min')
-        print(table_name, column, timestamps, now, diff)
+        # print(table_name, column, timestamps, now, diff)
 
         if diff > diff_threshold * 86400:
             diff_days = int(diff / 86400)

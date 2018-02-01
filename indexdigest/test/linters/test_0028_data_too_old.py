@@ -12,7 +12,13 @@ class LimitedViewDatabase(Database, DatabaseTestMixin):
     Limit test to tables
     """
     def get_tables(self):
-        return ['0028_data_too_old', '0028_data_ok', '0028_data_empty']
+        return [
+            '0028_data_too_old',
+            '0028_data_ok',
+            '0028_data_empty',
+            '0028_no_time',
+            '0028_data_not_updated_recently'
+        ]
 
 
 class TestLinter(TestCase, DatabaseTestMixin):
@@ -38,7 +44,7 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
     def test_data_too_old_with_custom_threshold(self):
         env = {
-            'INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS': 365 * 86400
+            'INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS': str(365 * 86400)
         }
 
         reports = list(check_data_too_old(self.connection, env))
