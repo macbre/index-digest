@@ -3,7 +3,7 @@
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>] [--format=<formatter>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data]
   index_digest (-h | --help)
   index_digest --version
 
@@ -11,6 +11,7 @@ Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
   --format=<formatter>  Use a given results formatter (plain, syslog, yaml)
+  --analyze-data    Run additional checks that will query table data (can be slow!)
   -h --help         Show this screen.
   --version         Show version.
 
@@ -24,7 +25,7 @@ from __future__ import print_function
 
 import logging
 from itertools import chain
-from os import getenv
+from os import getenv, environ
 
 from docopt import docopt
 
@@ -49,7 +50,8 @@ from indexdigest.linters import \
     check_single_column, \
     check_empty_tables, \
     check_select_star, \
-    check_having_clause
+    check_having_clause, \
+    check_data_too_old
 
 
 def main():
@@ -103,6 +105,15 @@ def main():
             check_insert_ignore_queries(database, queries=queries),
             check_select_star(database, queries=queries),
             check_having_clause(database, queries=queries),
+        )
+
+    # checks that require --analyze-data switch to be on (see #28)
+    if arguments.get('--analyze-data') is True:
+        logger.info("Will run data analyzing checks, can take a while...")
+
+        reports = chain(
+            reports,
+            check_data_too_old(database, env=environ),
         )
 
     # handle --format
