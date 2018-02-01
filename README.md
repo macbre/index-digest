@@ -15,7 +15,8 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports queries that use filesort, temporary file or full table scan
   * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`, `HAVING` clause)
 * if run with `--analyze-data` switch it:
-  * reports tables with old data (by querying for MIN() value of time columns) where data retency can be reviewed
+  * reports tables with old data (by querying for `MIN()` value of time column) where data retency can be reviewed
+  * reports tables with not up-to-date data (by querying for `MAX()` value of time column)
 
 This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
 
@@ -275,6 +276,22 @@ data_too_old → table affected: 0028_data_too_old
     ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1
 
 ------------------------------------------------------------
+data_not_updated_recently → table affected: 0028_data_not_updated_recently
+
+✗ "0028_data_not_updated_recently" has the latest row added 40 days ago, consider checking if it should be up-to-date
+
+  - diff_days: 40
+  - data_since: 2017-12-13 21:34:47
+  - data_until: 2017-12-23 21:34:47
+  - rows: 3
+  - schema: CREATE TABLE `0028_data_not_updated_recently` (
+      `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+      `cnt` int(8) unsigned NOT NULL,
+      `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1
+
+------------------------------------------------------------
 Queries performed: 100
 ```
 
@@ -345,6 +362,7 @@ Outputs YML file with results and metadata.
 > You need to use `--analyze-css` command line switch. Please note that these checks will query your tables. **These checks can take a while if queried columns are not indexed**.
 
 * `data_too_old`: reports tables that have really old data, maybe it's worth checking if such long data retention is actually needed (**defaults to three months threshold**, can be customized via `INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS` env variable)
+* `data_not_updated_recently`: reports tables that were not updated recently, check if it should be up-to-date (**defaults a month threshold**, can be customized via `INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS` env variable)
 
 ## Success stories
 
