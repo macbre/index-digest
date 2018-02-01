@@ -76,8 +76,11 @@ def check_data_too_old(database, env=None):
             context['diff_days'] = diff_days
             context['data_since'] = datetime.fromtimestamp(timestamps.get('min'))
             context['data_until'] = datetime.fromtimestamp(timestamps.get('max'))
+            context['rows'] = database.get_table_rows_estimate(table_name)
+            context['schema'] = database.get_table_schema(table_name)
 
             yield LinterEntry(linter_type='data_too_old', table_name=table_name,
-                              message='"{}" has rows added {} days ago'.
+                              message='"{}" has rows added {} days ago, '
+                                      'consider changing retention policy'.
                               format(table_name, diff_days),
                               context=context)

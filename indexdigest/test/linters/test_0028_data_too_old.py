@@ -29,6 +29,7 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert len(reports) == 1
 
         assert str(reports[0]).startswith('0028_data_too_old: "0028_data_too_old" has rows added 18')  # .. 184 days ago
+        assert str(reports[0]).endswith('consider changing retention policy')
         self.assertAlmostEquals(reports[0].context['diff_days'], 184)
         assert reports[0].table_name == '0028_data_too_old'
 
