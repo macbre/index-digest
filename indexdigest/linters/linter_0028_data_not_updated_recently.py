@@ -28,7 +28,7 @@ def check_data_not_updated_recently(database, env=None):
             continue
 
         diff = now - timestamps.get('max')
-        print(table_name, column, timestamps, now, diff)
+        # print(table_name, column, timestamps, now, diff)
 
         if diff > diff_threshold * 86400:
             diff_days = int(diff / 86400)

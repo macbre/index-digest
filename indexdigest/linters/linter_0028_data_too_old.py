@@ -67,7 +67,7 @@ def check_data_too_old(database, env=None):
             continue
 
         diff = now - timestamps.get('min')
-        print(table_name, column, timestamps, now, diff)
+        # print(table_name, column, timestamps, now, diff)
 
         if diff > diff_threshold * 86400:
             diff_days = int(diff / 86400)
