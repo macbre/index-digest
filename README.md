@@ -14,6 +14,8 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
   * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`, `HAVING` clause)
+* if run with `--analyze-data` switch it:
+  * reports tables with old data (by querying for MIN() value of time columns) where data retency can be reviewed
 
 This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
 
@@ -257,6 +259,22 @@ having_clause → table affected: sales
 (...)
 
 ------------------------------------------------------------
+data_too_old → table affected: 0028_data_too_old
+
+✗ "0028_data_too_old" has rows added 184 days ago, consider changing retention policy
+
+  - diff_days: 184
+  - data_since: 2017-08-01 20:12:30
+  - data_until: 2018-02-01 20:12:30
+  - rows: 4
+  - schema: CREATE TABLE `0028_data_too_old` (
+      `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+      `cnt` int(8) unsigned NOT NULL,
+      `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1
+
+------------------------------------------------------------
 Queries performed: 100
 ```
 
@@ -321,6 +339,12 @@ Outputs YML file with results and metadata.
 * `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
 * `select_star`: reports [queries using `SELECT *`](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3001.md)
 * `having_clause`: reports [queries using `HAVING` clause](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3012.md)
+
+### Additional checks performed on tables data
+
+> You need to use `--analyze-css` command line switch. Please note that these checks will query your tables. **These checks can take a while if queried columns are not indexed**.
+
+* `data_too_old`: reports tables that have really old data, maybe it's worth checking if such long data retention is actually needed (**defaults to three months threshold**, can be customized via `INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS` env variable)
 
 ## Success stories
 
