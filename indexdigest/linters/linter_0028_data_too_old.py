@@ -36,8 +36,8 @@ def get_boundary_times(database, table_name, column):
     :rtype: dict
     """
     # this may take a while when {column} is not indexed!
-    query = 'SELECT /* index-digest */ UNIX_TIMESTAMP(MIN({column})) as `min`, ' \
-            'UNIX_TIMESTAMP(MAX({column})) as `max` FROM {table}'.\
+    query = 'SELECT /* index-digest */ UNIX_TIMESTAMP(MIN(`{column}`)) as `min`, ' \
+            'UNIX_TIMESTAMP(MAX(`{column}`)) as `max` FROM {table}'.\
         format(
             column=column.name,
             table=table_name
