@@ -35,3 +35,13 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
         assert 'data_since' in reports[0].context
         assert 'data_until' in reports[0].context
+
+    def test_data_too_old_with_custom_threshold(self):
+        env = {
+            'INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS': 365 * 86400
+        }
+
+        reports = list(check_data_too_old(self.connection, env))
+
+        print(list(map(str, reports)))
+        assert len(reports) == 0
