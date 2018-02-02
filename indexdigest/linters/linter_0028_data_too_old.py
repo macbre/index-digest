@@ -5,7 +5,7 @@ from collections import OrderedDict
 from datetime import datetime
 from time import time
 
-from indexdigest.utils import LinterEntry
+from indexdigest.utils import LinterEntry, memoize
 
 
 def get_time_columns(database):
@@ -28,6 +28,7 @@ def get_time_columns(database):
         yield (table_name, time_columns[0])
 
 
+@memoize
 def get_boundary_times(database, table_name, column):
     """
     :type database  indexdigest.database.Database
