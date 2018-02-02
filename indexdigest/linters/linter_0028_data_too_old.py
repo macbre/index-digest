@@ -75,8 +75,8 @@ def check_data_too_old(database, env=None):
 
             context = OrderedDict()
             context['diff_days'] = diff_days
-            context['data_since'] = datetime.fromtimestamp(timestamps.get('min'))
-            context['data_until'] = datetime.fromtimestamp(timestamps.get('max'))
+            context['data_since'] = str(datetime.fromtimestamp(timestamps.get('min')))
+            context['data_until'] = str(datetime.fromtimestamp(timestamps.get('max')))
             context['rows'] = database.get_table_rows_estimate(table_name)
             context['schema'] = database.get_table_schema(table_name)
 
