@@ -1,6 +1,9 @@
 from collections import OrderedDict
 
+from indexdigest.database import Database
 from indexdigest.utils import LinterEntry
+
+from .. import DatabaseTestMixin
 
 
 class DatabaseMock(object):
@@ -45,3 +48,7 @@ class FormatterTestMixin(object):
             table_name='table_042',
             message='An index is missing'
         )
+
+    @staticmethod
+    def get_database():
+        return Database.connect_dsn(DatabaseTestMixin.DSN)
