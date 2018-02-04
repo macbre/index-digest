@@ -4,6 +4,8 @@ from indexdigest import VERSION
 from indexdigest.formatters.syslog import format_report
 from . import FormatterTestMixin
 
+from indexdigest.cli.script import get_reports
+
 
 class TestFormatter(TestCase, FormatterTestMixin):
 
@@ -21,3 +23,16 @@ class TestFormatter(TestCase, FormatterTestMixin):
         )
 
         # assert False
+
+
+class TestFormatterIntegrationTest(TestCase, FormatterTestMixin):
+
+    def test_format_for_real_reports(self):
+        database = self.get_database()
+
+        # pass all reports via syslog formatter
+        for report in get_reports(database, analyze_data=True):
+            try:
+                format_report(database, report)
+            except Exception:
+                self.fail('Failed to format the following report {}'.format(str(report)))

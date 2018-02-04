@@ -55,22 +55,16 @@ from indexdigest.linters import \
     check_data_not_updated_recently
 
 
-def main():
-    """ Main entry point for CLI"""
+def get_reports(database, sql_log=None, analyze_data=False):
+    """
+    :type database Database
+    :type sql_log str
+    :type analyze_data bool
+    :rtype: list[LinterEntry]
+    """
     logger = logging.getLogger(__name__)
 
-    arguments = docopt(__doc__, version='index_digest {}'.format(indexdigest.VERSION))
-    logger.debug('Options: %s', arguments)
-
-    if 'DSN' not in arguments:
-        return
-
-    # connect to the database
-    database = Database.connect_dsn(arguments['DSN'])
-    logger.debug('Connected to MySQL server v%s', database.get_server_version())
-
     # read SQL log file (if provided)
-    sql_log = arguments.get('--sql-log')
     if sql_log:
         logger.debug('Trying to open SQL log file: %s', sql_log)
 
@@ -109,7 +103,7 @@ def main():
         )
 
     # checks that require --analyze-data switch to be on (see #28)
-    if arguments.get('--analyze-data') is True:
+    if analyze_data is True:
         logger.info("Will run data analyzing checks, can take a while...")
 
         reports = chain(
@@ -117,6 +111,29 @@ def main():
             check_data_too_old(database, env=environ),
             check_data_not_updated_recently(database, env=environ),
         )
+
+    return reports
+
+
+def main():
+    """ Main entry point for CLI"""
+    logger = logging.getLogger(__name__)
+
+    arguments = docopt(__doc__, version='index_digest {}'.format(indexdigest.VERSION))
+    logger.debug('Options: %s', arguments)
+
+    if 'DSN' not in arguments:
+        return
+
+    # connect to the database
+    database = Database.connect_dsn(arguments['DSN'])
+    logger.debug('Connected to MySQL server v%s', database.get_server_version())
+
+    reports = get_reports(
+        database,
+        sql_log=arguments.get('--sql-log'),
+        analyze_data=arguments.get('--analyze-data')
+    )
 
     # handle --format
     formatter = arguments.get('--format') or 'plain'
