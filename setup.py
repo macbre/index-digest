@@ -44,7 +44,7 @@ setup(
         'pytest==3.4.0',
         'PyYAML==3.12',
         'mysqlclient==1.3.12',
-        'sql_metadata==1.0.2',
+        'sql_metadata==1.1.2',
         'termcolor==1.1.0',
         'yamlordereddictloader==0.4.0'
     ],
