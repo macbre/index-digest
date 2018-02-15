@@ -39,9 +39,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         'docopt==0.6.2',
-        'coverage==4.4.2',
-        'pylint==1.8.1',
-        'pytest==3.2.3',
+        'coverage==4.5.1',
+        'pylint==1.8.2',
+        'pytest==3.4.0',
         'PyYAML==3.12',
         'mysqlclient==1.3.12',
         'sql_metadata==1.0.2',
