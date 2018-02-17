@@ -16,17 +16,17 @@ class TestBigTableLinters(BigTableTest):
         self.assertEqual(len(reports), 2)
 
         self.assertEqual(str(reports[0]),
-                         '0020_big_table: "SELECT * FROM 0020_big_table WHERE id BETWEEN 10 A..." query used filesort')
+                         '0020_big_table: "SELECT * FROM 0020_big_table WHERE item_id BETWEEN..." query used filesort')
         self.assertEqual(reports[0].context['query'],
-                         'SELECT * FROM 0020_big_table WHERE id BETWEEN 10 AND 20 ORDER BY val')
+                         'SELECT * FROM 0020_big_table WHERE item_id BETWEEN 10 AND 20 ORDER BY val')
         self.assertEqual(reports[0].context['explain_extra'], 'Using where; Using filesort')
         self.assertEqual(reports[0].context['explain_rows'], 11)
         self.assertEqual(reports[0].context['explain_key'], 'PRIMARY')
 
         self.assertEqual(str(reports[1]),
-                         '0020_big_table: "SELECT val, count(*) FROM 0020_big_table WHERE id ..." query used filesort')
+                         '0020_big_table: "SELECT val, count(*) FROM 0020_big_table WHERE ite..." query used filesort')
         self.assertEqual(reports[1].context['query'],
-                         'SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val ORDER BY val')
+                         'SELECT val, count(*) FROM 0020_big_table WHERE item_id BETWEEN 10 AND 20 GROUP BY val ORDER BY val')
         self.assertEqual(reports[1].context['explain_extra'], 'Using where; Using temporary; Using filesort')
         self.assertEqual(reports[1].context['explain_rows'], 11)
         self.assertEqual(reports[1].context['explain_key'], 'PRIMARY')
@@ -39,9 +39,9 @@ class TestBigTableLinters(BigTableTest):
         self.assertEqual(len(reports), 1)
 
         self.assertEqual(str(reports[0]),
-                         '0020_big_table: "SELECT val, count(*) FROM 0020_big_table WHERE id ..." query used temporary')
+                         '0020_big_table: "SELECT val, count(*) FROM 0020_big_table WHERE ite..." query used temporary')
         self.assertEqual(reports[0].context['query'],
-                         'SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val ORDER BY val')
+                         'SELECT val, count(*) FROM 0020_big_table WHERE item_id BETWEEN 10 AND 20 GROUP BY val ORDER BY val')
         self.assertEqual(reports[0].context['explain_extra'], 'Using where; Using temporary; Using filesort')
         self.assertEqual(reports[0].context['explain_rows'], 11)
         self.assertEqual(reports[0].context['explain_key'], 'PRIMARY')

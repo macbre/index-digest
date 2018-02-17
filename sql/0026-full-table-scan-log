@@ -2,4 +2,4 @@
 SELECT * FROM 0020_big_table
 SELECT * FROM 0020_big_table LIMIT 5
 -- using index
-SELECT * FROM 0020_big_table WHERE id = 1
+SELECT * FROM 0020_big_table WHERE item_id = 1

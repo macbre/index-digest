@@ -4,10 +4,10 @@
 -- https://github.com/macbre/index-digest/issues/28
 DROP TABLE IF EXISTS `0028_data_too_old`;
 CREATE TABLE `0028_data_too_old` (
-    `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+    `item_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
     `cnt` int(8) unsigned NOT NULL,
      `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-     PRIMARY KEY (`id`)
+     PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB;
 
 
@@ -36,7 +36,7 @@ CREATE TABLE `0028_data_empty` LIKE `0028_data_too_old`;
 -- table with no time columns
 DROP TABLE IF EXISTS `0028_no_time`;
 CREATE TABLE `0028_no_time` (
-    `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+    `item_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
     `cnt` int(8) unsigned NOT NULL,
-     PRIMARY KEY (`id`)
+     PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB;

@@ -63,7 +63,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
             return
 
         # @see https://dev.mysql.com/doc/refman/5.7/en/insert.html
-        cursor.executemany('INSERT INTO 0020_big_table(id,val,text) VALUES(%s,%s,%s)', values)
+        cursor.executemany('INSERT INTO 0020_big_table(item_id,val,text) VALUES(%s,%s,%s)', values)
         # print(values[0], cursor.lastrowid)
 
     def _prepare_big_table(self):

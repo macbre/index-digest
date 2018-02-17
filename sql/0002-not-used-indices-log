@@ -1,4 +1,4 @@
-select * from `0002_not_used_indices` order by id
-select * from `0002_not_used_indices` where foo = 'foo' and id = 2
+select * from `0002_not_used_indices` order by item_id
+select * from `0002_not_used_indices` where foo = 'foo' and item_id = 2
 select count(*) from `0002_not_used_indices` where foo = 'foo'
 select * from `0002_not_used_indices` where bar = 'foo'

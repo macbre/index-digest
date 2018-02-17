@@ -16,14 +16,14 @@ class TestQueriesNotUsingIndices(TestCase, DatabaseTestMixin):
 
         self.assertEqual(len(reports), 2)
 
-        self.assertEqual(str(reports[0]), '0019_queries_not_using_indices: "SELECT id FROM 0019_queries_not_using_indices WHER..." query did not make use of any index')
+        self.assertEqual(str(reports[0]), '0019_queries_not_using_indices: "SELECT item_id FROM 0019_queries_not_using_indices..." query did not make use of any index')
         self.assertEqual(reports[0].table_name, '0019_queries_not_using_indices')
-        self.assertEqual(str(reports[0].context['query']), 'SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test" OR id > 1;')
+        self.assertEqual(str(reports[0].context['query']), 'SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test" OR item_id > 1;')
         self.assertEqual(str(reports[0].context['explain_extra']), 'Using where')
         self.assertEqual(str(reports[0].context['explain_rows']), '3')
 
         self.assertEqual(reports[1].table_name, '0019_queries_not_using_indices')
-        self.assertEqual(str(reports[1].context['query']), 'SELECT id FROM 0019_queries_not_using_indices WHERE foo = "test"')
+        self.assertEqual(str(reports[1].context['query']), 'SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test"')
         self.assertEqual(str(reports[1].context['explain_extra']), 'Using where')
         self.assertEqual(str(reports[1].context['explain_rows']), '3')
 

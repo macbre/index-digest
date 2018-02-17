@@ -41,8 +41,8 @@ class TestRedundantIndices(TestCase, DatabaseTestMixin):
 
         print(report, report.context)
 
-        self.assertEquals(str(report.context['redundant']), 'UNIQUE KEY idx (id, foo)')
-        self.assertEquals(str(report.context['covered_by']), 'PRIMARY KEY (id, foo)')
+        self.assertEquals(str(report.context['redundant']), 'UNIQUE KEY idx (item_id, foo)')
+        self.assertEquals(str(report.context['covered_by']), 'PRIMARY KEY (item_id, foo)')
 
         # and we have size reported as well (see #16)
         self.assertTrue(report.context['table_data_size_mb'] > 0)

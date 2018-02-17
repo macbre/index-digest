@@ -1,9 +1,9 @@
 -- Tables for core tests of Database class
 DROP TABLE IF EXISTS `0000_the_table`;
 CREATE TABLE `0000_the_table` (
-	`id` int(9) NOT NULL AUTO_INCREMENT,
+	`item_id` int(9) NOT NULL AUTO_INCREMENT,
 	`foo` varchar(16) NOT NULL DEFAULT '',
-	PRIMARY KEY (`id`,`foo`),
+	PRIMARY KEY (`item_id`,`foo`),
 	KEY `idx_foo` (`foo`)
 ) CHARACTER SET utf8;
 

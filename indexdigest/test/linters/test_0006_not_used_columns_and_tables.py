@@ -40,8 +40,8 @@ class TestNotUsedTables(TestCase):
 
     def test_get_used_tables_from_queries(self):
         queries = [
-            'SELECT /* a comment */ foo FROM `0006_not_used_columns` AS r WHERE id = 1;',  # table alias
-            'SELECT 1 FROM `0006_not_used_tables` WHERE id = 3;',
+            'SELECT /* a comment */ foo FROM `0006_not_used_columns` AS r WHERE item_id = 1;',  # table alias
+            'SELECT 1 FROM `0006_not_used_tables` WHERE item_id = 3;',
         ]
 
         tables = get_used_tables_from_queries(queries)
@@ -61,7 +61,7 @@ class TestNotUsedColumns(TestCase):
 
     def test_not_used_columns(self):
         queries = [
-            'SELECT test, id FROM `0006_not_used_columns` WHERE foo = "a"'
+            'SELECT test, item_id FROM `0006_not_used_columns` WHERE foo = "a"'
         ]
 
         reports = list(check_not_used_columns(database=self.connection, queries=queries))
@@ -83,7 +83,7 @@ class TestNotUsedColumns(TestCase):
 
         # reports ordered is the same as schema columns order
         self.assertEqual(len(reports), 2)
-        self.assertEqual(reports[0].context['column_name'], 'id')
+        self.assertEqual(reports[0].context['column_name'], 'item_id')
         self.assertEqual(reports[0].context['column_type'], 'int(9)')
         self.assertEqual(reports[1].context['column_name'], 'bar')
         self.assertEqual(reports[1].context['column_type'], 'varchar(16)')
