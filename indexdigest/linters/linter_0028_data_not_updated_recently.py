@@ -33,12 +33,17 @@ def check_data_not_updated_recently(database, env=None):
         if diff > diff_threshold * 86400:
             diff_days = int(diff / 86400)
 
+            metadata = database.get_table_metadata(table_name)
+
             context = OrderedDict()
             context['diff_days'] = diff_days
             context['data_since'] = str(datetime.fromtimestamp(timestamps.get('min')))
             context['data_until'] = str(datetime.fromtimestamp(timestamps.get('max')))
-            context['rows'] = database.get_table_rows_estimate(table_name)
+            context['date_column_name'] = str(column)
             context['schema'] = database.get_table_schema(table_name)
+            context['rows'] = database.get_table_rows_estimate(table_name)
+            context['table_size_mb'] = \
+                1. * (metadata['data_size'] + metadata['index_size']) / 1024 / 1024
 
             yield LinterEntry(linter_type='data_not_updated_recently', table_name=table_name,
                               message='"{}" has the latest row added {} days ago, '

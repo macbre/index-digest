@@ -276,15 +276,17 @@ data_too_old → table affected: 0028_data_too_old
 ✗ "0028_data_too_old" has rows added 184 days ago, consider changing retention policy
 
   - diff_days: 184
-  - data_since: 2017-08-01 20:12:30
-  - data_until: 2018-02-01 20:12:30
-  - rows: 4
+  - data_since: 2017-08-17 12:03:44
+  - data_until: 2018-02-17 12:03:44
+  - date_column_name: timestamp
   - schema: CREATE TABLE `0028_data_too_old` (
-      `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+      `item_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
       `cnt` int(8) unsigned NOT NULL,
       `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (`id`)
+      PRIMARY KEY (`item_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1
+  - rows: 4
+  - table_size_mb: 0.015625
 
 ------------------------------------------------------------
 data_not_updated_recently → table affected: 0028_data_not_updated_recently
@@ -292,15 +294,17 @@ data_not_updated_recently → table affected: 0028_data_not_updated_recently
 ✗ "0028_data_not_updated_recently" has the latest row added 40 days ago, consider checking if it should be up-to-date
 
   - diff_days: 40
-  - data_since: 2017-12-13 21:34:47
-  - data_until: 2017-12-23 21:34:47
-  - rows: 3
+  - data_since: 2017-12-29 12:03:44
+  - data_until: 2018-01-08 12:03:44
+  - date_column_name: timestamp
   - schema: CREATE TABLE `0028_data_not_updated_recently` (
-      `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+      `item_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
       `cnt` int(8) unsigned NOT NULL,
       `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      PRIMARY KEY (`id`)
+      PRIMARY KEY (`item_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1
+  - rows: 3
+  - table_size_mb: 0.015625
 
 ------------------------------------------------------------
 Queries performed: 100
