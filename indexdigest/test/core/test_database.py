@@ -28,7 +28,7 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
         self.assertEqual(cnt, 3)
 
     def test_query_row(self):
-        row = self.connection.query_row('SELECT * FROM 0000_the_table WHERE id = 1')
+        row = self.connection.query_row('SELECT * FROM 0000_the_table WHERE item_id = 1')
 
         self.assertEqual(row[0], 1)
         self.assertEqual(row[1], 'test')
@@ -37,7 +37,7 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
         row = self.connection.query_dict_row('SELECT * FROM 0000_the_table ORDER BY 1')
         print(row)
 
-        self.assertEqual(row['id'], 1)
+        self.assertEqual(row['item_id'], 1)
         self.assertEqual(row['foo'], 'test')
 
     def test_query_dict_rows(self):
@@ -47,7 +47,7 @@ class TestDatabaseBase(TestCase, DatabaseTestMixin):
 
         self.assertEqual(len(rows), 3)
 
-        self.assertEqual(row['id'], 1)
+        self.assertEqual(row['item_id'], 1)
         self.assertEqual(row['foo'], 'test')
 
 
@@ -123,7 +123,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertEqual(primary.name, 'PRIMARY')
 
         self.assertListEqual(idx.columns, ['foo'])
-        self.assertListEqual(primary.columns, ['id', 'foo'])
+        self.assertListEqual(primary.columns, ['item_id', 'foo'])
 
         self.assertFalse(idx.is_primary)
         self.assertFalse(idx.is_unique)
@@ -137,7 +137,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         print(schema)
 
         self.assertTrue('CREATE TABLE `0000_the_table` (' in schema)
-        self.assertTrue('PRIMARY KEY (`id`,`foo`),' in schema)
+        self.assertTrue('PRIMARY KEY (`item_id`,`foo`),' in schema)
         self.assertTrue('ENGINE=InnoDB' in schema)
 
         # assert False
@@ -162,10 +162,10 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         column_names = [column.name for column in columns]
 
         # columns
-        self.assertTrue('id' in column_names)
+        self.assertTrue('item_id' in column_names)
         self.assertTrue('foo' in column_names)
 
-        self.assertEqual(columns[0].name, 'id')
+        self.assertEqual(columns[0].name, 'item_id')
         self.assertEqual(columns[0].type, 'int(9)')
         self.assertIsNone(columns[0].character_set)  # numeric column
 
@@ -264,7 +264,7 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # also test that @memoize decorator correctly handles different arguments
         for _ in range(5):
             (col, _) = db.get_table_columns(table_name='0000_the_table')
-            self.assertEquals(col.name, 'id')
+            self.assertEquals(col.name, 'item_id')
 
             (_, col, _, _) = db.get_table_columns(table_name='0002_not_used_indices')
             self.assertEquals(col.name, 'foo')

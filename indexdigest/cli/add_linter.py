@@ -1,6 +1,8 @@
 """
 A helper script used to create files for new linter
 """
+from __future__ import print_function
+
 import logging
 import re
 import sys
@@ -108,7 +110,11 @@ def main():
     """
     usage: add_linter 89 empty_tables
     """
-    linter_id = int(sys.argv[1])
-    linter_name = str(sys.argv[2])
+    try:
+        linter_id = int(sys.argv[1])
+        linter_name = str(sys.argv[2])
 
-    add_linter(linter_id, linter_name)
+        add_linter(linter_id, linter_name)
+    except IndexError:
+        print('Usage: add_linter 89 empty_tables')
+        exit(1)

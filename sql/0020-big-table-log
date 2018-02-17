@@ -1,6 +1,6 @@
 -- Using where; Using index -- and that's good :)
-SELECT count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20
+SELECT count(*) FROM 0020_big_table WHERE item_id BETWEEN 10 AND 20
 -- Using where; Using filesort
-SELECT * FROM 0020_big_table WHERE id BETWEEN 10 AND 20 ORDER BY val
+SELECT * FROM 0020_big_table WHERE item_id BETWEEN 10 AND 20 ORDER BY val
 -- Using where; Using temporary; Using filesort
-SELECT val, count(*) FROM 0020_big_table WHERE id BETWEEN 10 AND 20 GROUP BY val ORDER BY val
+SELECT val, count(*) FROM 0020_big_table WHERE item_id BETWEEN 10 AND 20 GROUP BY val ORDER BY val

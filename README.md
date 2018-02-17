@@ -73,10 +73,10 @@ Visit <https://github.com/macbre/index-digest>
 ```
 $ index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log 
 ------------------------------------------------------------
-Found 48 issue(s) to report for "index_digest" database
+Found 85 issue(s) to report for "index_digest" database
 ------------------------------------------------------------
-MySQL v5.7.20 at debian
-index-digest v0.2.0
+MySQL v5.7.21 at debian
+index-digest v1.0.0
 ------------------------------------------------------------
 redundant_indices → table affected: 0004_id_foo
 
@@ -153,6 +153,17 @@ empty_tables → table affected: 0089_empty_table
 
   - schema: CREATE TABLE `0089_empty_table` (
       `id` int(9) NOT NULL AUTO_INCREMENT,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+------------------------------------------------------------
+generic_primary_key → table affected: 0094_generic_primary_key
+
+✗ "0094_generic_primary_key" has a primary key called id, use a more meaningful name
+
+  - schema: CREATE TABLE `0094_generic_primary_key` (
+      `id` int(9) NOT NULL AUTO_INCREMENT,
+      `foo` varchar(16) NOT NULL DEFAULT '',
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
@@ -297,7 +308,7 @@ Queries performed: 100
 
 ## SQL query log
 
-It's a text file with a single SQL query in each line (no line breaks are allowed). Lines that do not start with `SELECT` are ignored. The file can be [generated using `query-digest` when `--sql-log` output mode is selected](https://github.com/macbre/query-digest#output-modes).
+It's a text file with a single SQL query in each line (no line breaks are allowed). Lines that do start with `--` (SQL comment) are ignored. The file can be [generated using `query-digest` when `--sql-log` output mode is selected](https://github.com/macbre/query-digest#output-modes).
 
 An example:
 
@@ -307,6 +318,7 @@ select * from 0002_not_used_indices order by id
 select * from 0002_not_used_indices where foo = 'foo' and id = 2
 select count(*) from 0002_not_used_indices where foo = 'foo'
 select * from 0002_not_used_indices where bar = 'foo'
+INSERT  IGNORE INTO `0070_insert_ignore` VALUES ('123', 9, '2017-01-01');
 ```
 
 ## Formatters
@@ -332,7 +344,7 @@ Outputs YML file with results and metadata.
 
 ## Checks
 
-> **Number of checks**: 17
+> **Number of checks**: 20
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
@@ -340,6 +352,7 @@ Outputs YML file with results and metadata.
 * `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
 * `single_column`: reports tables with just a single column
 * `empty_tables`: reports tables with no rows
+* `generic_primary_key`: reports tables with [a primary key on `id` column](https://github.com/jarulraj/sqlcheck/blob/master/docs/logical/1004.md) (a more meaningful name should be used)
 
 ### Additional checks performed on SQL log
 
