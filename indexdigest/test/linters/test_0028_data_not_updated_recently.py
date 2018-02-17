@@ -28,6 +28,9 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
         assert 'data_since' in reports[0].context
         assert 'data_until' in reports[0].context
+        assert 'table_size_mb' in reports[0].context
+
+        assert reports[0].context['date_column_name'] == 'timestamp'
 
     def test_data_not_updated_recently_with_custom_threshold(self):
         env = {
