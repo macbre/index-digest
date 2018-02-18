@@ -68,7 +68,7 @@ Examples:
   index_digest mysql://username:password@localhost/dbname
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
   index_digest mysql://index_digest:qwerty@localhost/index_digest --skip-checks=non_utf_columns
-  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_not_updated_recently
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_too_old,data_not_updated_recently
 
 Visit <https://github.com/macbre/index-digest>
 ```
