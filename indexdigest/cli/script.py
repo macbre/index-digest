@@ -22,7 +22,7 @@ Examples:
   index_digest mysql://username:password@localhost/dbname
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
   index_digest mysql://index_digest:qwerty@localhost/index_digest --skip-checks=non_utf_columns
-  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_not_updated_recently
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_too_old,data_not_updated_recently
 
 Visit <https://github.com/macbre/index-digest>
 """
@@ -66,7 +66,7 @@ def get_reports(database, sql_log=None, analyze_data=False):
     :type database Database
     :type sql_log str
     :type analyze_data bool
-    :rtype: list[LinterEntry]
+    :rtype: list[indexdigest.utils.LinterEntry]
     """
     logger = logging.getLogger(__name__)
 
@@ -122,6 +122,28 @@ def get_reports(database, sql_log=None, analyze_data=False):
     return reports
 
 
+def filter_reports(reports, checks=None, skip_checks=None):
+    """
+    :type reports list[indexdigest.utils.LinterEntry]
+    :type checks str
+    :type skip_checks str
+    :rtype: list[indexdigest.utils.LinterEntry]
+    """
+    if checks:
+        return [
+            report for report in reports
+            if report.linter_type in checks.split(',')
+        ]
+
+    if skip_checks:
+        return [
+            report for report in reports
+            if report.linter_type not in skip_checks.split(',')
+        ]
+
+    return reports
+
+
 def main():
     """ Main entry point for CLI"""
     logger = logging.getLogger(__name__)
@@ -140,6 +162,13 @@ def main():
         database,
         sql_log=arguments.get('--sql-log'),
         analyze_data=arguments.get('--analyze-data')
+    )
+
+    # handle --checks / --skip-checks
+    reports = filter_reports(
+        reports,
+        checks=arguments.get('--checks'),
+        skip_checks=arguments.get('--skip-checks')
     )
 
     # handle --format
