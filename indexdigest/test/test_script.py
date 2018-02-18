@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from indexdigest.cli.script import filter_reports_by_type
+from indexdigest.cli.script import filter_reports_by_type, filter_reports_by_table
 from indexdigest.utils import LinterEntry
 
 
@@ -63,3 +63,64 @@ class FilterReportsByTypeTest(TestCase):
         assert len(filtered) == 2
         assert filtered[0].linter_type == 'bar'
         assert filtered[1].linter_type == 'foobar'
+
+
+class FilterReportsByTableTest(TestCase):
+
+    REPORT_TABLES = [
+        'foo',
+        'bar',
+        'test',
+        'test',
+        'foobar',
+    ]
+
+    @staticmethod
+    def get_reports_mock(tables):
+        """
+        :type tables list[str]
+        :rtype: list[LinterEntry]
+        """
+        return [
+            LinterEntry(linter_type='foo', table_name=table, message='message')
+            for table in tables
+        ]
+
+    def test_noop(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports)
+        print(filtered)
+
+        assert len(filtered) == len(self.REPORT_TABLES)
+
+    def test_tables_switch(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports, tables='foo,test')
+        print(filtered)
+
+        assert len(filtered) == 3
+        assert filtered[0].table_name == 'foo'
+        assert filtered[1].table_name == 'test'
+        assert filtered[2].table_name == 'test'
+
+    def test_tables_switch_single(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports, tables='test')
+        print(filtered)
+
+        assert len(filtered) == 2
+        assert filtered[0].table_name == 'test'
+        assert filtered[1].table_name == 'test'
+
+    def test_skip_tables_switch(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports, skip_tables='foo,test')
+        print(filtered)
+
+        assert len(filtered) == 2
+        assert filtered[0].table_name == 'bar'
+        assert filtered[1].table_name == 'foobar'
