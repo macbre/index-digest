@@ -4,7 +4,7 @@
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--checks=<checks> | --skip-checks=<skip-checks>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--checks=<checks> | --skip-checks=<skip-checks>] [--tables=<tables> | --skip-tables=<skip-tables>]
   index_digest (-h | --help)
   index_digest --version
 
@@ -15,6 +15,8 @@ Options:
   --analyze-data    Run additional checks that will query table data (can be slow!)
   --checks=<list>   Comma-separated lists of checks to report
   --skip-checks=<list> Comma-separated lists of checks to skip from report
+  --tables=<list>   Comma-separated lists of tables to report
+  --skip-tables=<list> Comma-separated lists of tables to skip from report
   -h --help         Show this screen.
   --version         Show version.
 
@@ -23,6 +25,7 @@ Examples:
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
   index_digest mysql://index_digest:qwerty@localhost/index_digest --skip-checks=non_utf_columns
   index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_too_old,data_not_updated_recently
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --skip-tables=DATABASECHANGELOG,DATABASECHANGELOGLOCK
 
 Visit <https://github.com/macbre/index-digest>
 """
@@ -122,7 +125,7 @@ def get_reports(database, sql_log=None, analyze_data=False):
     return reports
 
 
-def filter_reports(reports, checks=None, skip_checks=None):
+def filter_reports_by_type(reports, checks=None, skip_checks=None):
     """
     :type reports list[indexdigest.utils.LinterEntry]
     :type checks str
@@ -139,6 +142,28 @@ def filter_reports(reports, checks=None, skip_checks=None):
         return [
             report for report in reports
             if report.linter_type not in skip_checks.split(',')
+        ]
+
+    return reports
+
+
+def filter_reports_by_table(reports, tables=None, skip_tables=None):
+    """
+    :type reports list[indexdigest.utils.LinterEntry]
+    :type tables str
+    :type skip_tables str
+    :rtype: list[indexdigest.utils.LinterEntry]
+    """
+    if tables:
+        return [
+            report for report in reports
+            if report.table_name in tables.split(',')
+        ]
+
+    if skip_tables:
+        return [
+            report for report in reports
+            if report.table_name not in skip_tables.split(',')
         ]
 
     return reports
@@ -165,10 +190,17 @@ def main():
     )
 
     # handle --checks / --skip-checks
-    reports = filter_reports(
+    reports = filter_reports_by_type(
         reports,
         checks=arguments.get('--checks'),
         skip_checks=arguments.get('--skip-checks')
+    )
+
+    # handle --tables / --skip-tables
+    reports = filter_reports_by_table(
+        reports,
+        tables=arguments.get('--tables'),
+        skip_tables=arguments.get('--skip-tables')
     )
 
     # handle --format

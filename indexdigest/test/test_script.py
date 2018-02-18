@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from indexdigest.cli.script import filter_reports
+from indexdigest.cli.script import filter_reports_by_type, filter_reports_by_table
 from indexdigest.utils import LinterEntry
 
 
-class TestFormatterIntegrationTest(TestCase):
+class FilterReportsByTypeTest(TestCase):
 
     REPORT_TYPES = [
         'foo',
@@ -28,7 +28,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_noop(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports)
+        filtered = filter_reports_by_type(reports)
         print(filtered)
 
         assert len(filtered) == len(self.REPORT_TYPES)
@@ -36,7 +36,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_checks_switch(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports, checks='foo,test')
+        filtered = filter_reports_by_type(reports, checks='foo,test')
         print(filtered)
 
         assert len(filtered) == 3
@@ -47,7 +47,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_checks_switch_single(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports, checks='test')
+        filtered = filter_reports_by_type(reports, checks='test')
         print(filtered)
 
         assert len(filtered) == 2
@@ -57,9 +57,70 @@ class TestFormatterIntegrationTest(TestCase):
     def test_skip_checks_switch(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports, skip_checks='foo,test')
+        filtered = filter_reports_by_type(reports, skip_checks='foo,test')
         print(filtered)
 
         assert len(filtered) == 2
         assert filtered[0].linter_type == 'bar'
         assert filtered[1].linter_type == 'foobar'
+
+
+class FilterReportsByTableTest(TestCase):
+
+    REPORT_TABLES = [
+        'foo',
+        'bar',
+        'test',
+        'test',
+        'foobar',
+    ]
+
+    @staticmethod
+    def get_reports_mock(tables):
+        """
+        :type tables list[str]
+        :rtype: list[LinterEntry]
+        """
+        return [
+            LinterEntry(linter_type='foo', table_name=table, message='message')
+            for table in tables
+        ]
+
+    def test_noop(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports)
+        print(filtered)
+
+        assert len(filtered) == len(self.REPORT_TABLES)
+
+    def test_tables_switch(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports, tables='foo,test')
+        print(filtered)
+
+        assert len(filtered) == 3
+        assert filtered[0].table_name == 'foo'
+        assert filtered[1].table_name == 'test'
+        assert filtered[2].table_name == 'test'
+
+    def test_tables_switch_single(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports, tables='test')
+        print(filtered)
+
+        assert len(filtered) == 2
+        assert filtered[0].table_name == 'test'
+        assert filtered[1].table_name == 'test'
+
+    def test_skip_tables_switch(self):
+        reports = self.get_reports_mock(self.REPORT_TABLES)
+
+        filtered = filter_reports_by_table(reports, skip_tables='foo,test')
+        print(filtered)
+
+        assert len(filtered) == 2
+        assert filtered[0].table_name == 'bar'
+        assert filtered[1].table_name == 'foobar'

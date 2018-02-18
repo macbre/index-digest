@@ -50,7 +50,7 @@ index_digest
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--checks=<checks> | --skip-checks=<skip-checks>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--checks=<checks> | --skip-checks=<skip-checks>] [--tables=<tables> | --skip-tables=<skip-tables>]
   index_digest (-h | --help)
   index_digest --version
 
@@ -61,6 +61,8 @@ Options:
   --analyze-data    Run additional checks that will query table data (can be slow!)
   --checks=<list>   Comma-separated lists of checks to report
   --skip-checks=<list> Comma-separated lists of checks to skip from report
+  --tables=<list>   Comma-separated lists of tables to report
+  --skip-tables=<list> Comma-separated lists of tables to skip from report
   -h --help         Show this screen.
   --version         Show version.
 
@@ -69,6 +71,7 @@ Examples:
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
   index_digest mysql://index_digest:qwerty@localhost/index_digest --skip-checks=non_utf_columns
   index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_too_old,data_not_updated_recently
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --skip-tables=DATABASECHANGELOG,DATABASECHANGELOGLOCK
 
 Visit <https://github.com/macbre/index-digest>
 ```
