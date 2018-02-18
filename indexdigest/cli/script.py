@@ -122,7 +122,7 @@ def get_reports(database, sql_log=None, analyze_data=False):
     return reports
 
 
-def filter_reports(reports, checks=None, skip_checks=None):
+def filter_reports_by_type(reports, checks=None, skip_checks=None):
     """
     :type reports list[indexdigest.utils.LinterEntry]
     :type checks str
@@ -165,7 +165,7 @@ def main():
     )
 
     # handle --checks / --skip-checks
-    reports = filter_reports(
+    reports = filter_reports_by_type(
         reports,
         checks=arguments.get('--checks'),
         skip_checks=arguments.get('--skip-checks')

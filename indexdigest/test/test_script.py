@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from indexdigest.cli.script import filter_reports
+from indexdigest.cli.script import filter_reports_by_type
 from indexdigest.utils import LinterEntry
 
 
-class TestFormatterIntegrationTest(TestCase):
+class FilterReportsByTypeTest(TestCase):
 
     REPORT_TYPES = [
         'foo',
@@ -28,7 +28,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_noop(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports)
+        filtered = filter_reports_by_type(reports)
         print(filtered)
 
         assert len(filtered) == len(self.REPORT_TYPES)
@@ -36,7 +36,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_checks_switch(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports, checks='foo,test')
+        filtered = filter_reports_by_type(reports, checks='foo,test')
         print(filtered)
 
         assert len(filtered) == 3
@@ -47,7 +47,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_checks_switch_single(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports, checks='test')
+        filtered = filter_reports_by_type(reports, checks='test')
         print(filtered)
 
         assert len(filtered) == 2
@@ -57,7 +57,7 @@ class TestFormatterIntegrationTest(TestCase):
     def test_skip_checks_switch(self):
         reports = self.get_reports_mock(self.REPORT_TYPES)
 
-        filtered = filter_reports(reports, skip_checks='foo,test')
+        filtered = filter_reports_by_type(reports, skip_checks='foo,test')
         print(filtered)
 
         assert len(filtered) == 2
