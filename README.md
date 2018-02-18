@@ -50,7 +50,7 @@ index_digest
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>] [--format=<formatter>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--checks=<checks> | --skip-checks=<skip-checks>]
   index_digest (-h | --help)
   index_digest --version
 
@@ -58,12 +58,17 @@ Options:
   DSN               Data Source Name of database to check
   --sql-log=<file>  Text file with SQL queries to check against the database
   --format=<formatter>  Use a given results formatter (plain, syslog, yaml)
+  --analyze-data    Run additional checks that will query table data (can be slow!)
+  --checks=<list>   Comma-separated lists of checks to report
+  --skip-checks=<list> Comma-separated lists of checks to skip from report
   -h --help         Show this screen.
   --version         Show version.
 
 Examples:
   index_digest mysql://username:password@localhost/dbname
   index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log=sql.log
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --skip-checks=non_utf_columns
+  index_digest mysql://index_digest:qwerty@localhost/index_digest --analyze-data --checks=data_not_updated_recently
 
 Visit <https://github.com/macbre/index-digest>
 ```
@@ -347,6 +352,8 @@ Dec 28 15:59:58 debian index-digest[17485]: {"meta": {"version": "index-digest v
 Outputs YML file with results and metadata.
 
 ## Checks
+
+You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
 
 > **Number of checks**: 20
 
