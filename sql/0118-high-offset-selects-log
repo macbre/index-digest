@@ -1,0 +1,7 @@
+-- no offset queries
+SELECT foo_limit FROM bar_offset
+-- not high enough query
+SELECT foo_limit FROM bar_offset LIMIT 50 OFFSET 100
+select * from 0020_big_table order by id limit 50, 5;
+-- offset queries
+SELECT /* CategoryPaginationViewer::processSection */  page_namespace,page_title,page_len,page_is_redirect,cl_sortkey_prefix  FROM `page` INNER JOIN `categorylinks` FORCE INDEX (cl_sortkey) ON ((cl_from = page_id))  WHERE cl_type = 'page' AND cl_to = 'Spotify/Song'  ORDER BY cl_sortkey LIMIT 927600,200
