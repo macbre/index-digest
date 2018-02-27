@@ -61,7 +61,8 @@ from indexdigest.linters import \
     check_having_clause, \
     check_data_too_old, \
     check_data_not_updated_recently, \
-    check_generic_primary_key
+    check_generic_primary_key, \
+    check_high_offset_selects
 
 
 def get_reports(database, sql_log=None, analyze_data=False):
@@ -110,6 +111,7 @@ def get_reports(database, sql_log=None, analyze_data=False):
             check_insert_ignore_queries(database, queries=queries),
             check_select_star(database, queries=queries),
             check_having_clause(database, queries=queries),
+            check_high_offset_selects(database, queries=queries),
         )
 
     # checks that require --analyze-data switch to be on (see #28)

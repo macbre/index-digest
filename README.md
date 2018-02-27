@@ -13,7 +13,7 @@ Analyses your database queries and schema and suggests indices improvements. You
   * reports text columns with character set different than `utf`
   * reports queries that do not use indices
   * reports queries that use filesort, temporary file or full table scan
-  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`, `HAVING` clause)
+  * reports queries that are not quite kosher (e.g. `LIKE "%foo%"`, `INSERT IGNORE`, `SELECT *`, `HAVING` clause, high `OFFSET` in pagination queries)
 * if run with `--analyze-data` switch it:
   * reports tables with old data (by querying for `MIN()` value of time column) where data retency can be reviewed
   * reports tables with not up-to-date data (by querying for `MAX()` value of time column)
@@ -315,6 +315,15 @@ data_not_updated_recently → table affected: 0028_data_not_updated_recently
   - table_size_mb: 0.015625
 
 ------------------------------------------------------------
+high_offset_selects → table affected: page
+
+✗ "SELECT /* CategoryPaginationViewer::processSection..." query uses too high offset impacting the performance
+
+  - query: SELECT /* CategoryPaginationViewer::processSection */  page_namespace,page_title,page_len,page_is_redirect,cl_sortkey_prefix  FROM `page` INNER JOIN `categorylinks` FORCE INDEX (cl_sortkey) ON ((cl_from = page_id))  WHERE cl_type = 'page' AND cl_to = 'Spotify/Song'  ORDER BY cl_sortkey LIMIT 927600,200
+  - limit: 200
+  - offset: 927600
+
+------------------------------------------------------------
 Queries performed: 100
 ```
 
@@ -358,7 +367,7 @@ Outputs YML file with results and metadata.
 
 You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
 
-> **Number of checks**: 20
+> **Number of checks**: 21
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
@@ -383,6 +392,7 @@ You can select which checks should be reported by the tool by using `--checks` c
 * `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
 * `select_star`: reports [queries using `SELECT *`](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3001.md)
 * `having_clause`: reports [queries using `HAVING` clause](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3012.md)
+* `high_offset_selects`: report [SELECT queries using high OFFSET](https://www.percona.com/blog/2008/09/24/four-ways-to-optimize-paginated-displays/)
 
 ### Additional checks performed on tables data
 

@@ -21,3 +21,4 @@ from .linter_0089_empty_tables import check_empty_tables
 from .linter_0092_select_star import check_select_star
 from .linter_0093_having_clause import check_having_clause
 from .linter_0094_generic_primary_key import check_generic_primary_key
+from .linter_0118_high_offset_selects import check_high_offset_selects
