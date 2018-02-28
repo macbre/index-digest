@@ -396,7 +396,7 @@ You can select which checks should be reported by the tool by using `--checks` c
 
 ### Additional checks performed on tables data
 
-> You need to use `--analyze-css` command line switch. Please note that these checks will query your tables. **These checks can take a while if queried columns are not indexed**.
+> You need to use `--analyze-data` command line switch. Please note that these checks will query your tables. **These checks can take a while if queried columns are not indexed**.
 
 * `data_too_old`: reports tables that have really old data, maybe it's worth checking if such long data retention is actually needed (**defaults to three months threshold**, can be customized via `INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS` env variable)
 * `data_not_updated_recently`: reports tables that were not updated recently, check if it should be up-to-date (**defaults a month threshold**, can be customized via `INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS` env variable)
