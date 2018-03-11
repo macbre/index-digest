@@ -40,3 +40,15 @@ CREATE TABLE `0028_no_time` (
     `cnt` int(8) unsigned NOT NULL,
      PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB;
+
+-- MediaWiki timestamp columns
+-- @see https://www.mediawiki.org/wiki/Manual:Revision_table
+DROP TABLE IF EXISTS `0028_revision`;
+CREATE TABLE `0028_revision` (
+    `rev_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `rev_timestamp` binary(14) NOT NULL,
+    PRIMARY KEY (`rev_id`)
+) ENGINE=InnoDB;
+
+INSERT INTO 0028_revision(rev_id, `rev_timestamp`) VALUES
+    (1, '20180101000000');

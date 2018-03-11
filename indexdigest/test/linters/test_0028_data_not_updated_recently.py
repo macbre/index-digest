@@ -2,7 +2,8 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters.linter_0028_data_not_updated_recently import check_data_not_updated_recently
+from indexdigest.linters.linter_0028_data_not_updated_recently \
+    import check_data_not_updated_recently, get_time_columns
 from indexdigest.test import DatabaseTestMixin
 from .test_0028_data_too_old import LimitedViewDatabase
 
@@ -13,12 +14,26 @@ class TestLinter(TestCase, DatabaseTestMixin):
     def connection(self):
         return LimitedViewDatabase.connect_dsn(self.DSN)
 
+    def test_get_time_columns(self):
+        columns = list(get_time_columns(self.connection))
+
+        assert len(columns) == 5
+
+        assert columns[0][0] == '0028_data_too_old'
+        assert columns[0][1].name == 'timestamp'
+
+        assert columns[4][0] == '0028_revision'
+        assert columns[4][1].name == 'rev_timestamp'
+
+        print(list(columns))
+        # assert False
+
     def test_data_not_updated_recently(self):
         reports = list(check_data_not_updated_recently(self.connection))
 
         print(list(map(str, reports)))
 
-        assert len(reports) == 1
+        assert len(reports) == 2
 
         assert str(reports[0]).startswith('0028_data_not_updated_recently: "0028_data_not_updated_recently" '
                                           'has the latest row added 4')  # 40 days ago
@@ -31,6 +46,9 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert 'table_size_mb' in reports[0].context
 
         assert reports[0].context['date_column_name'] == 'timestamp'
+
+        assert reports[1].table_name == '0028_revision'
+        assert reports[1].context['date_column_name'] == 'rev_timestamp'
 
     def test_data_not_updated_recently_with_custom_threshold(self):
         env = {
