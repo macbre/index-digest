@@ -17,7 +17,7 @@ def get_time_columns(database):
         time_columns = [
             column
             for column in database.get_table_columns(table_name)
-            if column.is_timestamp_type()
+            if column.is_timestamp_type() or 'time' in column.name
         ]
 
         # there are no time type columns, skip
