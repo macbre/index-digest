@@ -68,6 +68,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         print(tables)
 
         self.assertTrue(self.TABLE_NAME in tables)
+        self.assertTrue('0000_the_table-metadata' in tables)
 
     def test_get_variables(self):
         variables = self.connection.get_variables()
@@ -275,9 +276,9 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # however, only four are made :)
         self.assertEquals(len(queries), 4)
 
-        self.assertTrue("SHOW COLUMNS FROM 0000_the_table" in str(queries[0]))
+        self.assertTrue("SHOW COLUMNS FROM `0000_the_table`" in str(queries[0]))
         self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0000_the_table'" in str(queries[1]))
-        self.assertTrue("SHOW COLUMNS FROM 0002_not_used_indices" in str(queries[2]))
+        self.assertTrue("SHOW COLUMNS FROM `0002_not_used_indices`" in str(queries[2]))
         self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0002_not_used_indices'" in str(queries[3]))
 
     def test_cached_get_table_schema(self):
@@ -298,5 +299,5 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # however, only two are made :)
         self.assertEquals(len(queries), 2)
 
-        self.assertEquals('SHOW CREATE TABLE 0000_the_table', str(queries[0]))
-        self.assertEquals('SHOW CREATE TABLE 0002_not_used_indices', str(queries[1]))
+        self.assertEquals('SHOW CREATE TABLE `0000_the_table`', str(queries[0]))
+        self.assertEquals('SHOW CREATE TABLE `0002_not_used_indices`', str(queries[1]))
