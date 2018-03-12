@@ -68,6 +68,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         print(tables)
 
         self.assertTrue(self.TABLE_NAME in tables)
+        self.assertTrue('0000_the_table-metadata' in tables)
 
     def test_get_variables(self):
         variables = self.connection.get_variables()
