@@ -5,13 +5,18 @@ import re
 
 from indexdigest.utils import LinterEntry
 
+TEST_TABLES = (
+    'test',
+    'temp',
+)
+
 
 def is_test_table(table_name):
     """
     :type table_name str
     :rtype: bool
     """
-    return re.search(r'(^|_)test(_|$)', table_name) is not None
+    return re.search(r'(^|_)({})(_|$)'.format('|'.join(TEST_TABLES)), table_name) is not None
 
 
 def check_test_tables(database):
