@@ -201,11 +201,13 @@ class Database(DatabaseBase):
     @memoize
     def get_tables(self):
         """
-        Returns the list of tables.
+        Returns the list of tables (ignore views)
 
         :rtype: list[str]
         """
-        return list(self.query_list('SHOW TABLES'))
+        return list(self.query_list('SELECT TABLE_NAME FROM information_schema.tables '
+                                    'WHERE table_schema = "{}" and TABLE_TYPE = "BASE TABLE"'.
+                                    format(self.db_name)))
 
     def get_variables(self, like=None):
         """

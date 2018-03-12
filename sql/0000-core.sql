@@ -18,4 +18,8 @@ CREATE TABLE `0000_the_table-metadata` (
 	KEY `idx_foo` (`foo`)
 ) CHARACTER SET utf8;
 
-INSERT INTO `0000_the_table-metadata` VALUES(1, 'test'), (2, 'foo'), (3, 'foo ąęź');
+INSERT INTO `0000_the_table-metadata` VALUES(1, 'test'), (2, 'foo'), (3, 'foo ąęź'), (4, 'foo');
+
+-- handle views, actually ignore them :)
+DROP VIEW IF EXISTS `0000_the_view`;
+CREATE VIEW 0000_the_view AS SELECT foo, COUNT(*) AS cnt FROM `0000_the_table-metadata` GROUP BY foo;
