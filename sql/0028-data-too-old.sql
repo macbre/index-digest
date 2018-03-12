@@ -51,4 +51,5 @@ CREATE TABLE `0028_revision` (
 ) ENGINE=InnoDB;
 
 INSERT INTO 0028_revision(rev_id, `rev_timestamp`) VALUES
-    (1, '20180101000000');
+    (1, '20180101000000'),
+    (2, '2018010'); -- #129: Incorrect datetime value

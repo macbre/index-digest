@@ -33,7 +33,7 @@ class TestLinter(TestCase, DatabaseTestMixin):
 
         print(list(map(str, reports)))
 
-        assert len(reports) == 2
+        assert len(reports) == 1
 
         assert str(reports[0]).startswith('0028_data_not_updated_recently: "0028_data_not_updated_recently" '
                                           'has the latest row added 4')  # 40 days ago
@@ -44,11 +44,6 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert 'data_since' in reports[0].context
         assert 'data_until' in reports[0].context
         assert 'table_size_mb' in reports[0].context
-
-        assert reports[0].context['date_column_name'] == 'timestamp'
-
-        assert reports[1].table_name == '0028_revision'
-        assert reports[1].context['date_column_name'] == 'rev_timestamp'
 
     def test_data_not_updated_recently_with_custom_threshold(self):
         env = {

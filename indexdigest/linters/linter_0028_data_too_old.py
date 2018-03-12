@@ -44,10 +44,10 @@ def get_boundary_times(database, table_name, column):
             table=table_name
         )
 
-    timestamps = database.query_dict_row(query)\
+    timestamps = database.query_dict_row(query)
 
     # if there's no data in the table, return None
-    return timestamps if timestamps.get('max') else None
+    return timestamps if timestamps.get('min') and timestamps.get('max') else None
 
 
 def check_data_too_old(database, env=None):
@@ -64,7 +64,8 @@ def check_data_too_old(database, env=None):
 
     for (table_name, column) in get_time_columns(database):
         timestamps = get_boundary_times(database, table_name, column)
-        if timestamps is None:
+
+        if timestamps is None or timestamps.get('min') is None:
             continue
 
         diff = now - timestamps.get('min')
