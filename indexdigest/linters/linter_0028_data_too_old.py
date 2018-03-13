@@ -38,7 +38,7 @@ def get_boundary_times(database, table_name, column):
     """
     # this may take a while when {column} is not indexed!
     query = 'SELECT /* index-digest */ UNIX_TIMESTAMP(MIN(`{column}`)) as `min`, ' \
-            'UNIX_TIMESTAMP(MAX(`{column}`)) as `max` FROM {table}'.\
+            'UNIX_TIMESTAMP(MAX(`{column}`)) as `max` FROM `{table}`'.\
         format(
             column=column.name,
             table=table_name
