@@ -8,6 +8,7 @@ except ImportError:
 
 import functools
 import logging
+import re
 
 
 def parse_dsn(dsn):
@@ -37,7 +38,10 @@ def is_select_query(query):
     :type query str
     :rtype bool
     """
-    return query.lstrip().lower().startswith('select')
+    query = query.lstrip().lower()
+    query = re.sub(r'^/\*[^*]+\*/', '', query)  # remove SQL comments
+
+    return query.lstrip().startswith('select')
 
 
 def explain_queries(database, queries):
