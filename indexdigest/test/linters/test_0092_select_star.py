@@ -11,6 +11,9 @@ class TestLinter(TestCase, DatabaseTestMixin):
     def test_is_wildcard_query(self):
         assert is_wildcard_query('SELECT * FROM foo;')
         assert is_wildcard_query('SELECT t.* FROM foo AS t;')
+        assert is_wildcard_query('SELECT  *  FROM `user`  WHERE user_id = 34994913  LIMIT 1')
+        assert is_wildcard_query('/* User::loadFromDatabase */ SELECT  *  FROM `user`  WHERE user_id = 34994913  LIMIT 1')
+        assert is_wildcard_query('SELECT /* User::loadFromDatabase */ *  FROM `user`  WHERE user_id = 34994913  LIMIT 1')
 
         assert is_wildcard_query('SELECT id FROM foo') is False
         assert is_wildcard_query('SELECT (id+2) * 2 FROM foo') is False
