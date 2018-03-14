@@ -14,16 +14,17 @@ class TestUtils(TestCase):
         self.assertEqual('test', parsed['db'])
 
     def test_is_select_query(self):
-        self.assertTrue(is_select_query('SELECT * FROM foo'))
-        self.assertTrue(is_select_query('select * from foo'))
-        self.assertTrue(is_select_query('SELECT * FROM foo;'))
-        self.assertTrue(is_select_query('  SELECT * FROM foo;'))
+        assert is_select_query('SELECT * FROM foo')
+        assert is_select_query('select * from foo')
+        assert is_select_query('SELECT * FROM foo;')
+        assert is_select_query('  SELECT * FROM foo;')
+        assert is_select_query('/* foo */ SELECT * FROM foo;')
 
-        self.assertFalse(is_select_query('BEGIN'))
-        self.assertFalse(is_select_query('COMMIT'))
-        self.assertFalse(is_select_query('/* SELECT */ COMMIT'))
-        self.assertFalse(is_select_query('TRUNCATE foo;'))
-        self.assertFalse(is_select_query('UPDATE foo SET bar=42 WHERE id=1'))
+        assert is_select_query('BEGIN') is False
+        assert is_select_query('COMMIT') is False
+        assert is_select_query('/* SELECT */ COMMIT') is False
+        assert is_select_query('TRUNCATE foo;') is False
+        assert is_select_query('UPDATE foo SET bar=42 WHERE id=1') is False
 
     def test_shorten_query(self):
         self.assertEquals('SELECT * FROM foo', shorten_query('SELECT * FROM foo'))
