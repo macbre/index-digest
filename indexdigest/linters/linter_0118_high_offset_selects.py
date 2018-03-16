@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 from sql_metadata import get_query_limit_and_offset, get_query_tables
 
-from indexdigest.utils import LinterEntry, shorten_query
+from indexdigest.utils import LinterEntry, shorten_query, is_select_query
 
 
 OFFSET_THRESHOLD = 1000
@@ -18,6 +18,10 @@ def check_high_offset_selects(_, queries):
     :rtype: list[LinterEntry]
     """
     for query in queries:
+        # ignore insert queries (#140)
+        if not is_select_query(query):
+            continue
+
         res = get_query_limit_and_offset(query)
 
         if res is None:
