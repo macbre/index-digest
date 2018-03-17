@@ -23,7 +23,7 @@ demo:
 	index_digest mysql://index_digest:qwerty@127.0.0.1/index_digest --sql-log sql/0002-not-used-indices-log --analyze-data --skip-checks=non_utf_columns --skip-tables=0028_no_time
 
 sql-console:
-	mysql --protocol=tcp -uindex_digest -pqwerty index_digest
+	mysql --prompt='mysql@\h[\d]>' --protocol=tcp -uindex_digest -pqwerty index_digest
 
 publish:
 	# run git tag -a v0.0.0 before running make publish
