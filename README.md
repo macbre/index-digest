@@ -176,6 +176,18 @@ generic_primary_key → table affected: 0094_generic_primary_key
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 ------------------------------------------------------------
+use_innodb → table affected: 0036_use_innodb_myisam
+
+✗ "0036_use_innodb_myisam" uses MyISAM storage engine
+
+  - schema: CREATE TABLE `0036_use_innodb_myisam` (
+      `item_id` int(9) NOT NULL AUTO_INCREMENT,
+      `foo` int(8) DEFAULT NULL,
+      PRIMARY KEY (`item_id`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=latin1
+  - engine: MyISAM
+
+------------------------------------------------------------
 not_used_indices → table affected: 0002_not_used_indices
 
 ✗ "test_id_idx" index was not used by provided queries
@@ -367,7 +379,7 @@ Outputs YML file with results and metadata.
 
 You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
 
-> **Number of checks**: 21
+> **Number of checks**: 22
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
@@ -376,6 +388,7 @@ You can select which checks should be reported by the tool by using `--checks` c
 * `single_column`: reports tables with just a single column
 * `empty_tables`: reports tables with no rows
 * `generic_primary_key`: reports tables with [a primary key on `id` column](https://github.com/jarulraj/sqlcheck/blob/master/docs/logical/1004.md) (a more meaningful name should be used)
+* `use_innodb`: reports table using storage engines different than `InnoDB` (a default for MySQL 5.5+ and MariaDB 10.2+)
 
 ### Additional checks performed on SQL log
 
