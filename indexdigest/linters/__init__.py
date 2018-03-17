@@ -14,6 +14,7 @@ from .linter_0028_data_too_old import check_data_too_old
 from .linter_0028_data_not_updated_recently import check_data_not_updated_recently
 from .linter_0032_utf_latin_columns import check_latin_columns
 from .linter_0034_missing_primary_index import check_missing_primary_index
+from .linter_0036_use_innodb import check_use_innodb
 from .linter_0070_insert_ignore import check_insert_ignore_queries
 from .linter_0074_single_column import check_single_column
 from .linter_0075_test_tables import check_test_tables

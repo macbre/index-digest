@@ -76,9 +76,84 @@ Examples:
 Visit <https://github.com/macbre/index-digest>
 ```
 
-## An example
+## SQL query log
+
+It's a text file with a single SQL query in each line (no line breaks are allowed). Lines that do start with `--` (SQL comment) are ignored. The file can be [generated using `query-digest` when `--sql-log` output mode is selected](https://github.com/macbre/query-digest#output-modes).
+
+An example:
+
+```sql
+-- A comment
+select * from 0002_not_used_indices order by id
+select * from 0002_not_used_indices where foo = 'foo' and id = 2
+select count(*) from 0002_not_used_indices where foo = 'foo'
+/* foo bar */ select * from 0002_not_used_indices where bar = 'foo'
+INSERT  IGNORE INTO `0070_insert_ignore` VALUES ('123', 9, '2017-01-01');
+```
+
+## Formatters
+
+`index-digest` can return results in various formats (use `--format` to choose one).
+
+### plain
+
+Emits human-readable report to a console. You can disable colored and bold text by setting env variable `ANSI_COLORS_DISABLED=1`.
+
+### syslog
+
+Pushes JSON-formatted messages via syslog, so they can be aggregated using ELK stack.
+Use `SYSLOG_IDENT` env variable to customize syslog's `ident` messages are sent with (defaults to `index-digest`).
 
 ```
+Dec 28 15:59:58 debian index-digest[17485]: {"meta": {"version": "index-digest v0.1.0", "database_name": "index_digest", "database_host": "debian", "database_version": "MySQL v5.7.20"}, "report": {"type": "redundant_indices", "table": "0004_id_foo", "message": "\"idx\" index can be removed as redundant (covered by \"PRIMARY\")", "context": {"redundant": "UNIQUE KEY idx (id, foo)", "covered_by": "PRIMARY KEY (id, foo)", "schema": "CREATE TABLE `0004_id_foo` (\n  `id` int(9) NOT NULL AUTO_INCREMENT,\n  `foo` varbinary(16) NOT NULL DEFAULT '',\n  PRIMARY KEY (`id`,`foo`),\n  UNIQUE KEY `idx` (`id`,`foo`)\n) ENGINE=InnoDB DEFAULT CHARSET=latin1", "table_data_size_mb": 0.015625, "table_index_size_mb": 0.015625}}}
+```
+
+### yaml
+
+Outputs YML file with results and metadata.
+
+## Checks
+
+You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
+
+> **Number of checks**: 22
+
+* `redundant_indices`: reports indices that are redundant and covered by other
+* `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
+* `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
+* `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
+* `single_column`: reports tables with just a single column
+* `empty_tables`: reports tables with no rows
+* `generic_primary_key`: reports tables with [a primary key on `id` column](https://github.com/jarulraj/sqlcheck/blob/master/docs/logical/1004.md) (a more meaningful name should be used)
+* `use_innodb`: reports table using storage engines different than `InnoDB` (a default for MySQL 5.5+ and MariaDB 10.2+)
+
+### Additional checks performed on SQL log
+
+> You need to provide SQL log file via `--sql-log` option
+
+* `not_used_columns`: checks which columns were not used by SELECT queries
+* `not_used_indices`: checks which indices are not used by SELECT queries
+* `not_used_tables`: checks which tables are not used by SELECT queries
+* `queries_not_using_index`: reports SELECT queries that do not use any index
+* `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
+* `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
+* `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
+* `selects_with_like`: reports SELECT queries that use `LIKE '%foo'` conditions (they can not use an index)
+* `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
+* `select_star`: reports [queries using `SELECT *`](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3001.md)
+* `having_clause`: reports [queries using `HAVING` clause](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3012.md)
+* `high_offset_selects`: report [SELECT queries using high OFFSET](https://www.percona.com/blog/2008/09/24/four-ways-to-optimize-paginated-displays/)
+
+### Additional checks performed on tables data
+
+> You need to use `--analyze-data` command line switch. Please note that these checks will query your tables. **These checks can take a while if queried columns are not indexed**.
+
+* `data_too_old`: reports tables that have really old data, maybe it's worth checking if such long data retention is actually needed (**defaults to three months threshold**, can be customized via `INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS` env variable)
+* `data_not_updated_recently`: reports tables that were not updated recently, check if it should be up-to-date (**defaults a month threshold**, can be customized via `INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS` env variable)
+
+## An example report
+
+```sql
 $ index_digest mysql://index_digest:qwerty@localhost/index_digest --sql-log sql/0002-not-used-indices-log 
 ------------------------------------------------------------
 Found 85 issue(s) to report for "index_digest" database
@@ -174,6 +249,18 @@ generic_primary_key → table affected: 0094_generic_primary_key
       `foo` varchar(16) NOT NULL DEFAULT '',
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+------------------------------------------------------------
+use_innodb → table affected: 0036_use_innodb_myisam
+
+✗ "0036_use_innodb_myisam" uses MyISAM storage engine
+
+  - schema: CREATE TABLE `0036_use_innodb_myisam` (
+      `item_id` int(9) NOT NULL AUTO_INCREMENT,
+      `foo` int(8) DEFAULT NULL,
+      PRIMARY KEY (`item_id`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=latin1
+  - engine: MyISAM
 
 ------------------------------------------------------------
 not_used_indices → table affected: 0002_not_used_indices
@@ -326,80 +413,6 @@ high_offset_selects → table affected: page
 ------------------------------------------------------------
 Queries performed: 100
 ```
-
-## SQL query log
-
-It's a text file with a single SQL query in each line (no line breaks are allowed). Lines that do start with `--` (SQL comment) are ignored. The file can be [generated using `query-digest` when `--sql-log` output mode is selected](https://github.com/macbre/query-digest#output-modes).
-
-An example:
-
-```sql
--- A comment
-select * from 0002_not_used_indices order by id
-select * from 0002_not_used_indices where foo = 'foo' and id = 2
-select count(*) from 0002_not_used_indices where foo = 'foo'
-select * from 0002_not_used_indices where bar = 'foo'
-INSERT  IGNORE INTO `0070_insert_ignore` VALUES ('123', 9, '2017-01-01');
-```
-
-## Formatters
-
-`index-digest` can return results in various formats (use `--format` to choose one).
-
-### plain
-
-Emits human-readable report to a console. You can disable colored and bold text by setting env variable `ANSI_COLORS_DISABLED=1`.
-
-### syslog
-
-Pushes JSON-formatted messages via syslog, so they can be aggregated using ELK stack.
-Use `SYSLOG_IDENT` env variable to customize syslog's `ident` messages are sent with (defaults to `index-digest`).
-
-```
-Dec 28 15:59:58 debian index-digest[17485]: {"meta": {"version": "index-digest v0.1.0", "database_name": "index_digest", "database_host": "debian", "database_version": "MySQL v5.7.20"}, "report": {"type": "redundant_indices", "table": "0004_id_foo", "message": "\"idx\" index can be removed as redundant (covered by \"PRIMARY\")", "context": {"redundant": "UNIQUE KEY idx (id, foo)", "covered_by": "PRIMARY KEY (id, foo)", "schema": "CREATE TABLE `0004_id_foo` (\n  `id` int(9) NOT NULL AUTO_INCREMENT,\n  `foo` varbinary(16) NOT NULL DEFAULT '',\n  PRIMARY KEY (`id`,`foo`),\n  UNIQUE KEY `idx` (`id`,`foo`)\n) ENGINE=InnoDB DEFAULT CHARSET=latin1", "table_data_size_mb": 0.015625, "table_index_size_mb": 0.015625}}}
-```
-
-### yaml
-
-Outputs YML file with results and metadata.
-
-## Checks
-
-You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
-
-> **Number of checks**: 21
-
-* `redundant_indices`: reports indices that are redundant and covered by other
-* `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
-* `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
-* `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
-* `single_column`: reports tables with just a single column
-* `empty_tables`: reports tables with no rows
-* `generic_primary_key`: reports tables with [a primary key on `id` column](https://github.com/jarulraj/sqlcheck/blob/master/docs/logical/1004.md) (a more meaningful name should be used)
-
-### Additional checks performed on SQL log
-
-> You need to provide SQL log file via `--sql-log` option
-
-* `not_used_columns`: checks which columns were not used by SELECT queries
-* `not_used_indices`: checks which indices are not used by SELECT queries
-* `not_used_tables`: checks which tables are not used by SELECT queries
-* `queries_not_using_index`: reports SELECT queries that do not use any index
-* `queries_using_filesort`: reports SELECT queries that require filesort ([a sort can’t be performed from an index and quicksort is used](https://www.percona.com/blog/2009/03/05/what-does-using-filesort-mean-in-mysql/))
-* `queries_using_temporary`: reports SELECT queries that require a temporary table to hold the result
-* `queries_using_full_table_scan`: reports SELECT queries that require a [full table scan](https://dev.mysql.com/doc/refman/5.7/en/table-scan-avoidance.html)
-* `selects_with_like`: reports SELECT queries that use `LIKE '%foo'` conditions (they can not use an index)
-* `insert_ignore`: reports [queries using `INSERT IGNORE`](https://medium.com/legacy-systems-diary/things-to-avoid-episode-1-insert-ignore-535b4c24406b)
-* `select_star`: reports [queries using `SELECT *`](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3001.md)
-* `having_clause`: reports [queries using `HAVING` clause](https://github.com/jarulraj/sqlcheck/blob/master/docs/query/3012.md)
-* `high_offset_selects`: report [SELECT queries using high OFFSET](https://www.percona.com/blog/2008/09/24/four-ways-to-optimize-paginated-displays/)
-
-### Additional checks performed on tables data
-
-> You need to use `--analyze-data` command line switch. Please note that these checks will query your tables. **These checks can take a while if queried columns are not indexed**.
-
-* `data_too_old`: reports tables that have really old data, maybe it's worth checking if such long data retention is actually needed (**defaults to three months threshold**, can be customized via `INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS` env variable)
-* `data_not_updated_recently`: reports tables that were not updated recently, check if it should be up-to-date (**defaults a month threshold**, can be customized via `INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS` env variable)
 
 ## Success stories
 
