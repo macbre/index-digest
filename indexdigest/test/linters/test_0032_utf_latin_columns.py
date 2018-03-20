@@ -2,8 +2,29 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from indexdigest.linters import check_latin_columns
+from indexdigest.linters.linter_0032_utf_latin_columns import \
+    check_latin_columns, is_text_column_latin
+from indexdigest.schema import Column
 from indexdigest.test import Database, DatabaseTestMixin
+
+
+class TestIsTextColumnLatin(TestCase):
+
+    def test_is_text_column_non_latin(self):
+        for character_set in ['utf8', 'ucs2', 'utf8mb4', 'utf16', 'utf16le', 'utf32', 'binary']:
+            column = Column(name='foo', column_type='varchar', character_set=character_set)
+
+            assert is_text_column_latin(column) is False, character_set
+
+    def test_is_text_column_latin(self):
+        # @see https://dev.mysql.com/doc/refman/5.7/en/charset-mysql.html
+        for character_set in ['big5', 'latin1', 'latin2']:
+            column = Column(name='foo', column_type='varchar', character_set=character_set)
+
+            assert is_text_column_latin(column) is True, character_set
+
+    def test_blob_column(self):
+        assert is_text_column_latin(Column(name='foo', column_type='blob')) is False
 
 
 class LimitedViewDatabase(Database, DatabaseTestMixin):
@@ -24,7 +45,7 @@ class TestFullTableScan(TestCase):
 
         print(list(map(str, reports)))
 
-        self.assertEqual(len(reports), 2)
+        self.assertEqual(len(reports), 3)
 
         self.assertEqual(str(reports[0]),
                          '0032_utf8_table: "latin_column" text column has "latin1" character set defined')
@@ -33,9 +54,15 @@ class TestFullTableScan(TestCase):
         self.assertEqual(reports[0].context['column_collation'], 'latin1_bin')
 
         self.assertEqual(str(reports[1]),
+                         '0032_utf8_table: "big5_column" text column has "big5" character set defined')
+        self.assertEqual(reports[1].context['column'], 'big5_column')
+        self.assertEqual(reports[1].context['column_character_set'], 'big5')
+        self.assertEqual(reports[1].context['column_collation'], 'big5_chinese_ci')
+
+        self.assertEqual(str(reports[2]),
                          '0032_latin1_table: "name" text column has "latin1" character set defined')
-        self.assertEqual(reports[1].context['column'], 'name')
-        self.assertEqual(reports[1].context['column_character_set'], 'latin1')
-        self.assertEqual(reports[1].context['column_collation'], 'latin1_swedish_ci')
+        self.assertEqual(reports[2].context['column'], 'name')
+        self.assertEqual(reports[2].context['column_character_set'], 'latin1')
+        self.assertEqual(reports[2].context['column_collation'], 'latin1_swedish_ci')
 
         # assert False
