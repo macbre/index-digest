@@ -19,7 +19,7 @@ CREATE TABLE `0032_latin1_table` (
 	`ucs2_column` varchar(255) CHARACTER SET ucs2,
 	`utf8mb4_column` varchar(255) CHARACTER SET utf8mb4,
 	`utf16_column` varchar(255) CHARACTER SET utf16,
-	`utf16le_column` varchar(255) CHARACTER SET utf16le,
+	-- `utf16le_column` varchar(255) CHARACTER SET utf16le, -- not supported by MySQL 5.5
 	`utf32_column` varchar(255) CHARACTER SET utf32,
 	`binary_column` varchar(255) CHARACTER SET binary,
 	`latin_blob` blob,
