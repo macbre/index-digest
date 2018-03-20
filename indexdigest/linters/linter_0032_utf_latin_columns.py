@@ -43,6 +43,7 @@ def check_latin_columns(database):
             context['column'] = column.name
             context['column_character_set'] = column.character_set
             context['column_collation'] = column.collation
+            context['schema'] = database.get_table_schema(table)
 
             yield LinterEntry(linter_type='non_utf_columns', table_name=table,
                               message='"{}" text column has "{}" character set defined'.

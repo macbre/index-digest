@@ -52,6 +52,7 @@ class TestFullTableScan(TestCase):
         self.assertEqual(reports[0].context['column'], 'latin_column')
         self.assertEqual(reports[0].context['column_character_set'], 'latin1')
         self.assertEqual(reports[0].context['column_collation'], 'latin1_bin')
+        assert 'CREATE TABLE `0032_utf8_table` (' in reports[0].context['schema']
 
         self.assertEqual(str(reports[1]),
                          '0032_utf8_table: "big5_column" text column has "big5" character set defined')

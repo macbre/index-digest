@@ -305,6 +305,18 @@ non_utf_columns → table affected: 0032_latin1_table
   - column: name
   - column_character_set: latin1
   - column_collation: latin1_swedish_ci
+  - schema: CREATE TABLE `0032_latin1_table` (
+      `item_id` int(9) NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) DEFAULT NULL,
+      `utf8_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL,
+      `ucs2_column` varchar(255) CHARACTER SET ucs2 DEFAULT NULL,
+      `utf8mb4_column` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
+      `utf16_column` varchar(255) CHARACTER SET utf16 DEFAULT NULL,
+      `utf32_column` varchar(255) CHARACTER SET utf32 DEFAULT NULL,
+      `binary_column` varbinary(255) DEFAULT NULL,
+      `latin_blob` blob,
+      PRIMARY KEY (`item_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 ------------------------------------------------------------
 
