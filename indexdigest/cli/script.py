@@ -4,7 +4,7 @@
 Analyses your database queries and schema and suggests indices improvements.
 
 Usage:
-  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--checks=<checks> | --skip-checks=<skip-checks>] [--tables=<tables> | --skip-tables=<skip-tables>]
+  index_digest DSN [--sql-log=<file>] [--format=<formatter>] [--analyze-data] [--check-empty-databases] [--checks=<checks> | --skip-checks=<skip-checks>] [--tables=<tables> | --skip-tables=<skip-tables>]
   index_digest (-h | --help)
   index_digest --version
 
@@ -13,6 +13,7 @@ Options:
   --sql-log=<file>  Text file with SQL queries to check against the database
   --format=<formatter>  Use a given results formatter (plain, syslog, yaml)
   --analyze-data    Run additional checks that will query table data (can be slow!)
+  --check-empty-databases  Detect empty databases on this MySQL server
   --checks=<list>   Comma-separated lists of checks to report
   --skip-checks=<list> Comma-separated lists of checks to skip from report
   --tables=<list>   Comma-separated lists of tables to report
@@ -63,14 +64,16 @@ from indexdigest.linters import \
     check_data_not_updated_recently, \
     check_generic_primary_key, \
     check_high_offset_selects, \
-    check_use_innodb
+    check_use_innodb, \
+    check_empty_database
 
 
-def get_reports(database, sql_log=None, analyze_data=False):
+def get_reports(database, sql_log=None, analyze_data=False, check_empty_databases=False):
     """
     :type database Database
     :type sql_log str
     :type analyze_data bool
+    :type check_empty_databases bool
     :rtype: list[indexdigest.utils.LinterEntry]
     """
     logger = logging.getLogger(__name__)
@@ -124,6 +127,15 @@ def get_reports(database, sql_log=None, analyze_data=False):
             reports,
             check_data_too_old(database, env=environ),
             check_data_not_updated_recently(database, env=environ),
+        )
+
+    # --check-empty-databases switch to be on to run "empty_database" (see #146)
+    if check_empty_databases is True:
+        logger.info("Will analyze databases on this MySQL server, can take a while...")
+
+        reports = chain(
+            reports,
+            check_empty_database(database),
         )
 
     return reports
@@ -190,7 +202,8 @@ def main():
     reports = get_reports(
         database,
         sql_log=arguments.get('--sql-log'),
-        analyze_data=arguments.get('--analyze-data')
+        analyze_data=arguments.get('--analyze-data'),
+        check_empty_databases=arguments.get('--check-empty-databases')
     )
 
     # handle --checks / --skip-checks

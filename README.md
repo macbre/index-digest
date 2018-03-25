@@ -17,6 +17,8 @@ Analyses your database queries and schema and suggests indices improvements. You
 * if run with `--analyze-data` switch it:
   * reports tables with old data (by querying for `MIN()` value of time column) where data retency can be reviewed
   * reports tables with not up-to-date data (by querying for `MAX()` value of time column)
+* if run with `--check-empty-databases` switch it:
+  * report empty databases on the current MySQL server
 
 This tool **supports MySQL 5.5, 5.6, 5.7, 8.0 and MariaDB 10.0, 10.2** and runs under **Python 2.7, 3.4, 3.5 and 3.6**.
 
@@ -116,7 +118,7 @@ Outputs YML file with results and metadata.
 
 You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
 
-> **Number of checks**: 22
+> **Number of checks**: 23
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
@@ -150,6 +152,12 @@ You can select which checks should be reported by the tool by using `--checks` c
 
 * `data_too_old`: reports tables that have really old data, maybe it's worth checking if such long data retention is actually needed (**defaults to three months threshold**, can be customized via `INDEX_DIGEST_DATA_TOO_OLD_THRESHOLD_DAYS` env variable)
 * `data_not_updated_recently`: reports tables that were not updated recently, check if it should be up-to-date (**defaults a month threshold**, can be customized via `INDEX_DIGEST_DATA_NOT_UPDATED_RECENTLY_THRESHOLD_DAYS` env variable)
+
+### Additional checks performed across database on the current MySQL server
+
+> You need to use `--check-empty-databases` command line switch.
+
+* `empty_database`: reports databases that have no `BASE TABLE` tables (as provided by `information_schema.TABLES`)
 
 ## An example report
 
@@ -421,6 +429,11 @@ high_offset_selects → table affected: page
   - query: SELECT /* CategoryPaginationViewer::processSection */  page_namespace,page_title,page_len,page_is_redirect,cl_sortkey_prefix  FROM `page` INNER JOIN `categorylinks` FORCE INDEX (cl_sortkey) ON ((cl_from = page_id))  WHERE cl_type = 'page' AND cl_to = 'Spotify/Song'  ORDER BY cl_sortkey LIMIT 927600,200
   - limit: 200
   - offset: 927600
+
+------------------------------------------------------------
+empty_database → table affected: index_digest_empty
+
+✗ "index_digest_empty" database has no tables
 
 ------------------------------------------------------------
 Queries performed: 100
