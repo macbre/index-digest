@@ -14,4 +14,4 @@ CREATE TABLE `0028_data_not_updated_recently` (
 INSERT INTO 0028_data_not_updated_recently(cnt, `timestamp`) VALUES
     (20, NOW() - INTERVAL 50 DAY),
     (20, NOW() - INTERVAL 45 DAY),
-    (20, NOW() - INTERVAL 40 DAY);
+    (20, NOW() - INTERVAL 41 DAY);
