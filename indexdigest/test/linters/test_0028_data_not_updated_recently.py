@@ -36,9 +36,9 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert len(reports) == 1
 
         assert str(reports[0]).startswith('0028_data_not_updated_recently: "0028_data_not_updated_recently" '
-                                          'has the latest row added 4')  # 40 days ago
+                                          'has the latest row added ')
         assert str(reports[0]).endswith('consider checking if it should be up-to-date')
-        self.assertAlmostEquals(reports[0].context['diff_days'], 40)
+        assert abs(reports[0].context['diff_days'] - 40) < 2, 'diff_days is around 40 days'
         assert reports[0].table_name == '0028_data_not_updated_recently'
 
         assert 'data_since' in reports[0].context
