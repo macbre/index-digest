@@ -20,6 +20,7 @@ def check_queries_not_using_indices(database, queries):
         if explain_row['Extra'] in [
                 'Impossible WHERE noticed after reading const tables',
                 'no matching row in const table',
+                'No tables used'
         ]:
             continue
 

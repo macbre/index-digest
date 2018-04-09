@@ -7,3 +7,7 @@ SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test" OR item_id
 SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test"
 -- no matching row in const table (#44)
 SELECT foo FROM 0019_queries_not_using_indices WHERE item_id = 5;
+-- #148: EXPLAINS' Extra says "No tables used"
+SELECT 1*1;
+SELECT 1 AS one FROM dual WHERE exists ( SELECT 1 FROM 0000_the_table WHERE item_id = 2 );
+SELECT 1 AS one FROM dual WHERE exists ( SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test" );
