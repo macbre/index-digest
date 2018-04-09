@@ -12,9 +12,9 @@ class TestQueriesNotUsingIndices(TestCase, DatabaseTestMixin):
         reports = list(check_queries_not_using_indices(
             database=self.connection, queries=read_queries_from_log('0019-queries-not-using-indices-log')))
 
-        # print(reports)
+        print(list(map(str, reports)))
 
-        self.assertEqual(len(reports), 2)
+        self.assertEqual(len(reports), 3)
 
         self.assertEqual(str(reports[0]), '0019_queries_not_using_indices: "SELECT item_id FROM 0019_queries_not_using_indices..." query did not make use of any index')
         self.assertEqual(reports[0].table_name, '0019_queries_not_using_indices')
@@ -26,5 +26,10 @@ class TestQueriesNotUsingIndices(TestCase, DatabaseTestMixin):
         self.assertEqual(str(reports[1].context['query']), 'SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test"')
         self.assertEqual(str(reports[1].context['explain_extra']), 'Using where')
         self.assertEqual(str(reports[1].context['explain_rows']), '3')
+
+        self.assertEqual(reports[2].table_name, '0019_queries_not_using_indices')
+        self.assertEqual(str(reports[2].context['query']), 'SELECT 1 AS one FROM dual WHERE exists ( SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test" );')
+        self.assertEqual(str(reports[2].context['explain_extra']), 'Using where')
+        self.assertEqual(str(reports[2].context['explain_rows']), '3')
 
         # assert False
