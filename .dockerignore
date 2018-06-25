@@ -1,0 +1,22 @@
+# hidden files and directories
+.*/*
+
+# shell scripts and Makefile
+*.sh
+Makefile
+
+# virtual environments
+env*
+
+# Python-specific stuff
+*.egg-info/
+dist/
+htmlcov/
+coverage.xml
+
+# SQL fixtures and tests
+setup.sql
+sql/
+
+# READMEs
+*.md
