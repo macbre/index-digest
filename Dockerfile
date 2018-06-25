@@ -18,3 +18,6 @@ RUN apt-get update && apt-get install -y libmariadbclient-dev gcc \
 ADD . .
 
 USER nobody
+
+# docker run -t macbre/index-digest
+ENTRYPOINT ["index_digest"]

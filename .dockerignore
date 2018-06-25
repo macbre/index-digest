@@ -1,5 +1,5 @@
 # hidden files and directories
-.*/*
+.*
 
 # shell scripts and Makefile
 *.sh
