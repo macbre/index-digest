@@ -43,6 +43,35 @@ source env/bin/activate
 make install
 ```
 
+### Using Docker
+
+> See https://hub.docker.com/r/macbre/index-digest/
+
+```
+$ docker run --network=host -t macbre/index-digest:latest mysql://index_digest:qwerty@debian/index_digest  | head -n 20
+------------------------------------------------------------
+Found 61 issue(s) to report for "index_digest" database
+------------------------------------------------------------
+MySQL v5.7.22 at debian
+index-digest v1.2.0
+------------------------------------------------------------
+redundant_indices → table affected: 0004_id_foo
+
+✗ "idx" index can be removed as redundant (covered by "PRIMARY")
+
+  - redundant: UNIQUE KEY idx (item_id, foo)
+  - covered_by: PRIMARY KEY (item_id, foo)
+  - schema: CREATE TABLE `0004_id_foo` (
+      `item_id` int(9) NOT NULL AUTO_INCREMENT,
+      `foo` varbinary(16) NOT NULL DEFAULT '',
+      PRIMARY KEY (`item_id`,`foo`),
+      UNIQUE KEY `idx` (`item_id`,`foo`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+  - table_data_size_mb: 0.015625
+  - table_index_size_mb: 0.015625
+...
+```
+
 ## How to run it?
 
 ```

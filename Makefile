@@ -28,3 +28,16 @@ sql-console:
 publish:
 	# run git tag -a v0.0.0 before running make publish
 	python setup.py sdist upload -r pypi
+
+# docker
+VERSION = "1.2.0"
+
+build:
+	@docker build -t macbre/index-digest:$(VERSION) . \
+	&& docker tag macbre/index-digest:$(VERSION) macbre/index-digest:latest
+
+push: build
+	@docker push macbre/index-digest:$(VERSION) \
+	&& docker push macbre/index-digest:latest
+
+.PHONY: build
