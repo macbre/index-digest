@@ -40,10 +40,10 @@ setup(
     install_requires=[
         'docopt==0.6.2',
         'coverage==4.5.1',
-        'pylint==1.8.2',
-        'pytest==3.4.0',
-        'PyYAML==3.12',
-        'mysqlclient==1.3.12',
+        'pylint==2.0.0',
+        'pytest==3.6.3',
+        'PyYAML==3.13',
+        'mysqlclient==1.3.13',
         'sql_metadata==1.1.2',
         'termcolor==1.1.0',
         'yamlordereddictloader==0.4.0'
