@@ -40,7 +40,7 @@ setup(
     install_requires=[
         'docopt==0.6.2',
         'coverage==4.5.1',
-        'pylint==2.0.0',
+        'pylint==1.9.2',
         'pytest==3.6.3',
         'PyYAML==3.13',
         'mysqlclient==1.3.13',
