@@ -29,8 +29,8 @@ publish:
 	# run git tag -a v0.0.0 before running make publish
 	python setup.py sdist upload -r pypi
 
-# docker
-VERSION = "1.2.0"
+# docker (tag with commit ID)
+VERSION = "1.2.0-"$(shell git rev-parse --short HEAD)
 
 build:
 	@docker build -t macbre/index-digest:$(VERSION) . \
