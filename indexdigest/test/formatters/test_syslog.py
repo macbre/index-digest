@@ -14,7 +14,7 @@ class TestFormatter(TestCase, FormatterTestMixin):
         out = format_report(self.get_database_mock(), report)
         print(out, report)
 
-        self.assertEquals(
+        self.assertEqual(
             '{"appname": "index-digest", "meta": {"version": "index-digest v' + VERSION + '", "database_name": "test_database", '
             '"database_host": "test.local", "database_version": "MySQL v1.2.3-test"}, '
             '"report": {"type": "foo_linter", "table": "table_001", "message": "Something is fishy here", '

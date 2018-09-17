@@ -10,12 +10,12 @@ from indexdigest.test import DatabaseTestMixin, read_queries_from_log
 class TestInsertIgnore(TestCase, DatabaseTestMixin):
 
     def test_remove_comments(self):
-        self.assertEquals(
+        self.assertEqual(
             'INSERT  IGNORE',
             remove_comments('INSERT /* foo */ IGNORE')
         )
 
-        self.assertEquals(
+        self.assertEqual(
             'SELECT foo',
             remove_comments('/* foo */SELECT/* test*/ foo')
         )

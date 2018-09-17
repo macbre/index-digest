@@ -27,7 +27,7 @@ class TestUtils(TestCase):
         assert is_select_query('UPDATE foo SET bar=42 WHERE id=1') is False
 
     def test_shorten_query(self):
-        self.assertEquals('SELECT * FROM foo', shorten_query('SELECT * FROM foo'))
-        self.assertEquals('SELECT * FROM foo', shorten_query('SELECT * FROM foo', max_len=18))
-        self.assertEquals('SELECT * FROM foo', shorten_query('SELECT * FROM foo', max_len=17))
-        self.assertEquals('SELECT * FROM fo...', shorten_query('SELECT * FROM foo', max_len=16))
+        self.assertEqual('SELECT * FROM foo', shorten_query('SELECT * FROM foo'))
+        self.assertEqual('SELECT * FROM foo', shorten_query('SELECT * FROM foo', max_len=18))
+        self.assertEqual('SELECT * FROM foo', shorten_query('SELECT * FROM foo', max_len=17))
+        self.assertEqual('SELECT * FROM fo...', shorten_query('SELECT * FROM foo', max_len=16))
