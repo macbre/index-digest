@@ -180,18 +180,18 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         # assert False
 
     def test_get_table_rows_estimate(self):
-        self.assertEquals(self.connection.get_table_rows_estimate(self.TABLE_NAME), 3)
+        self.assertEqual(self.connection.get_table_rows_estimate(self.TABLE_NAME), 3)
 
 
 class TestsWithDatabaseMocked(TestCase):
 
     def test_database_hostname(self):
         db = DatabaseWithMockedRow(mocked_row=['hostname', 'kopytko.foo.net'])
-        self.assertEquals(db.get_server_hostname(), 'kopytko.foo.net')
+        self.assertEqual(db.get_server_hostname(), 'kopytko.foo.net')
 
     def test_database_version(self):
         db = DatabaseWithMockedRow(mocked_row=['5.5.58-0+deb8u1'])
-        self.assertEquals(db.get_server_version(), '5.5.58-0+deb8u1')
+        self.assertEqual(db.get_server_version(), '5.5.58-0+deb8u1')
 
 
 class TestMemoization(TestCase, DatabaseTestMixin):
@@ -201,10 +201,10 @@ class TestMemoization(TestCase, DatabaseTestMixin):
 
         # query method is not memoized, so let's count all queries (even the same ones)
         for _ in range(5):
-            self.assertEquals(db.query_row('SELECT FOO'), ['foo'])
+            self.assertEqual(db.query_row('SELECT FOO'), ['foo'])
 
-        self.assertEquals(len(db.get_queries()), 5)
-        self.assertEquals(db.get_queries()[0], 'SELECT FOO')
+        self.assertEqual(len(db.get_queries()), 5)
+        self.assertEqual(db.get_queries()[0], 'SELECT FOO')
 
     def test_cached_get_tables(self):
         tables_list = ['foo']
@@ -212,10 +212,10 @@ class TestMemoization(TestCase, DatabaseTestMixin):
 
         # this would made five queries to database if not memoization in get_tables
         for _ in range(5):
-            self.assertEquals(db.get_tables(), tables_list)
+            self.assertEqual(db.get_tables(), tables_list)
 
         # however, only one is made :)
-        self.assertEquals(len(db.get_queries()), 1)
+        self.assertEqual(len(db.get_queries()), 1)
 
     def test_cached_explain_query(self):
         db = self.connection
@@ -224,16 +224,16 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # also test that @memoize decorator correctly handles different arguments
         for _ in range(5):
             (row,) = db.explain_query('SELECT * FROM 0000_the_table')
-            self.assertEquals(row['table'], '0000_the_table')
+            self.assertEqual(row['table'], '0000_the_table')
 
             (row,) = db.explain_query('SELECT * FROM 0002_not_used_indices')
-            self.assertEquals(row['table'], '0002_not_used_indices')
+            self.assertEqual(row['table'], '0002_not_used_indices')
 
         queries = db.get_queries()
         print(queries)
 
         # however, only two are made :)
-        self.assertEquals(len(queries), 2)
+        self.assertEqual(len(queries), 2)
 
         self.assertTrue('EXPLAIN SELECT * FROM 0000_the_table' in str(queries[0]))
         self.assertTrue('EXPLAIN SELECT * FROM 0002_not_used_indices' in str(queries[1]))
@@ -248,13 +248,13 @@ class TestMemoization(TestCase, DatabaseTestMixin):
             self.assertTrue(primary.is_primary)
 
             (idx, _, _) = db.get_table_indices(table_name='0002_not_used_indices')
-            self.assertEquals(idx.name, 'foo_id_idx')
+            self.assertEqual(idx.name, 'foo_id_idx')
 
         queries = db.get_queries()
         print(queries)
 
         # however, only two are made :)
-        self.assertEquals(len(queries), 2)
+        self.assertEqual(len(queries), 2)
 
         self.assertTrue('0000_the_table' in str(queries[0]))
         self.assertTrue('0002_not_used_indices' in str(queries[1]))
@@ -266,16 +266,16 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # also test that @memoize decorator correctly handles different arguments
         for _ in range(5):
             (col, _) = db.get_table_columns(table_name='0000_the_table')
-            self.assertEquals(col.name, 'item_id')
+            self.assertEqual(col.name, 'item_id')
 
             (_, col, _, _) = db.get_table_columns(table_name='0002_not_used_indices')
-            self.assertEquals(col.name, 'foo')
+            self.assertEqual(col.name, 'foo')
 
         queries = db.get_queries()
         print(queries)
 
         # however, only four are made :)
-        self.assertEquals(len(queries), 4)
+        self.assertEqual(len(queries), 4)
 
         self.assertTrue("SHOW COLUMNS FROM `0000_the_table`" in str(queries[0]))
         self.assertTrue("information_schema.COLUMNS WHERE TABLE_SCHEMA='index_digest' AND TABLE_NAME='0000_the_table'" in str(queries[1]))
@@ -289,16 +289,16 @@ class TestMemoization(TestCase, DatabaseTestMixin):
         # also test that @memoize decorator correctly handles different arguments
         for _ in range(5):
             schema = db.get_table_schema('0000_the_table')
-            self.assertEquals(schema, 'CREATE TABLE foo;')
+            self.assertEqual(schema, 'CREATE TABLE foo;')
 
             schema = db.get_table_schema('0002_not_used_indices')
-            self.assertEquals(schema, 'CREATE TABLE foo;')
+            self.assertEqual(schema, 'CREATE TABLE foo;')
 
         queries = db.get_queries()
         print(queries)
 
         # however, only two are made :)
-        self.assertEquals(len(queries), 2)
+        self.assertEqual(len(queries), 2)
 
-        self.assertEquals('SHOW CREATE TABLE `0000_the_table`', str(queries[0]))
-        self.assertEquals('SHOW CREATE TABLE `0002_not_used_indices`', str(queries[1]))
+        self.assertEqual('SHOW CREATE TABLE `0000_the_table`', str(queries[0]))
+        self.assertEqual('SHOW CREATE TABLE `0002_not_used_indices`', str(queries[1]))

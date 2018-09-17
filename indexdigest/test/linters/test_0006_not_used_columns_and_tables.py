@@ -97,6 +97,6 @@ class TestNotUsedColumns(TestCase):
         ]
 
         reports = list(check_not_used_columns(database=self.connection, queries=queries))
-        self.assertEquals(len(reports), 0)
+        self.assertEqual(len(reports), 0)
 
         # assert False
