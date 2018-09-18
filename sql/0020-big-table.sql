@@ -6,6 +6,8 @@ CREATE TABLE `0020_big_table` (
 	`item_id` int(9) NOT NULL AUTO_INCREMENT,
 	`val` int(9) NOT NULL,
 	`text` char(5) NOT NULL,
+	`num` int(3) NOT NULL,
 	PRIMARY KEY (`item_id`),
-	KEY text_idx (`text`)
+	KEY text_idx (`text`),
+	KEY num_idx (`num`) -- low cardinality (#31)
 ) CHARSET=utf8;

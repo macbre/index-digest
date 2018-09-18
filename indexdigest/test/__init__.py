@@ -63,7 +63,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
             return
 
         # @see https://dev.mysql.com/doc/refman/5.7/en/insert.html
-        cursor.executemany('INSERT INTO 0020_big_table(item_id,val,text) VALUES(%s,%s,%s)', values)
+        cursor.executemany('INSERT INTO 0020_big_table(item_id,val,text,num) VALUES(%s,%s,%s,%s)', values)
         # print(values[0], cursor.lastrowid)
 
     def _prepare_big_table(self):
@@ -84,7 +84,10 @@ class BigTableTest(TestCase, DatabaseTestMixin):
 
         # no? populate it
         for row in self._rows():
-            values.append((row, val, '{:05x}'.format(row)[:5]))
+            # Report low cardinality indices, use only a few distinct values (#31)
+            num = row % 3
+
+            values.append((row, val, '{:05x}'.format(row)[:5], num))
 
             if row % 5 == 0:
                 val += 1
@@ -100,6 +103,9 @@ class BigTableTest(TestCase, DatabaseTestMixin):
         connection.connection.commit()
 
         cursor.close()
+
+        # update key distribution statistics (#31)
+        self.connection.query('ANALYZE TABLE 0020_big_table')
 
     def table_populated(self):
         """
