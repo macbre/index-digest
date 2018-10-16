@@ -70,6 +70,7 @@ def check_low_cardinality_index(database):
         context = OrderedDict()
         context['column_name'] = index['COLUMN_NAME']
         context['index_name'] = index['INDEX_NAME']
+        context['index_cardinality'] = index['CARDINALITY']
         context['schema'] = database.get_table_schema(table_name)
         context['value_usage'] = value_usage
 

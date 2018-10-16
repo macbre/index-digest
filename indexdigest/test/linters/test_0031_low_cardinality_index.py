@@ -30,4 +30,8 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert str(reports[0]) == '0020_big_table: "num_idx" index on "num" column ' \
                                   'has low cardinality, check if it is needed'
         assert reports[0].table_name == '0020_big_table'
+
+        assert reports[0].context['column_name'] == 'num'
+        assert reports[0].context['index_name'] == 'num_idx'
+        assert reports[0].context['index_cardinality'] == 2
         assert int(reports[0].context['value_usage']) == 33
