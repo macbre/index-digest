@@ -65,7 +65,8 @@ from indexdigest.linters import \
     check_generic_primary_key, \
     check_high_offset_selects, \
     check_use_innodb, \
-    check_empty_database
+    check_empty_database, \
+    check_low_cardinality_index
 
 
 def get_reports(database, sql_log=None, analyze_data=False, check_empty_databases=False):
@@ -99,6 +100,7 @@ def get_reports(database, sql_log=None, analyze_data=False, check_empty_database
         check_empty_tables(database),
         check_generic_primary_key(database),
         check_use_innodb(database),
+        check_low_cardinality_index(database),
     )
 
     # checks that use SQL log
