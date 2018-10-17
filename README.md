@@ -147,7 +147,7 @@ Outputs YML file with results and metadata.
 
 You can select which checks should be reported by the tool by using `--checks` command line option. Certain checks can also be skipped via `--skip-checks` option. Refer to `index_digest --help` for examples.
 
-> **Number of checks**: 23
+> **Number of checks**: 24
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
@@ -157,6 +157,7 @@ You can select which checks should be reported by the tool by using `--checks` c
 * `empty_tables`: reports tables with no rows
 * `generic_primary_key`: reports tables with [a primary key on `id` column](https://github.com/jarulraj/sqlcheck/blob/master/docs/logical/1004.md) (a more meaningful name should be used)
 * `use_innodb`: reports table using storage engines different than `InnoDB` (a default for MySQL 5.5+ and MariaDB 10.2+)
+* `low_cardinality_index`: reports [indices with low cardinality](https://github.com/macbre/index-digest/issues/31)
 
 ### Additional checks performed on SQL log
 
@@ -411,6 +412,27 @@ having_clause → table affected: sales
 ✗ "SELECT s.cust_id,count(s.cust_id) FROM SH.sales s ..." query uses HAVING clause
 
   - query: SELECT s.cust_id,count(s.cust_id) FROM SH.sales s GROUP BY s.cust_id HAVING s.cust_id != '1660' AND s.cust_id != '2'
+
+(...)
+
+------------------------------------------------------------
+low_cardinality_index → table affected: 0020_big_table
+
+✗ "num_idx" index on "num" column has low cardinality, check if it is needed
+
+  - column_name: num
+  - index_name: num_idx
+  - index_cardinality: 2
+  - schema: CREATE TABLE `0020_big_table` (
+      `item_id` int(9) NOT NULL AUTO_INCREMENT,
+      `val` int(9) NOT NULL,
+      `text` char(5) NOT NULL,
+      `num` int(3) NOT NULL,
+      PRIMARY KEY (`item_id`),
+      KEY `text_idx` (`text`),
+      KEY `num_idx` (`num`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=100001 DEFAULT CHARSET=utf8
+  - value_usage: 33.24788541334185
 
 (...)
 
