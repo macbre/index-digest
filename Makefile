@@ -2,15 +2,15 @@ project_name = indexdigest
 coverage_options = --include='$(project_name)/*' --omit='$(project_name)/test/*'
 
 install:
-	pip install -U -e .
+	pip install -U -e .[dev]
 
 test:
-	py.test -x $(project_name)
+	pytest -x $(project_name)
 
 coverage:
 	rm -f .coverage*
 	rm -rf htmlcov/*
-	coverage run -p -m py.test -x $(project_name)
+	coverage run -p -m pytest -x $(project_name)
 	coverage combine
 	coverage html -d htmlcov $(coverage_options)
 	coverage xml -i
@@ -27,7 +27,8 @@ sql-console:
 
 publish:
 	# run git tag -a v0.0.0 before running make publish
-	python setup.py sdist upload -r pypi
+	python setup.py sdist
+	twine upload --skip-existing dist/*
 
 # docker (tag with commit ID)
 VERSION = "1.2.0-"$(shell git rev-parse --short HEAD)

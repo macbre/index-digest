@@ -2,6 +2,10 @@ from setuptools import setup, find_packages
 
 from indexdigest import VERSION
 
+# @see https://packaging.python.org/tutorials/packaging-projects/#creating-setup-py
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 # @see https://github.com/pypa/sampleproject/blob/master/setup.py
 setup(
     name='indexdigest',
@@ -10,6 +14,8 @@ setup(
     author_email='maciej.brencz@gmail.com',
     license='MIT',
     description='Analyses your database queries and schema and suggests indices and schema improvements',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/macbre/index-digest',
     # https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -37,14 +43,19 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     packages=find_packages(),
+    extras_require={
+        'dev': [
+            'coverage==4.5.2',
+            'pylint>=1.9.2, <=2.1.1',  # 2.x branch is for Python 3
+            'pytest==4.0.0',
+            'twine==1.12.1',
+        ]
+    },
     install_requires=[
         'docopt==0.6.2',
-        'coverage==4.5.1',
-        'pylint==1.9.3',
-        'pytest==3.8.0',
         'PyYAML==3.13',
         'mysqlclient==1.3.13',
-        'sql_metadata==1.1.2',
+        'sql_metadata==1.3',
         'termcolor==1.1.0',
         'yamlordereddictloader==0.4.0'
     ],

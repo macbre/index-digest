@@ -34,9 +34,9 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert reports[0].table_name == 'foo'
         assert reports[0].context['query'] == 'SELECT * FROM foo HAVING bar = 2;'
 
-        assert str(reports[1]) == 'sales: "SELECT s.cust_id,count(s.cust_id) ' \
+        assert str(reports[1]) == 'SH.sales: "SELECT s.cust_id,count(s.cust_id) ' \
                                   'FROM SH.sales s ..." query uses HAVING clause'
-        assert reports[1].table_name == 'sales'
+        assert reports[1].table_name == 'SH.sales'
 
         assert str(reports[2]) == '0019_queries_not_using_indices: "SELECT * FROM ' \
                                   '`0019_queries_not_using_indices` WHE..." query uses HAVING clause'
