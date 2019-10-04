@@ -36,9 +36,9 @@ pip install indexdigest
 
 ```
 git clone git@github.com:macbre/index-digest.git && cd index-digest
-sudo apt-get install libmysqlclient-dev python-dev virtualenv
+sudo apt-get install libmysqlclient-dev python3-dev virtualenv
 
-virtualenv env
+virtualenv -ppython3 env
 source env/bin/activate
 make install
 ```
