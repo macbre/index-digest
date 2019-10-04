@@ -8,7 +8,7 @@ from warnings import filterwarnings
 
 import MySQLdb
 from MySQLdb.cursors import DictCursor
-from _mysql_exceptions import OperationalError, ProgrammingError
+from MySQLdb._exceptions import OperationalError, ProgrammingError
 
 from indexdigest.schema import Column, Index
 from indexdigest.utils import parse_dsn, memoize, IndexDigestError
@@ -18,7 +18,6 @@ class IndexDigestQueryError(IndexDigestError):
     """
     A wrapper for _mysql_exceptions.OperationalError:
     """
-    pass
 
 
 class DatabaseBase(object):

@@ -117,4 +117,4 @@ def main():
         add_linter(linter_id, linter_name)
     except IndexError:
         print('Usage: add_linter 89 empty_tables')
-        exit(1)
+        sys.exit(1)

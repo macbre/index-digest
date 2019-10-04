@@ -1,33 +1,26 @@
 language: python
-dist: trusty
+dist: xenial
 services:
   - docker
 
 # * run various Python versions tests on MySQL 5.7
-# * run all MySQL versions tests on Python 3.6
+# * run all MySQL versions tests on Python 3.7
 # @see https://docs.travis-ci.com/user/customizing-the-build/#Explicitly-Including-Jobs
 matrix:
   include:
-    - python: 2.7
+    - python: "3.6"
       env: DOCKER_IMAGE=mysql:5.7
-    - python: 3.4
-      env: DOCKER_IMAGE=mysql:5.7
-    - python: 3.5
-      env: DOCKER_IMAGE=mysql:5.7
-    - python: 3.6
+    - python: "3.7"
       env: DOCKER_IMAGE=mysql:5.7
 
     # @see https://hub.docker.com/_/mysql/
-    - python: 3.6
-      env: DOCKER_IMAGE=mysql:5.5
-    - python: 3.6
-      env: DOCKER_IMAGE=mysql:5.6
-    - python: 3.6
+    # @see https://www.fromdual.com/support-for-mysql-from-oracle
+    - python: "3.7"
       env: DOCKER_IMAGE=mysql:8.0.3
     # @see https://hub.docker.com/_/mariadb/
-    - python: 3.6
-      env: DOCKER_IMAGE=mariadb:10.0  # used by Wikipedia
-    - python: 3.6
+    - python: "3.7"
+      env: DOCKER_IMAGE=mariadb:10.1
+    - python: "3.7"
       env: DOCKER_IMAGE=mariadb:10.2
 
 before_script:
