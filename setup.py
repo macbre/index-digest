@@ -35,8 +35,6 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
@@ -45,17 +43,17 @@ setup(
     packages=find_packages(),
     extras_require={
         'dev': [
-            'coverage==4.5.2',
-            'pylint>=1.9.2, <=2.1.1',  # 2.x branch is for Python 3
-            'pytest==4.0.0',
-            'twine==1.12.1',
+            'coverage==4.5.4',
+            'pylint>=2.4.2',
+            'pytest==5.2.0',
+            'twine==2.0.0',
         ]
     },
     install_requires=[
         'docopt==0.6.2',
-        'PyYAML==3.13',
-        'mysqlclient==1.3.13',
-        'sql_metadata==1.3',
+        'PyYAML==5.1.2',
+        'mysqlclient==1.4.4',
+        'sql_metadata==1.5.0',
         'termcolor==1.1.0',
         'yamlordereddictloader==0.4.0'
     ],
