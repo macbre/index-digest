@@ -123,4 +123,3 @@ class IndexDigestError(Exception):
     """
     index-digest base exception class
     """
-    pass

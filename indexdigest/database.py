@@ -18,7 +18,6 @@ class IndexDigestQueryError(IndexDigestError):
     """
     A wrapper for _mysql_exceptions.OperationalError:
     """
-    pass
 
 
 class DatabaseBase(object):
