@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/python/
-FROM python:3.6-slim
+FROM python:3.7-slim-buster
 
 WORKDIR /opt/macbre/index-digest
 
@@ -9,7 +9,7 @@ ADD indexdigest/__init__.py ./indexdigest/__init__.py
 
 # installs mysql_config and pip dependencies
 # https://github.com/gliderlabs/docker-alpine/issues/181
-RUN apt-get update && apt-get install -y libmariadbclient-dev gcc \
+RUN apt-get update && apt-get install -y libmariadb-dev-compat gcc \
     && pip install indexdigest \
     && rm -rf ~/.cache/pip \
     && apt-get remove -y gcc && apt-get autoremove -y
