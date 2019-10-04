@@ -31,7 +31,7 @@ publish:
 	twine upload --skip-existing dist/*
 
 # docker (tag with commit ID)
-VERSION = "1.2.0-"$(shell git rev-parse --short HEAD)
+VERSION = "1.2.1-"$(shell git rev-parse --short HEAD)
 
 build:
 	@docker build -t macbre/index-digest:$(VERSION) . \
