@@ -27,7 +27,7 @@ class DatabaseBase(object):
     Sub-class this to mock database connection
     """
 
-    def __init__(self, host, user, passwd, db):
+    def __init__(self, host, user, passwd, db, port=3306):
         """
         Connects to a given database
 
@@ -40,7 +40,7 @@ class DatabaseBase(object):
         self.query_logger = logging.getLogger(__name__ + '.query')
 
         # lazy connect
-        self._connection_params = dict(host=host, user=user, passwd=passwd, db=db)
+        self._connection_params = dict(host=host, port=port, user=user, passwd=passwd, db=db)
         self._connection = None
         self.db_name = db
 
@@ -67,8 +67,9 @@ class DatabaseBase(object):
         :rtype: Connection
         """
         if self._connection is None:
-            self.logger.info('Lazy connecting to %s and using %s database',
-                             self._connection_params['host'], self._connection_params['db'])
+            self.logger.info('Lazy connecting to %s:%i and using %s database',
+                             self._connection_params['host'], self._connection_params['port'],
+                             self._connection_params['db'])
 
             self._connection = MySQLdb.connect(**self._connection_params)
 

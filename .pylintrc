@@ -1,2 +1,4 @@
 [MESSAGES CONTROL]
 disable=too-few-public-methods,fixme,no-member,duplicate-code,useless-object-inheritance
+[DESIGN]
+max-args=7

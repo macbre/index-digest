@@ -9,6 +9,16 @@ class TestUtils(TestCase):
         parsed = parse_dsn('mysql://alex:pwd@localhost/test')
 
         self.assertEqual('localhost', parsed['host'])
+        self.assertEqual(3306, parsed['port'])
+        self.assertEqual('alex', parsed['user'])
+        self.assertEqual('pwd', parsed['passwd'])
+        self.assertEqual('test', parsed['db'])
+
+    def test_parse_dsn_with_port(self):
+        parsed = parse_dsn('mysql://alex:pwd@localhost:5000/test')
+
+        self.assertEqual('localhost', parsed['host'])
+        self.assertEqual(5000, parsed['port'])
         self.assertEqual('alex', parsed['user'])
         self.assertEqual('pwd', parsed['passwd'])
         self.assertEqual('test', parsed['db'])

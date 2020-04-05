@@ -27,6 +27,7 @@ def parse_dsn(dsn):
 
     return {
         'host': parsed.hostname,
+        'port': int(parsed.port) if parsed.port else 3306,
         'user': parsed.username,
         'passwd': parsed.password,
         'db': str(parsed.path).lstrip('/')
