@@ -12,6 +12,8 @@ matrix:
       env: DOCKER_IMAGE=mysql:5.7
     - python: "3.7"
       env: DOCKER_IMAGE=mysql:5.7
+    - python: "3.8"
+      env: DOCKER_IMAGE=mysql:5.7
 
     # @see https://hub.docker.com/_/mysql/
     # @see https://www.fromdual.com/support-for-mysql-from-oracle
