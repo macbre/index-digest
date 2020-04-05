@@ -36,7 +36,7 @@ before_script:
   - mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
 install: make install
-script: make coverage && make lint && make demo
+script: make coverage && make lint
 
 # @see https://github.com/nickstenning/travis-pip-cache/issues/1
 cache: pip
