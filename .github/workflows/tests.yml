@@ -11,14 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      # Do not fail if one the tests did not pass
+      fail-fast: false
+
       matrix:
         # Python version(s) to use when running the tests
         python: [ 3.8 ]
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
-          - "mysql:5.7"
-          - "mysql:8.0.3"
+          - "mysql:5.7.30"
+          - "mysql:8.0.20"
           - "mariadb:10.1"
           - "mariadb:10.2"
 
