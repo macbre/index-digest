@@ -16,7 +16,11 @@ jobs:
         python: [ 3.8 ]
 
         # Docker images of MySQL-compliant databases to run the tests suite on
-        database: [ mysql:5.7, mysql:8.0.3, mariadb:10.1, mariadb:10.2 ]
+        database:
+          - "mysql:5.7"
+          - "mysql:8.0.3"
+          - "mariadb:10.1"
+          - "mariadb:10.2"
 
     services:
         mysql:
