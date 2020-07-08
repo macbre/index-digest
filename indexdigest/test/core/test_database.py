@@ -168,7 +168,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         self.assertTrue('foo' in column_names)
 
         self.assertEqual(columns[0].name, 'item_id')
-        self.assertEqual(columns[0].type, 'int(9)')
+        self.assertEqual(columns[0].type, 'int')
         self.assertIsNone(columns[0].character_set)  # numeric column
 
         self.assertEqual(columns[1].name, 'foo')
