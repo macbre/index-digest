@@ -1,4 +1,4 @@
-name: Linter and tester
+name: Integration tests
 
 on:
   push:
