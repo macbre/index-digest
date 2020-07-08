@@ -46,7 +46,7 @@ setup(
             'coverage==4.5.4',
             'pylint>=2.4.2',
             'pytest==5.2.0',
-            'twine==2.0.0',
+            'twine==3.2.0',
         ]
     },
     install_requires=[
