@@ -1,0 +1,53 @@
+name: Linter and tester
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+strategy:
+  matrix:
+    # Python version(s) to use when running the tests
+    python: [ 3.8 ]
+  
+    # Docker images of MySQL-compliant databases to run the tests suite on
+    database: [ mysql:5.7, mysql:8.0.3, mariadb:10.1, mariadb:10.2 ]
+
+services:
+    mysql:
+        image: ${{ matrix.database }}
+        env:
+            MYSQL_ALLOW_EMPTY_PASSWORD: yes
+            MYSQL_DATABASE: index_digest
+        ports:
+            - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Linter
+      run: make lint
+
+    - name: Set up the database
+      run: |
+        mysql --protocol=tcp -u root -v < setup.sql
+        # import the test schema files
+        "./sql/populate.sh"
+        mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
+
+    - name: Tests
+      run: make coverage
