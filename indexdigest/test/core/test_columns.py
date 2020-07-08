@@ -22,6 +22,8 @@ class TestColumn(TestCase):
         ]
 
         not_text_types = [
+            'INT',
+            'BIGINT',
             'INT(9)',
             'TIMESTAMP',
             'DATETIME',
@@ -47,6 +49,8 @@ class TestColumn(TestCase):
         ]
 
         not_timestamp_types = [
+            'INT',
+            'BIGINT',
             'INT(9)',
             'CHAR(16)',
             'VARCHAR(16)',

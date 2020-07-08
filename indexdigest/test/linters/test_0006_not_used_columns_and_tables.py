@@ -84,7 +84,7 @@ class TestNotUsedColumns(TestCase):
         # reports ordered is the same as schema columns order
         self.assertEqual(len(reports), 2)
         self.assertEqual(reports[0].context['column_name'], 'item_id')
-        self.assertEqual(reports[0].context['column_type'], 'int(9)')
+        self.assertEqual(reports[0].context['column_type'], 'int')
         self.assertEqual(reports[1].context['column_name'], 'bar')
         self.assertEqual(reports[1].context['column_type'], 'varchar(16)')
 
