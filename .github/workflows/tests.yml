@@ -54,4 +54,4 @@ jobs:
         mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
     - name: Tests
-      run: make coverage
+      run: make test
