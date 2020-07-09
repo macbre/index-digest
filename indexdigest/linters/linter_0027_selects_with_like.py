@@ -36,7 +36,7 @@ def check_selects_with_like(database, queries):
 
             # https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain-extra-information
             context['explain_extra'] = explain_row['Extra']
-            context['explain_rows'] = explain_row['rows']
+            context['explain_rows'] = int(explain_row['rows'])  # we get string here when using MariaDB 10.5
 
             yield LinterEntry(linter_type='selects_with_like', table_name=table_used,
                               message='"{}" query uses LIKE with left-most wildcard'.
