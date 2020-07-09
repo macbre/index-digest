@@ -25,6 +25,7 @@ jobs:
           - "mariadb:10.1"
           - "mariadb:10.2"
           - "mariadb:10.5"
+          - "percona:8.0.19-10"
 
     services:
         mysql:
