@@ -25,7 +25,7 @@ def filter_explain_extra(database, queries, check):
             context['query'] = query
 
             context['explain_extra'] = explain_row['Extra']
-            context['explain_rows'] = explain_row['rows']
+            context['explain_rows'] = int(explain_row['rows'])  # string when using MariaDB 10.5
             context['explain_filtered'] = explain_row.get('filtered')  # can be not set
             context['explain_key'] = explain_row['key']
 

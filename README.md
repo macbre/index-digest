@@ -1,7 +1,6 @@
 # index-digest
 
 [![PyPI](https://img.shields.io/pypi/v/indexdigest.svg)](https://pypi.python.org/pypi/indexdigest)
-[![Build Status](https://travis-ci.org/macbre/index-digest.svg?branch=master)](https://travis-ci.org/macbre/index-digest)
 
 Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as **your database linter**. The goal is to **provide the user with actionable reports** instead of just a list of statistics and schema details. Inspired by [Percona's `pt-index-usage`](https://www.percona.com/doc/percona-toolkit/LATEST/pt-index-usage.html).
 
@@ -20,7 +19,7 @@ Analyses your database queries and schema and suggests indices improvements. You
 * if run with `--check-empty-databases` switch it:
   * report empty databases on the current MySQL server
 
-This tool **supports MySQL 5.7, 8.0 and MariaDB 10.1, 10.2** and runs under **Python 3.4+**.
+This tool **supports MySQL 5.7, 8.0, [Percona Server](https://www.percona.com/software/mysql-database/percona-server) 8.0 and MariaDB 10.1, 10.2, 10.5** and runs under **Python 3.4+**.
 
 Results can be reported in a human-readable form, as YAML or sent to syslog and later aggregated & processed using ELK stack.
 
@@ -41,6 +40,24 @@ sudo apt-get install libmysqlclient-dev python3-dev virtualenv
 virtualenv -ppython3 env
 source env/bin/activate
 make install
+```
+
+#### Running tests
+
+We assume database is running locally on port 3306. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
+
+```
+docker run -p 3306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=index_digest" mysql:8.0.20
+```
+
+Wait until the server is up and running.
+
+```
+mysql --protocol=tcp -u root -v < setup.sql
+./sql/populate.sh
+mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
+
+make test
 ```
 
 ### Using Docker

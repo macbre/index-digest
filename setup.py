@@ -45,13 +45,13 @@ setup(
         'dev': [
             'coverage==5.2',
             'pylint>=2.4.2',
-            'pytest==5.2.0',
+            'pytest==5.4.3',
             'twine==3.2.0',
         ]
     },
     install_requires=[
         'docopt==0.6.2',
-        'PyYAML==5.1.2',
+        'PyYAML==5.3.1',
         'mysqlclient==2.0.1',
         'sql_metadata==1.7.0',
         'termcolor==1.1.0',

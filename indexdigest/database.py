@@ -201,13 +201,15 @@ class Database(DatabaseBase):
     @memoize
     def get_tables(self):
         """
-        Returns the list of tables (ignore views)
+        Returns the alphabetically sorted list of tables (ignore views)
 
         :rtype: list[str]
         """
-        return list(self.query_list('SELECT TABLE_NAME FROM information_schema.tables '
-                                    'WHERE table_schema = "{}" and TABLE_TYPE = "BASE TABLE"'.
-                                    format(self.db_name)))
+        return sorted(self.query_list(
+            'SELECT TABLE_NAME FROM information_schema.tables '
+            'WHERE table_schema = "{}" and TABLE_TYPE = "BASE TABLE"'.
+            format(self.db_name)
+        ))
 
     def get_variables(self, like=None):
         """
@@ -285,7 +287,7 @@ class Database(DatabaseBase):
         :type table_name str
         :rtype: list[Column]
         """
-        # @see https://dev.mysql.com/doc/refman/5.7/en/show-columns.html
+        # @see https://dev.mysql.com/doc/refman/8.0/en/show-columns.html
         try:
             columns = [
                 row['Field']
@@ -296,7 +298,7 @@ class Database(DatabaseBase):
             logger.error('Cannot get columns list for table: %s', table_name)
             return None
 
-        # @see https://dev.mysql.com/doc/refman/5.7/en/columns-table.html
+        # @see https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
         rows = self.query_dict_rows(
             "SELECT COLUMN_NAME as NAME, COLUMN_TYPE as TYPE, CHARACTER_SET_NAME, COLLATION_NAME "
             "FROM information_schema.COLUMNS " + self._get_information_schema_where(table_name))
@@ -304,6 +306,7 @@ class Database(DatabaseBase):
         meta = dict()
 
         for row in rows:
+            # TYPE: e.g. int(9), varchar(32)
             meta[row['NAME']] = Column(name=row['NAME'], column_type=row['TYPE'],
                                        character_set=row['CHARACTER_SET_NAME'],
                                        collation=row['COLLATION_NAME'])

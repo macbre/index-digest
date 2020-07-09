@@ -127,6 +127,18 @@ class Column(object):
         self._character_set = character_set
         self._collation = collation
 
+        # As of MySQL 8.0.17, the ZEROFILL attribute is deprecated for numeric data types
+        # and support for it will be removed in a future MySQL version. Consider using
+        # an alternative means of producing the effect of this attribute.
+        #
+        # For example, applications could use the LPAD() function to zero-pad numbers up to
+        # the desired width, or they could store the formatted numbers in CHAR columns.
+        #
+        # https://dev.mysql.com/doc/refman/8.0/en/numeric-type-syntax.html
+        if 'int(' in self._type:
+            # normalize int(N) from MySQL 8.0.16 and older to int
+            self._type = self._type.split('(')[0]
+
     @property
     def name(self):
         """
