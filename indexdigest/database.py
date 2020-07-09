@@ -201,11 +201,11 @@ class Database(DatabaseBase):
     @memoize
     def get_tables(self):
         """
-        Returns the list of tables (ignore views)
+        Returns the alphabetically sorted list of tables (ignore views)
 
         :rtype: list[str]
         """
-        return list(self.query_list('SELECT TABLE_NAME FROM information_schema.tables '
+        return sorted(self.query_list('SELECT TABLE_NAME FROM information_schema.tables '
                                     'WHERE table_schema = "{}" and TABLE_TYPE = "BASE TABLE"'.
                                     format(self.db_name)))
 
