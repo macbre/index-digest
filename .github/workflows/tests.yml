@@ -24,6 +24,7 @@ jobs:
           - "mysql:8.0.20"
           - "mariadb:10.1"
           - "mariadb:10.2"
+          - "mariadb:10.5"
 
     services:
         mysql:

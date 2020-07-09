@@ -28,7 +28,7 @@ def check_full_table_scan(database, queries):
 
         context = OrderedDict()
         context['query'] = query
-        context['explain_rows'] = row['rows']
+        context['explain_rows'] = int(row['rows'])  # we get string here when using MariaDB 10.5
 
         yield LinterEntry(linter_type='queries_using_full_table_scan', table_name=table_used,
                           message='"{}" query triggered full table scan'.
