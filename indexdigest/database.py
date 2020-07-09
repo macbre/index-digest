@@ -205,9 +205,11 @@ class Database(DatabaseBase):
 
         :rtype: list[str]
         """
-        return sorted(self.query_list('SELECT TABLE_NAME FROM information_schema.tables '
-                                    'WHERE table_schema = "{}" and TABLE_TYPE = "BASE TABLE"'.
-                                    format(self.db_name)))
+        return sorted(self.query_list(
+            'SELECT TABLE_NAME FROM information_schema.tables '
+            'WHERE table_schema = "{}" and TABLE_TYPE = "BASE TABLE"'.
+            format(self.db_name)
+        ))
 
     def get_variables(self, like=None):
         """
