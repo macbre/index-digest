@@ -19,7 +19,7 @@ Analyses your database queries and schema and suggests indices improvements. You
 * if run with `--check-empty-databases` switch it:
   * report empty databases on the current MySQL server
 
-This tool **supports MySQL 5.7, 8.0 and MariaDB 10.1, 10.2, 10.5** and runs under **Python 3.4+**.
+This tool **supports MySQL 5.7, 8.0, [Percona Server](https://www.percona.com/software/mysql-database/percona-server) 8.0 and MariaDB 10.1, 10.2, 10.5** and runs under **Python 3.4+**.
 
 Results can be reported in a human-readable form, as YAML or sent to syslog and later aggregated & processed using ELK stack.
 
