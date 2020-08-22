@@ -106,7 +106,7 @@ class DatabaseBase(object):
             # e.g. (1146, "Table 'index_digest.t' doesn't exist") - ProgrammingError
             (code, message) = ex.args
             self.query_logger.error('Database error #%d: %s', code, message)
-            raise IndexDigestQueryError(message)
+            raise IndexDigestQueryError(message) from ex
 
         # register the query
         self._queries.append(sql)
