@@ -93,6 +93,12 @@ class DatabaseBase(object):
         cursor = self.connection.cursor(cursorclass=cursor_class)
 
         try:
+            # Python 3: query should be str (unicode) when executing %
+            try:
+                sql = sql.encode('utf8')
+            except UnicodeDecodeError:
+                pass
+
             cursor.execute(sql)
         except (OperationalError, ProgrammingError) as ex:
             # e.g. (1054, "Unknown column 'test' in 'field list'") - OperationalError
