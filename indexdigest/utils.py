@@ -1,10 +1,7 @@
 """
 This module contains utility functions and classes
 """
-try:
-    from urlparse import urlparse  # Python2
-except ImportError:
-    from urllib.parse import urlparse  # Python3
+from urllib.parse import urlparse
 
 import functools
 import logging

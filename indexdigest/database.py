@@ -93,7 +93,6 @@ class DatabaseBase(object):
         cursor = self.connection.cursor(cursorclass=cursor_class)
 
         try:
-            # Python 2: query should be bytes when executing %.
             # Python 3: query should be str (unicode) when executing %
             try:
                 sql = sql.encode('utf8')
@@ -106,7 +105,7 @@ class DatabaseBase(object):
             # e.g. (1146, "Table 'index_digest.t' doesn't exist") - ProgrammingError
             (code, message) = ex.args
             self.query_logger.error('Database error #%d: %s', code, message)
-            raise IndexDigestQueryError(message)
+            raise IndexDigestQueryError(message) from ex
 
         # register the query
         self._queries.append(sql)
