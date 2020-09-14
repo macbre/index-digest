@@ -45,7 +45,7 @@ setup(
     packages=find_packages(),
     extras_require={
         'dev': [
-            'coverage==5.2.1',
+            'coverage==5.3',
             'pylint==2.6.0',
             'pytest==6.0.1',
             'twine==3.2.0',
