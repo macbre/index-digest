@@ -65,7 +65,7 @@ def check_low_cardinality_index(database):
         if value_usage < INDEX_VALUE_PERCENTAGE_THRESHOLD:
             continue
 
-        print(value_usage, index, table_name)
+        # print(value_usage, index, table_name)
 
         context = OrderedDict()
         context['column_name'] = index['COLUMN_NAME']
