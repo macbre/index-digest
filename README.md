@@ -139,6 +139,16 @@ select count(*) from 0002_not_used_indices where foo = 'foo'
 INSERT  IGNORE INTO `0070_insert_ignore` VALUES ('123', 9, '2017-01-01');
 ```
 
+### From [MySQL slow query log](https://dev.mysql.com/doc/refman/8.0/en/slow-query-log.html)
+
+MySQL's slow query log needs to be pre-processed first (to remove comments and timestamps):
+
+```
+cat mysql-slow.log | egrep -v '^(SET timestamp|#|throttle: )' > queries.log
+```
+
+Then you can run `index_digest --sql-log=queries.log ...`.
+
 ## Formatters
 
 `index-digest` can return results in various formats (use `--format` to choose one).
