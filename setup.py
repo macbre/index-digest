@@ -47,7 +47,7 @@ setup(
         'dev': [
             'coverage==5.2.1',
             'pylint==2.6.0',
-            'pytest==6.0.1',
+            'pytest==6.0.2',
             'twine==3.2.0',
         ]
     },
