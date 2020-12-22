@@ -35,14 +35,14 @@ def get_low_cardinality_indices(database):
                 table_name=table_name, database_name=database.db_name)
         )
 
-        print('get_low_cardinality_indices', list(indices))
-
         for index in indices:
+            print('idx', table_name, rows_count, index)
+
             # the cardinality is too high
             if index['CARDINALITY'] > INDEX_CARDINALITY_THRESHOLD:
                 continue
 
-            yield (table_name, rows_count, index)
+            yield table_name, rows_count, index
 
 
 def check_low_cardinality_index(database):
