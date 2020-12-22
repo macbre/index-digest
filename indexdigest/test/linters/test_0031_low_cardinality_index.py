@@ -37,4 +37,5 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert reports[0].context['column_name'] == 'num'
         assert reports[0].context['index_name'] == 'num_idx'
         assert isinstance(reports[0].context['index_cardinality'], int)
-        assert 33 <= int(reports[0].context['value_usage']) <= 35
+
+        self.assertAlmostEqual(int(reports[0].context['value_usage']), 50, delta=5)

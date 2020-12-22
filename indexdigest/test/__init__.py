@@ -85,7 +85,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
         # no? populate it
         for row in self._rows():
             # Report low cardinality indices, use only a few distinct values (#31)
-            num = row % 3
+            num = row % 2
 
             values.append((row, val, '{:05x}'.format(row)[:5], num))
 
