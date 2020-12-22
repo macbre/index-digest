@@ -266,11 +266,13 @@ class Database(DatabaseBase):
         :type table_name str
         :rtype: dict
         """
-        # @see https://dev.mysql.com/doc/refman/5.7/en/tables-table.html
+        # https://dev.mysql.com/doc/refman/5.7/en/tables-table.html
+        # https://mariadb.com/kb/en/information-schema-tables-table/
         stats = self.query_dict_row(
             "SELECT ENGINE, TABLE_ROWS, DATA_LENGTH, INDEX_LENGTH "
             "FROM information_schema.TABLES " + self._get_information_schema_where(table_name))
 
+        # TODO: introduce dataclass
         return {
             'engine': stats['ENGINE'],
             'rows': stats['TABLE_ROWS'],  # For InnoDB the row count is only a rough estimate
