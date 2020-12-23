@@ -2,9 +2,8 @@ name: Integration tests
 
 on:
   push:
-    branches: [ master ]
+    branches: master
   pull_request:
-    branches: [ master ]
 jobs:
 
   integrations_tests:
@@ -16,7 +15,7 @@ jobs:
 
       matrix:
         # Python version(s) to use when running the tests
-        python: [ 3.8, 3.9-dev ]
+        python: 3.8
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
