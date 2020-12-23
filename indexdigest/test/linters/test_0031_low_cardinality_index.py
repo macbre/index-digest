@@ -20,7 +20,7 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert index[0] == '0020_big_table'
         assert index[2]['INDEX_NAME'] == 'num_idx'
         assert index[2]['COLUMN_NAME'] == 'num'
-        assert index[2]['CARDINALITY'] > 1
+        assert index[2]['CARDINALITY'] >= 1
         assert index[2]['CARDINALITY'] <= INDEX_CARDINALITY_THRESHOLD
 
     def test_low_cardinality_index(self):
@@ -37,4 +37,5 @@ class TestLinter(TestCase, DatabaseTestMixin):
         assert reports[0].context['column_name'] == 'num'
         assert reports[0].context['index_name'] == 'num_idx'
         assert isinstance(reports[0].context['index_cardinality'], int)
-        assert 33 <= int(reports[0].context['value_usage']) <= 35
+
+        self.assertAlmostEqual(int(reports[0].context['value_usage']), 50, delta=5)

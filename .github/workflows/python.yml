@@ -1,4 +1,4 @@
-name: Integration tests
+name: Test against different Python version
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  integrations_tests:
+  python_tests:
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,16 +17,13 @@ jobs:
       matrix:
         # Python version(s) to use when running the tests
         python:
-         - "3.8"
+          - "3.6"
+          - "3.8"
+          - "3.9-dev"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
-          - "mysql:5.7.30"
-          - "mysql:8.0.20"
-          - "mariadb:10.1"
-          - "mariadb:10.2"
-          - "mariadb:10.5"
-          - "percona:8.0.19-10"
+         - "mysql:8.0.20"
 
     services:
         mysql:
