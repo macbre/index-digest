@@ -5,7 +5,7 @@ install:
 	pip install -U -e .[dev]
 
 test:
-	pytest -x $(project_name)
+	pytest -x $(project_name) -o log_cli=true -o log_cli_level=warning
 
 coverage:
 	rm -f .coverage*
