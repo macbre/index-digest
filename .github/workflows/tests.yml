@@ -16,7 +16,8 @@ jobs:
 
       matrix:
         # Python version(s) to use when running the tests
-        python: 3.8
+        python:
+         - "3.8"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
