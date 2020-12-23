@@ -4,8 +4,9 @@ on:
   push:
     branches: master
   pull_request:
-jobs:
+    branches: [ master ]
 
+jobs:
   integrations_tests:
     runs-on: ubuntu-latest
 
