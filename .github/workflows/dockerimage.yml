@@ -1,16 +1,25 @@
 name: Check if a Docker image can be built
 
-on: [push]
+on:
+  push:
+    branches: [ devel ]
+  pull_request:
 
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
+
     - name: Build the Docker image
+      env:
+        # @see https://testdriven.io/blog/faster-ci-builds-with-docker-cache/
+        CACHE_IMAGE: macbre/index-digest:latest
       run: |
-        docker build . --tag ${{ github.repository }}:$(date +%s)
+        docker pull $CACHE_IMAGE
+        docker build . \
+          --cache-from $CACHE_IMAGE \
+          --tag ${{ github.repository }}
         docker images
