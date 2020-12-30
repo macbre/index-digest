@@ -2,7 +2,7 @@ name: Check if a Docker image can be built
 
 on:
   push:
-    branches: [ devel ]
+    branches: [ master ]
   pull_request:
 
 jobs:
