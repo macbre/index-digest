@@ -4,7 +4,6 @@ on:
   push:
     branches: master
   pull_request:
-    branches: [ master ]
 
 jobs:
   integrations_tests:
@@ -21,12 +20,15 @@ jobs:
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
-          - "mysql:5.7.30"
-          - "mysql:8.0.20"
+          # https://hub.docker.com/_/mysql?tab=tags
+          - "mysql:5.7.32"
+          - "mysql:8.0.22"
+          # https://hub.docker.com/_/mariadb?tab=tags
           - "mariadb:10.1"
           - "mariadb:10.2"
           - "mariadb:10.5"
-          - "percona:8.0.19-10"
+          # https://hub.docker.com/_/percona?tab=tags
+          - "percona:8.0.22-13"
 
     services:
         mysql:
