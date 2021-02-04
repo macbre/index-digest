@@ -15,15 +15,9 @@ jobs:
 
     - name: Build the Docker image
       env:
-        # @see https://testdriven.io/blog/faster-ci-builds-with-docker-cache/
-        CACHE_IMAGE: macbre/index-digest:latest
-
         # @see https://docs.docker.com/develop/develop-images/build_enhancements/
         COMPOSE_DOCKER_CLI_BUILD: "1"
         DOCKER_BUILDKIT: "1"
       run: |
-        docker pull $CACHE_IMAGE
-        docker build . \
-          --cache-from $CACHE_IMAGE \
-          --tag ${{ github.repository }}
+        docker build . --tag ${{ github.repository }}
         docker images
