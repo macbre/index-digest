@@ -62,7 +62,9 @@ jobs:
           ${{ runner.os }}-pip-
 
     - name: Install dependencies
-      run: make install
+      run: |
+        pip install wheel
+        make install
 
     - name: Linter
       run: make lint
