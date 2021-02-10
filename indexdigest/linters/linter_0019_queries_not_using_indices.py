@@ -16,7 +16,7 @@ def check_queries_not_using_indices(database, queries):
         # print(query, explain_row)
 
         # EXPLAIN can return no matching row in const table in Extra column.
-        # Do not consider this query as not using an index. -- see #44 and 210
+        # Do not consider this query as not using an index. -- see #44 and #210
         if explain_row['Extra'] in [
                 'Impossible WHERE noticed after reading const tables',
                 'no matching row in const table',
