@@ -70,7 +70,7 @@ jobs:
         mysql --protocol=tcp --port=53306 -u root --password="" -v < setup.sql
         # import the test schema files
         "./sql/populate.sh"
-        mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
+        mysql --protocol=tcp --port=53306 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
     - name: Tests
       run: make test
