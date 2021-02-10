@@ -47,15 +47,15 @@ make install
 We assume database is running locally on port 3306. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
 
 ```
-docker run -p 3306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=index_digest" mysql:8.0.20
+docker run --rm -p 53306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=index_digest" --name=index_digest_mysql mysql:8.0.22 "--default-authentication-plugin=mysql_native_password"
 ```
 
 Wait until the server is up and running.
 
 ```
-mysql --protocol=tcp -u root -v < setup.sql
+mysql --protocol=tcp --port=53306 -u root --password="" -v < setup.sql
 ./sql/populate.sh
-mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
+mysql --protocol=tcp --port=53306 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
 make test
 ```

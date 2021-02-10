@@ -32,7 +32,7 @@ jobs:
                 MYSQL_ALLOW_EMPTY_PASSWORD: yes
                 MYSQL_DATABASE: index_digest
             ports:
-                - "3306:3306"
+              - "53306:3306"
             options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -57,7 +57,9 @@ jobs:
           ${{ runner.os }}-pip-
 
     - name: Install dependencies
-      run: make install
+      run: |
+        pip install wheel
+        make install
 
     - name: Linter
       run: make lint
@@ -65,10 +67,10 @@ jobs:
     - name: Set up the database
       run: |
         docker ps
-        mysql --protocol=tcp -u root -v < setup.sql
+        mysql --protocol=tcp --port=53306 -u root --password="" -v < setup.sql
         # import the test schema files
         "./sql/populate.sh"
-        mysql --protocol=tcp -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
+        mysql --protocol=tcp --port=53306 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
     - name: Tests
       run: make test
