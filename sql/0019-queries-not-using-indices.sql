@@ -14,6 +14,7 @@ CREATE TABLE `0019_queries_not_using_indices` (
 DROP TABLE IF EXISTS `0019_queries_not_using_indices_empty_table`;
 CREATE TABLE `0019_queries_not_using_indices_empty_table` (
 	`item_id` int(9) NOT NULL AUTO_INCREMENT,
+	`foo` varchar(16) NOT NULL DEFAULT '',
 	PRIMARY KEY (`item_id`)
 );
 
