@@ -4,6 +4,8 @@
 
 Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as **your database linter**. The goal is to **provide the user with actionable reports** instead of just a list of statistics and schema details. Inspired by [Percona's `pt-index-usage`](https://www.percona.com/doc/percona-toolkit/LATEST/pt-index-usage.html).
 
+**NEW** You can also [use `index-digest` as GitHub's Action](https://github.com/marketplace/actions/index-digest).
+
 `index-digest` does the following:
 
 * it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication, dropping tables with just a single column or no rows)
