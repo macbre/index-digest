@@ -150,7 +150,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
         # stats
         self.assertEqual(meta['engine'], 'InnoDB')
-        self.assertEqual(meta['rows'], 3)
+        self.assertAlmostEqual(meta['rows'], 3, delta=1)
         self.assertTrue(meta['index_size'] > 0)
         self.assertTrue(meta['data_size'] > 0)
 
@@ -180,7 +180,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         # assert False
 
     def test_get_table_rows_estimate(self):
-        self.assertEqual(self.connection.get_table_rows_estimate(self.TABLE_NAME), 3)
+        self.assertAlmostEqual(self.connection.get_table_rows_estimate(self.TABLE_NAME), 3, delta=1)
 
 
 class TestsWithDatabaseMocked(TestCase):

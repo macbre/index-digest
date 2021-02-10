@@ -6,10 +6,10 @@ from collections import OrderedDict
 from indexdigest.utils import LinterEntry
 
 # skip small tables
-ROWS_COUNT_THRESHOLD = 1000
+ROWS_COUNT_THRESHOLD = 100000
 
 # cardinality threshold
-INDEX_CARDINALITY_THRESHOLD = 5
+INDEX_CARDINALITY_THRESHOLD = 6
 
 # the least frequent value should be used at most by x% rows
 INDEX_VALUE_PERCENTAGE_THRESHOLD = 20
@@ -40,7 +40,7 @@ def get_low_cardinality_indices(database):
             if index['CARDINALITY'] > INDEX_CARDINALITY_THRESHOLD:
                 continue
 
-            yield (table_name, rows_count, index)
+            yield table_name, rows_count, index
 
 
 def check_low_cardinality_index(database):

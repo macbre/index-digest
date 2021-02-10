@@ -36,26 +36,25 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     packages=find_packages(),
     extras_require={
         'dev': [
-            'coverage==5.3',
+            'coverage==5.4',
             'pylint==2.6.0',
-            'pytest==6.0.2',
-            'twine==3.2.0',
+            'pytest==6.2.2',
+            'twine==3.3.0',
         ]
     },
     install_requires=[
         'docopt==0.6.2',
-        'PyYAML==5.3.1',
-        'mysqlclient==2.0.1',
-        'sql_metadata==1.8.0',
+        'PyYAML==5.4.1',
+        'mysqlclient==2.0.3',
+        'sql_metadata==1.10.0',
         'termcolor==1.1.0',
         'yamlordereddictloader==0.4.0'
     ],

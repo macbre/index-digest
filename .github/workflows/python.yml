@@ -1,12 +1,13 @@
-name: Integration tests
+name: Test against different Python version
 
 on:
   push:
     branches: master
   pull_request:
+    branches: [ master ]
 
 jobs:
-  integrations_tests:
+  python_tests:
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,19 +17,13 @@ jobs:
       matrix:
         # Python version(s) to use when running the tests
         python:
-         - "3.8"
+          - "3.6"
+          - "3.8"
+          - "3.9-dev"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
-          # https://hub.docker.com/_/mysql?tab=tags
-          - "mysql:5.7.32"
-          - "mysql:8.0.22"
-          # https://hub.docker.com/_/mariadb?tab=tags
-          - "mariadb:10.1"
-          - "mariadb:10.2"
-          - "mariadb:10.5"
-          # https://hub.docker.com/_/percona?tab=tags
-          - "percona:8.0.22-13"
+         - "mysql:8.0.20"
 
     services:
         mysql:
@@ -37,7 +32,7 @@ jobs:
                 MYSQL_ALLOW_EMPTY_PASSWORD: yes
                 MYSQL_DATABASE: index_digest
             ports:
-                - "53306:3306"
+                - "3306:3306"
             options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:

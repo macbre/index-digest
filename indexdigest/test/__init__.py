@@ -1,3 +1,5 @@
+import logging
+
 from ..database import Database
 
 from unittest import TestCase
@@ -17,6 +19,7 @@ def read_queries_from_log(log_file):
 
 class DatabaseTestMixin(object):
     DSN = 'mysql://index_digest:qwerty@127.0.0.1:53306/index_digest'
+    DBNAME = 'index_digest'
 
     @property
     def connection(self):
@@ -31,6 +34,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
     ROWS = 100000  # how many rows to generate
     BATCH = 5000  # perform INSERT in batches
 
+    BIG_TABLE_NAME = '0020_big_table'
     PREPARED = False
 
     def setUp(self):
@@ -85,7 +89,7 @@ class BigTableTest(TestCase, DatabaseTestMixin):
         # no? populate it
         for row in self._rows():
             # Report low cardinality indices, use only a few distinct values (#31)
-            num = row % 3
+            num = row % 2
 
             values.append((row, val, '{:05x}'.format(row)[:5], num))
 
@@ -106,6 +110,14 @@ class BigTableTest(TestCase, DatabaseTestMixin):
 
         # update key distribution statistics (#31)
         self.connection.query('ANALYZE TABLE 0020_big_table')
+
+        cardinality_stats = self.connection.query_dict_rows(
+            "select TABLE_NAME, INDEX_NAME, COLUMN_NAME, CARDINALITY from"
+            " INFORMATION_SCHEMA.STATISTICS where"
+            " TABLE_NAME = '{table_name}' AND TABLE_SCHEMA = '{database_name}'".format(
+                table_name=self.BIG_TABLE_NAME, database_name=self.DBNAME)
+        )
+        logging.warning('Big table initialized, cardinality: %r', list(cardinality_stats))
 
     def table_populated(self):
         """
