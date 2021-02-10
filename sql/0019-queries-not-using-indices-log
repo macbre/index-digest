@@ -13,3 +13,5 @@ SELECT 1 AS one FROM dual WHERE exists ( SELECT 1 FROM 0000_the_table WHERE item
 SELECT 1 AS one FROM dual WHERE exists ( SELECT item_id FROM 0019_queries_not_using_indices WHERE foo = "test" );
 -- #210: EXPLAINS' Extra says "Select tables optimized away"
 SELECT max(item_id) FROM 0019_queries_not_using_indices;
+-- #210: EXPLAINS' Extra says "No matching min/max row"
+SELECT max(item_id) FROM 0019_queries_not_using_indices_empty_table;

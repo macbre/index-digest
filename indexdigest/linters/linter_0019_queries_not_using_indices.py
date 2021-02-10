@@ -22,6 +22,7 @@ def check_queries_not_using_indices(database, queries):
                 'no matching row in const table',
                 'No tables used',
                 'Select tables optimized away',
+                'No matching min/max row',
         ]:
             continue
 
