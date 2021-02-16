@@ -180,7 +180,7 @@ You can select which checks should be reported by the tool by using `--checks` c
 
 * `redundant_indices`: reports indices that are redundant and covered by other
 * `non_utf_columns`: reports text columns that have characters encoding set to `latin1` (utf is the way to go)
-* `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863))
+* `missing_primary_index`: reports tables with no primary or unique key (see [MySQL bug #76252](https://bugs.mysql.com/bug.php?id=76252) and [Wikia/app#9863](https://github.com/Wikia/app/pull/9863)). [Primary keys can be enforced on MySQL config level](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_sql_require_primary_key) since 8.0.13 (via `sql_require_primary_key` variable).
 * `test_tables`: reports tables that seem to be test leftovers (e.g. `some_guy_test_table`)
 * `single_column`: reports tables with just a single column
 * `empty_tables`: reports tables with no rows
