@@ -45,7 +45,7 @@ setup(
     extras_require={
         'dev': [
             'coverage==5.4',
-            'pylint==2.6.2',
+            'pylint==2.7.0',
             'pytest==6.2.2',
             'twine==3.3.0',
         ]
