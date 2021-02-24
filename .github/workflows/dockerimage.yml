@@ -10,6 +10,18 @@ jobs:
   docker_build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0.22
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: index_digest
+          MYSQL_USER: test
+          MYSQL_PASSWORD: p4ss
+        ports:
+        - "3306:3306"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - uses: actions/checkout@v1
 
@@ -24,7 +36,10 @@ jobs:
           --tag ${{ github.repository }}
         docker images
 
-    - name: Run the container
+    - name: Check the version
       run: |
         docker run ${{ github.repository }} --version
   
+    - name: Run the container and connect to the test database
+      run: |
+        docker run ${{ github.repository }} mysql://test:p4ss@localhost/index_digest
