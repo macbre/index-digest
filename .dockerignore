@@ -20,3 +20,11 @@ sql/
 
 # READMEs
 *.md
+
+# other stuff
+*.log
+MANIFEST*
+Dockerfile
+
+**/__pycache__/**
+**/test/**
