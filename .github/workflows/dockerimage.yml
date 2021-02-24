@@ -43,4 +43,5 @@ jobs:
   
     - name: Run the container and connect to the test database
       run: |
-        docker run --network=host ${{ github.repository }} mysql://test:p4ss@0.0.0.0:53306/index_digest
+        docker run --network=host ${{ github.repository }} mysql://test:p4ss@0.0.0.0:53306/index_digest | tee /tmp/results
+        grep "Jolly, good! No issues to report" /tmp/results
