@@ -35,6 +35,7 @@ jobs:
           --cache-from macbre/index-digest:latest \
           --tag ${{ github.repository }}
         docker images
+        docker ps
 
     - name: Check the version
       run: |
@@ -42,4 +43,4 @@ jobs:
   
     - name: Run the container and connect to the test database
       run: |
-        docker run ${{ github.repository }} mysql://test:p4ss@localhost/index_digest
+        docker run ${{ github.repository }} mysql://test:p4ss@127.0.0.1/index_digest
