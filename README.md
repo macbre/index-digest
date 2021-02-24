@@ -48,7 +48,7 @@ make install
 
 #### Running tests
 
-We assume database is running locally on port 3306. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
+**We assume that the test database is running locally on port 53306**. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
 
 ```
 docker run --rm -p 53306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=index_digest" --name=index_digest_mysql mysql:8.0.22 "--default-authentication-plugin=mysql_native_password"
