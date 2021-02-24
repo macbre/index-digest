@@ -19,7 +19,7 @@ jobs:
           MYSQL_USER: test
           MYSQL_PASSWORD: p4ss
         ports:
-        - "3306:3306"
+        - "53306:3306"
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -43,4 +43,4 @@ jobs:
   
     - name: Run the container and connect to the test database
       run: |
-        docker run ${{ github.repository }} mysql://test:p4ss@127.0.0.1/index_digest
+        docker run --network=host ${{ github.repository }} mysql://test:p4ss@0.0.0.0:53306/index_digest
