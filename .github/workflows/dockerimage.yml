@@ -23,3 +23,8 @@ jobs:
           --cache-from macbre/index-digest:latest \
           --tag ${{ github.repository }}
         docker images
+
+    - name: Run the container
+      run: |
+        docker run ${{ github.repository }} --version
+  
