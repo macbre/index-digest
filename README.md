@@ -6,6 +6,8 @@ Analyses your database queries and schema and suggests indices improvements. You
 
 **NEW** You can also [use `index-digest` as GitHub's Action](https://github.com/marketplace/actions/index-digest).
 
+## What this tool does
+
 `index-digest` does the following:
 
 * it checks the schema of all tables in a given database and suggests improvements (e.g. removal of redundant indices, adding a primary key to ease replication, dropping tables with just a single column or no rows)
