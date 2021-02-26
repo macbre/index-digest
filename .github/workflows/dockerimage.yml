@@ -33,8 +33,11 @@ jobs:
       run: |
         docker build . \
           --cache-from macbre/index-digest:latest \
+          --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
           --tag ${{ github.repository }}
         docker images
+        docker inspect --format='{{json .Config.Labels}}' ${{ github.repository }} | jq
+
         docker ps
 
     - name: Check the version
