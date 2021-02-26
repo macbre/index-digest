@@ -13,7 +13,7 @@ RUN apk upgrade \
     && apk add --virtual build-deps gcc musl-dev \
     && apk add mariadb-dev \
     && pip install . \
-    && rm -rf ~/.cache/pip \
+    && rm -rf ~/.cache/pip /root/.cache/ \
     && apk del build-deps
 
 ARG COMMIT_SHA="dev"
@@ -28,6 +28,10 @@ LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 ADD . .
 
 USER nobody
+
+# install the entire package
+RUN pip install -U .
+RUN index_digest --version
 
 # docker run -t macbre/index-digest
 ENTRYPOINT ["index_digest"]
