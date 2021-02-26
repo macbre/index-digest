@@ -17,7 +17,7 @@ RUN apk upgrade \
     && apk del build-deps
 
 ARG COMMIT_SHA="dev"
-RUN echo "Labelling with ${COMMIT_SHA} ..."
+ENV COMMIT_SHA ${COMMIT_SHA}
 
 # label the image with branch name and commit hash
 LABEL maintainer="maciej.brencz@gmail.com"

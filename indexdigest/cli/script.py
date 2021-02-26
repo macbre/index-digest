@@ -191,7 +191,10 @@ def main():
     """ Main entry point for CLI"""
     logger = logging.getLogger(__name__)
 
-    arguments = docopt(__doc__, version='index_digest {}'.format(indexdigest.VERSION))
+    arguments = docopt(__doc__, version='index_digest {version} (git {commit})'.format(
+        version=indexdigest.VERSION,
+        commit=getenv('COMMIT_SHA', 'dev')[:7]
+    ))
     logger.debug('Options: %s', arguments)
 
     if 'DSN' not in arguments:
