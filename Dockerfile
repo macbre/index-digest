@@ -3,9 +3,9 @@ FROM python:3.9-alpine
 
 WORKDIR /opt/macbre/index-digest
 
-# install dependencies
-ADD setup.py ./
-ADD indexdigest/__init__.py ./indexdigest/__init__.py
+# copy files required to run "pip install"
+ADD setup.py README.md ./
+ADD ./indexdigest/__init__.py ./indexdigest
 
 # installs mysql_config and pip dependencies
 # https://github.com/gliderlabs/docker-alpine/issues/181
