@@ -12,7 +12,7 @@ ADD indexdigest/__init__.py ./indexdigest/__init__.py
 RUN apk upgrade \
     && apk add --virtual build-deps gcc musl-dev \
     && apk add mariadb-dev \
-    && pip install indexdigest \
+    && pip install . \
     && rm -rf ~/.cache/pip \
     && apk del build-deps
 

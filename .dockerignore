@@ -18,9 +18,6 @@ coverage.xml
 setup.sql
 sql/
 
-# READMEs
-*.md
-
 # other stuff
 *.log
 MANIFEST*
