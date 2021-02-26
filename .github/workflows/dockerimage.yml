@@ -1,4 +1,4 @@
-name: Check if a Docker image can be built
+name: Build and test a Docker image
 
 on:
   push:
@@ -21,5 +21,36 @@ jobs:
       run: |
         docker build . \
           --cache-from macbre/index-digest:latest \
+          --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
           --tag ${{ github.repository }}
         docker images
+
+        echo "## Image labels:"
+        docker inspect --format='{{json .Config.Labels}}' ${{ github.repository }} | jq
+
+    - name: Check the version
+      run: |
+        docker run ${{ github.repository }} --version
+
+  docker_test:
+    runs-on: ubuntu-latest
+    needs: docker_build
+
+    services:
+      mysql:
+        image: mysql:8.0.22
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: index_digest
+          MYSQL_USER: test
+          MYSQL_PASSWORD: p4ss
+        ports:
+        - "53306:3306"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Run the container and connect to the test database
+      run: |
+        docker ps
+        docker run --network=host ${{ github.repository }} mysql://test:p4ss@0.0.0.0:53306/index_digest | tee /tmp/results
+        grep "Jolly, good! No issues to report" /tmp/results

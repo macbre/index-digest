@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/python/
-FROM python:3.9.0-slim-buster
+FROM python:3.9-alpine
 
 WORKDIR /opt/macbre/index-digest
 
@@ -9,10 +9,20 @@ ADD indexdigest/__init__.py ./indexdigest/__init__.py
 
 # installs mysql_config and pip dependencies
 # https://github.com/gliderlabs/docker-alpine/issues/181
-RUN apt-get update && apt-get install -y libmariadb-dev-compat gcc \
+RUN apk upgrade \
+    && apk add --virtual build-deps gcc musl-dev \
+    && apk add mariadb-dev \
     && pip install indexdigest \
     && rm -rf ~/.cache/pip \
-    && apt-get remove -y gcc && apt-get autoremove -y
+    && apk del build-deps
+
+ARG COMMIT_SHA="dev"
+RUN echo "Labelling with ${COMMIT_SHA} ..."
+
+# label the image with branch name and commit hash
+LABEL maintainer="maciej.brencz@gmail.com"
+LABEL org.opencontainers.image.source="https://github.com/macbre/index-digest"
+LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 
 # install the remaining files
 ADD . .

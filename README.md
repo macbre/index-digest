@@ -1,10 +1,13 @@
 # index-digest
 
 [![PyPI](https://img.shields.io/pypi/v/indexdigest.svg)](https://pypi.python.org/pypi/indexdigest)
+[![Docker Hub](https://img.shields.io/docker/pulls/macbre/index-digest.svg)](https://hub.docker.com/r/macbre/index-digest/)
 
 Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as **your database linter**. The goal is to **provide the user with actionable reports** instead of just a list of statistics and schema details. Inspired by [Percona's `pt-index-usage`](https://www.percona.com/doc/percona-toolkit/LATEST/pt-index-usage.html).
 
 **NEW** You can also [use `index-digest` as GitHub's Action](https://github.com/marketplace/actions/index-digest).
+
+## What this tool does
 
 `index-digest` does the following:
 
@@ -46,7 +49,7 @@ make install
 
 #### Running tests
 
-We assume database is running locally on port 3306. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
+**We assume that the test database is running locally on port 53306**. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
 
 ```
 docker run --rm -p 53306:3306 --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -e "MYSQL_DATABASE=index_digest" --name=index_digest_mysql mysql:8.0.22 "--default-authentication-plugin=mysql_native_password"
