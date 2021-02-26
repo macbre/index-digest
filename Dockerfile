@@ -16,13 +16,13 @@ RUN apk upgrade \
     && rm -rf ~/.cache/pip \
     && apk del build-deps
 
-ARG COMMIT="dev"
-ENV COMMIT_SHA=${COMMIT}
+ARG COMMIT_SHA="dev"
+RUN echo "Labelling with ${COMMIT_SHA} ..."
 
 # label the image with branch name and commit hash
 LABEL maintainer="maciej.brencz@gmail.com"
 LABEL org.opencontainers.image.source="https://github.com/macbre/index-digest"
-LABEL org.opencontainers.image.revision=${COMMIT}
+LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 
 # install the remaining files
 ADD . .
