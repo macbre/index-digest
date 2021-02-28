@@ -27,10 +27,12 @@ LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 # install the remaining files
 ADD . .
 
-USER nobody
-
 # install the entire package
-RUN pip install -U .
+ENV HOME /opt/macbre/index-digest
+RUN chown -R nobody .
+USER nobody
+RUN pip install --user .
+
 RUN index_digest --version
 
 # docker run -t macbre/index-digest
