@@ -27,11 +27,13 @@ LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 # install the remaining files
 ADD . .
 
-# install the entire package
+# run as nobody
 ENV HOME /opt/index-digest
 RUN chown -R nobody .
 USER nobody
-RUN pip install --user .
+
+# install the entire package
+RUN pip install --no-warn-script-location --user . && rm -rf ~./cache
 
 RUN index_digest --version
 
