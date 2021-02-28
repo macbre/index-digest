@@ -69,6 +69,17 @@ from indexdigest.linters import \
     check_low_cardinality_index
 
 
+def get_version() -> str:
+    """
+    Return version string, e.g.
+    1.5.0 (git 1a258db)
+    """
+    return '{version} (git {commit})'.format(
+        version=indexdigest.VERSION,
+        commit=getenv('COMMIT_SHA', 'dev')[:7]
+    )
+
+
 def get_reports(database, sql_log=None, analyze_data=False, check_empty_databases=False):
     """
     :type database Database
@@ -191,7 +202,7 @@ def main():
     """ Main entry point for CLI"""
     logger = logging.getLogger(__name__)
 
-    arguments = docopt(__doc__, version='index_digest {}'.format(indexdigest.VERSION))
+    arguments = docopt(__doc__, version=f'index_digest {get_version()}')
     logger.debug('Options: %s', arguments)
 
     if 'DSN' not in arguments:

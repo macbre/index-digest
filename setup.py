@@ -1,6 +1,11 @@
+import re
 from setuptools import setup, find_packages
 
-from indexdigest import VERSION
+# take the version
+with open("indexdigest/__init__.py", "r") as fh:
+    # e.g. VERSION = '1.5.0'
+    last_line = fh.readlines()[-1]
+    VERSION = re.search(r'[\d.]+', last_line).group(0)
 
 # @see https://packaging.python.org/tutorials/packaging-projects/#creating-setup-py
 with open("README.md", "r") as fh:

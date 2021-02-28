@@ -28,6 +28,9 @@ jobs:
         echo "## Image labels:"
         docker inspect --format='{{json .Config.Labels}}' ${{ github.repository }} | jq
 
+        echo "## Image env vars:"
+        docker inspect --format='{{json .Config.Env}}' ${{ github.repository }} | jq
+
     - name: Check the version
       run: |
         docker run ${{ github.repository }} --version
