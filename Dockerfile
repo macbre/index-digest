@@ -1,7 +1,7 @@
 # https://hub.docker.com/_/python/
 FROM python:3.9-alpine
 
-WORKDIR /opt/macbre/index-digest
+WORKDIR /opt/index-digest
 
 # copy files required to run "pip install"
 ADD setup.py README.md ./
@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 ADD . .
 
 # install the entire package
-ENV HOME /opt/macbre/index-digest
+ENV HOME /opt/index-digest
 RUN chown -R nobody .
 USER nobody
 RUN pip install --user .
