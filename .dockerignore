@@ -20,8 +20,10 @@ sql/
 
 # other stuff
 *.log
-MANIFEST*
+CONTRIBUTING.md
 Dockerfile
+MANIFEST*
 
-**/__pycache__/**
-**/test/**
+**/__pycache__
+**/test
+hooks/
