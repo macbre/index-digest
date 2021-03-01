@@ -33,7 +33,8 @@ RUN chown -R nobody .
 USER nobody
 
 # install the entire package
-RUN pip install --no-warn-script-location --user . && rm -rf ~./cache
+RUN pip install --no-warn-script-location --user . \
+    && rm -rf ~./cache
 
 RUN index_digest --version
 
