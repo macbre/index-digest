@@ -16,10 +16,13 @@ jobs:
 
       matrix:
         # Python version(s) to use when running the tests
+        # # https://github.com/actions/python-versions/blob/main/versions-manifest.json
         python:
           - "3.6"
+          - "3.7"
           - "3.8"
-          - "3.9-dev"
+          - "3.9"
+          - "3.10.0-alpha.5"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
@@ -38,7 +41,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python }}
 
