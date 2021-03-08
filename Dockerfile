@@ -13,7 +13,7 @@ RUN apk upgrade \
     && apk add --virtual build-deps gcc musl-dev \
     && apk add mariadb-dev \
     && pip install . \
-    && rm -rf ~/.cache/pip /root/.cache/ \
+    && rm -rf /root/.cache \
     && apk del build-deps
 
 ARG COMMIT_SHA="dev"
