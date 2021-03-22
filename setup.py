@@ -52,7 +52,7 @@ setup(
             'coverage==5.5',
             'pylint==2.7.2',
             'pytest==6.2.2',
-            'twine==3.3.0',
+            'twine==3.4.1',
         ]
     },
     install_requires=[
