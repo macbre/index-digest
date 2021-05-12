@@ -4,7 +4,7 @@ This linter checks for not used columns and tables by going through SELECT queri
 import logging
 
 from collections import defaultdict, OrderedDict
-from sql_metadata import get_query_columns, get_query_tables
+from sql_metadata.compat import get_query_columns, get_query_tables
 
 from indexdigest.utils import LinterEntry, is_select_query
 

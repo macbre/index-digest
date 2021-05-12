@@ -2,7 +2,7 @@
 This linter checks for select queries with HAVING clause
 """
 from sqlparse.tokens import Keyword
-from sql_metadata import preprocess_query, get_query_tables, get_query_tokens
+from sql_metadata.compat import preprocess_query, get_query_tables, get_query_tokens
 
 from indexdigest.utils import LinterEntry, shorten_query, is_select_query
 

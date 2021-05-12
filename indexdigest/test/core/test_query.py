@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from sql_metadata import get_query_columns, get_query_tables
+from sql_metadata.compat import get_query_columns, get_query_tables
 
 
 class TestUtils(TestCase):
