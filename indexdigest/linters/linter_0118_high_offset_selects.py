@@ -3,7 +3,7 @@ This linter checks for too high offset SELECT queries
 """
 from collections import OrderedDict
 
-from sql_metadata import get_query_limit_and_offset, get_query_tables
+from sql_metadata.compat import get_query_limit_and_offset, get_query_tables
 
 from indexdigest.utils import LinterEntry, shorten_query, is_select_query
 
