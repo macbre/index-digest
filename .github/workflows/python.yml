@@ -74,8 +74,8 @@ jobs:
         "./sql/populate.sh"
         mysql --protocol=tcp --port=53306 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
-    - name: Tests
-      run: make test
+    - name: Tests with code coverage
+      run: make coverage
 
     # https://coveralls-python.readthedocs.io/en/latest/usage/index.html
     # upload coverage report for just one of Python version matrix runs
