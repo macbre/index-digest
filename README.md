@@ -47,6 +47,8 @@ source env/bin/activate
 make install
 ```
 
+When using MacOS, you should follow [this `mysql_config` installation steps](https://stackoverflow.com/a/25491082).
+
 #### Running tests
 
 **We assume that the test database is running locally on port 53306**. You can use the following to test your changes locally before pushing them (this one uses MySQL 8.0.20):
