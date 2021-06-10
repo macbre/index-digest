@@ -2,9 +2,8 @@ name: Test against different Python version
 
 on:
   push:
-    branches: master
-  pull_request:
     branches: [ master ]
+  pull_request:
 
 jobs:
   python_tests:
