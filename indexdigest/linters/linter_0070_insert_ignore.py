@@ -46,7 +46,10 @@ def check_insert_ignore_queries(database, queries):
     queries = [query for query in queries if is_insert_ignore_query(query)]
 
     for query in queries:
-        table_used = get_query_tables(query)[0]
+        try:
+            table_used = get_query_tables(query)[0]
+        except ValueError as ex:
+            raise ValueError(f"Unable to parse the query: {query}") from ex
 
         context = OrderedDict()
         context['query'] = query
