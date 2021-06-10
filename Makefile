@@ -1,23 +1,14 @@
-project_name = indexdigest
-coverage_options = --include='$(project_name)/*' --omit='$(project_name)/test/*'
-
 install:
 	pip install -U -e .[dev]
 
 test:
-	pytest -x $(project_name) -o log_cli=true -o log_cli_level=warning
+	pytest -vv -o log_cli=true -o log_cli_level=warning
 
 coverage:
-	rm -f .coverage*
-	rm -rf htmlcov/*
-	coverage run -p -m pytest -x $(project_name)
-	coverage combine
-	coverage html -d htmlcov $(coverage_options)
-	coverage xml -i
-	coverage report $(coverage_options)
+	pytest -vv --cov=indexdigest --cov-report=term --cov-report=xml --cov-report=html --cov-fail-under=93
 
 lint:
-	pylint $(project_name)/ --ignore=test
+	pylint indexdigest/ --ignore=test
 
 demo:
 	docker run --network=host -t macbre/index-digest:latest mysql://index_digest:qwerty@127.0.0.1/index_digest --analyze-data --skip-checks=non_utf_columns --skip-tables=0028_no_time

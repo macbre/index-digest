@@ -2,9 +2,8 @@ name: Test against different Python version
 
 on:
   push:
-    branches: master
-  pull_request:
     branches: [ master ]
+  pull_request:
 
 jobs:
   python_tests:
@@ -17,7 +16,7 @@ jobs:
       matrix:
         # Python version(s) to use when running the tests
         # # https://github.com/actions/python-versions/blob/main/versions-manifest.json
-        python:
+        python-version:
           - "3.6"
           - "3.7"
           - "3.8"
@@ -43,7 +42,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python }}
+        python-version: ${{ matrix.python-version }}
 
     # https://github.com/actions/cache/blob/main/examples.md#using-pip-to-get-cache-location
     - name: Get pip cache dir
@@ -75,5 +74,13 @@ jobs:
         "./sql/populate.sh"
         mysql --protocol=tcp --port=53306 -uindex_digest -pqwerty index_digest -v -e '\s; SHOW TABLES; SHOW DATABASES;'
 
-    - name: Tests
-      run: make test
+    - name: Tests with code coverage
+      run: make coverage
+
+    # https://coveralls-python.readthedocs.io/en/latest/usage/index.html
+    # upload coverage report for just one of Python version matrix runs
+    - name: Upload coverage report to Coveralls
+      if: matrix.python-version == '3.9'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: coveralls --service=github

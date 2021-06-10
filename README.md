@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/indexdigest.svg)](https://pypi.python.org/pypi/indexdigest)
 [![Docker Hub](https://img.shields.io/docker/pulls/macbre/index-digest.svg)](https://hub.docker.com/r/macbre/index-digest/)
+[![Coverage Status](https://coveralls.io/repos/github/macbre/index-digest/badge.svg?branch=master)](https://coveralls.io/github/macbre/index-digest?branch=master)
 
 Analyses your database queries and schema and suggests indices improvements. You can use `index-digest` as **your database linter**. The goal is to **provide the user with actionable reports** instead of just a list of statistics and schema details. Inspired by [Percona's `pt-index-usage`](https://www.percona.com/doc/percona-toolkit/LATEST/pt-index-usage.html).
 
