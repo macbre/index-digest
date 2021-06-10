@@ -5,7 +5,7 @@ test:
 	pytest -vv -o log_cli=true -o log_cli_level=warning
 
 coverage:
-	pytest -vv --cov=indexdigest --cov-report=term --cov-report=xml
+	pytest -vv --cov=indexdigest --cov-report=term --cov-report=html --cov-fail-under=93
 
 lint:
 	pylint indexdigest/ --ignore=test
