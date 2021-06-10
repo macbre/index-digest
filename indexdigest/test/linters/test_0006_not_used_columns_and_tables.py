@@ -93,7 +93,7 @@ class TestNotUsedColumns(TestCase):
     def test_parsing_errors_handling(self):
         queries = [
             'SELECT test',
-            'SELECT t.val as value, count(*) FROM 0020_big_table as t WHERE id BETWEEN 10 AND 20 GROUP BY val'
+            'SELECT 0020_big_table t WHERE id BETWEEN 10 AND 20 GROUP BY val'
         ]
 
         reports = list(check_not_used_columns(database=self.connection, queries=queries))
