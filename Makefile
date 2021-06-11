@@ -5,7 +5,7 @@ test:
 	pytest -vv -o log_cli=true -o log_cli_level=warning
 
 coverage:
-	pytest -vv --cov=indexdigest --cov-report=term-missing --cov-report=html --cov-fail-under=93
+	pytest -vv --cov=indexdigest --cov-report=term-missing --cov-report=html --cov-fail-under=96
 
 lint:
 	pylint indexdigest/ --ignore=test
@@ -14,7 +14,7 @@ demo:
 	docker run --network=host -t macbre/index-digest:latest mysql://index_digest:qwerty@127.0.0.1/index_digest --analyze-data --skip-checks=non_utf_columns --skip-tables=0028_no_time
 
 sql-console:
-	mysql --prompt='mysql@\h[\d]>' --protocol=tcp -uindex_digest -pqwerty index_digest
+	mysql --prompt='mysql@\h[\d]>' --protocol=tcp --port=53306 -uindex_digest -pqwerty index_digest
 
 publish:
 	# run git tag -a v0.0.0 before running make publish

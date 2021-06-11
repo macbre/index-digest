@@ -65,7 +65,7 @@ def check_data_too_old(database, env=None):
     for (table_name, column) in get_time_columns(database):
         timestamps = get_boundary_times(database, table_name, column)
 
-        if timestamps is None or timestamps.get('min') is None:
+        if timestamps is None:
             continue
 
         diff = now - timestamps.get('min')

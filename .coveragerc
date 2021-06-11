@@ -1,0 +1,5 @@
+[run]
+# https://coverage.readthedocs.io/en/latest/source.html#source
+omit =
+    indexdigest/cli/add_linter.py
+    indexdigest/test/*

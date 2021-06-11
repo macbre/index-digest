@@ -11,7 +11,7 @@ from collections import OrderedDict
 import indexdigest
 
 
-def format_report(database, report):
+def _format_report(database, report):
     """
     :type database indexdigest.database.Database
     :type report indexdigest.utils.LinterEntry
@@ -48,7 +48,7 @@ def format_syslog(database, reports, ident='index-digest'):
     syslog.openlog(ident=ident, logoption=syslog.LOG_PID, facility=syslog.LOG_USER)
 
     for report in reports:
-        syslog.syslog(format_report(database, report))
+        syslog.syslog(_format_report(database, report))
 
     syslog.closelog()
     return ''

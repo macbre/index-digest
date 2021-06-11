@@ -198,7 +198,7 @@ def filter_reports_by_table(reports, tables=None, skip_tables=None):
     return reports
 
 
-def main():
+def main():  # pragma: no cover
     """ Main entry point for CLI"""
     logger = logging.getLogger(__name__)
 

@@ -1,6 +1,9 @@
 from unittest import TestCase
 
-from indexdigest.cli.script import filter_reports_by_type, filter_reports_by_table
+from _pytest.monkeypatch import MonkeyPatch
+
+from indexdigest import VERSION
+from indexdigest.cli.script import filter_reports_by_type, filter_reports_by_table, get_version
 from indexdigest.utils import LinterEntry
 
 
@@ -124,3 +127,8 @@ class FilterReportsByTableTest(TestCase):
         assert len(filtered) == 2
         assert filtered[0].table_name == 'bar'
         assert filtered[1].table_name == 'foobar'
+
+
+def test_get_version(monkeypatch: MonkeyPatch):
+    monkeypatch.setenv('COMMIT_SHA', '1234567890abc')
+    assert get_version() == f'{VERSION} (git 1234567)'
