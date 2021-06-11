@@ -32,10 +32,7 @@ class TestFormatterIntegrationTest(TestCase, FormatterTestMixin):
 
         # pass all reports via syslog formatter
         for report in get_reports(database, analyze_data=True):
-            try:
-                _format_report(database, report)
-            except Exception:
-                self.fail('Failed to format the following report {}'.format(str(report)))
+            _format_report(database, report)
 
     @mock.patch('syslog.syslog')
     def test_format_syslog(self, mocked_syslog: mock.MagicMock):
