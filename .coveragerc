@@ -1,0 +1,2 @@
+[run]
+omit = indexdigest/cli/add_linter.py
