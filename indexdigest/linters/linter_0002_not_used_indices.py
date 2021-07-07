@@ -26,10 +26,10 @@ def check_not_used_indices(database, queries):
 
     # analyze all tables used by the above queries
     # print(used_indices)
-    for table_name in used_indices.keys():
+    for table_name, table_indices in used_indices.items():
         for index in database.get_table_indices(table_name):
 
-            if index.name not in used_indices[table_name]:
+            if index.name not in table_indices:
                 yield LinterEntry(linter_type='not_used_indices', table_name=table_name,
                                   message='"{}" index was not used by provided queries'.
                                   format(index.name),
