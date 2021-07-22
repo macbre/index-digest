@@ -16,8 +16,8 @@ RUN apk upgrade \
     && rm -rf /root/.cache \
     && apk del build-deps
 
-ARG COMMIT_SHA="dev"
-ENV COMMIT_SHA ${COMMIT_SHA}
+ARG GITHUB_SHA="dev"
+ENV COMMIT_SHA ${GITHUB_SHA}
 
 # install the remaining files
 ADD . .
