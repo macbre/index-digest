@@ -1,3 +1,0 @@
-#!/bin/bash
-# see https://docs.docker.com/docker-hub/builds/advanced/#build-hook-examples
-docker build --build-arg COMMIT_SHA=$SOURCE_COMMIT -f $DOCKERFILE_PATH -t $IMAGE_NAME .

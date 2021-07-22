@@ -16,13 +16,14 @@ jobs:
     - name: Build the Docker image
       env:
         # @see https://docs.docker.com/develop/develop-images/build_enhancements/
-        COMPOSE_DOCKER_CLI_BUILD: "1"
         DOCKER_BUILDKIT: "1"
       run: |
         docker build . \
-          --cache-from macbre/index-digest:latest \
-          --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
+          --cache-from ghcr.io/macbre/index-digest:latest \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
+          --build-arg GITHUB_SHA=$(git rev-parse --short HEAD) \
           --tag ${{ github.repository }}
+
         docker images
 
         echo "## Image labels:"
