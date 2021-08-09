@@ -21,7 +21,7 @@ jobs:
           - "3.7"
           - "3.8"
           - "3.9"
-          - "3.10.0-alpha.5"
+          - "3.10.0-rc.1"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
@@ -60,6 +60,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        python -m pip install –upgrade pip
         pip install wheel
         make install
 
