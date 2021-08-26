@@ -10,8 +10,9 @@ ADD ./indexdigest/__init__.py ./indexdigest/__init__.py
 # installs mysql_config and pip dependencies
 # https://github.com/gliderlabs/docker-alpine/issues/181
 RUN apk upgrade \
-    && apk add --virtual build-deps gcc musl-dev \
+    && apk add --virtual build-deps gcc musl-dev cargo \
     && apk add mariadb-dev \
+    && pip install --upgrade pip \
     && pip install . \
     && rm -rf /root/.cache \
     && apk del build-deps
