@@ -94,7 +94,7 @@ def get_reports(database, sql_log=None, analyze_data=False, check_empty_database
     if sql_log:
         logger.debug('Trying to open SQL log file: %s', sql_log)
 
-        with open(sql_log) as log_file:
+        with open(sql_log, encoding='utf-8') as log_file:
             queries = log_file.readlines()
             queries = list(map(str.strip, queries))  # remove trailing spaces
             logger.debug('Got %d entries in SQL log file', len(queries))

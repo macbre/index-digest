@@ -30,7 +30,7 @@ def add_linter(linter_id, linter_name):
     sql_name = 'sql/{}-{}'.format(linter_id_fmt, linter_name.replace('_', '-'))
     logger.info("Add SQL schema and log files (%s) ...", sql_name)
 
-    with open(sql_name + '.sql', 'wt') as file_name:
+    with open(sql_name + '.sql', mode='wt', encoding='utf-8') as file_name:
         # 0002_not_used_indices
         table_name = '{}_{}'.format(linter_id_fmt, linter_name.replace('-', '_'))
 
@@ -46,7 +46,7 @@ def add_linter(linter_id, linter_name):
 
         logger.info('... %s created', file_name.name)
 
-    with open(sql_name + '-log', 'wt') as file_name:
+    with open(sql_name + '-log', mode='wt', encoding='utf-8') as file_name:
         file_name.writelines([
             '-- \n',
         ])
@@ -58,7 +58,7 @@ def add_linter(linter_id, linter_name):
     logger.info("Add a Python code for %s linter ...", linter_name)
 
     with open('indexdigest/linters/linter_{}_{}.py'.
-              format(linter_id_fmt, linter_name), 'wt') as file_name:
+              format(linter_id_fmt, linter_name), mode='wt', encoding='utf-8') as file_name:
         file_name.writelines([
             '"""\n',
             'This linter checks for ...\n',
@@ -85,7 +85,8 @@ def add_linter(linter_id, linter_name):
 
     logger.info("Add a test ...")
 
-    with open('indexdigest/test/linters/test_{}_{}.py'.format(linter_id_fmt, linter_name), 'wt') \
+    with open('indexdigest/test/linters/test_{}_{}.py'.format(linter_id_fmt, linter_name),
+            mode='wt', encoding='utf-8') \
             as file_name:
         file_name.writelines([
             'from __future__ import print_function\n',
