@@ -96,6 +96,7 @@ def memoize(func):
     return memoized_func
 
 
+# pylint:disable=too-few-public-methods
 class LinterEntry:
     """
     Wraps a single linter entry. Various formatters may display this data differently.

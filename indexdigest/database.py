@@ -27,6 +27,7 @@ class DatabaseBase:
     Sub-class this to mock database connection
     """
 
+    # pylint:disable=too-many-arguments
     def __init__(self, host, user, passwd, db, port=3306):
         """
         Connects to a given database
