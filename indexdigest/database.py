@@ -20,7 +20,7 @@ class IndexDigestQueryError(IndexDigestError):
     """
 
 
-class DatabaseBase(object):
+class DatabaseBase:
     """
     A generic wrapper of database connection with basic querying functionality.
 

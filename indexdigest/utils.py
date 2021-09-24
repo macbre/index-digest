@@ -96,7 +96,7 @@ def memoize(func):
     return memoized_func
 
 
-class LinterEntry(object):
+class LinterEntry:
     """
     Wraps a single linter entry. Various formatters may display this data differently.
     """
