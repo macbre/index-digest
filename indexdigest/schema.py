@@ -3,7 +3,7 @@ Data structures for handling schema-related things like indices and columns
 """
 
 
-class Index(object):
+class Index:
     """
     Keeps a single index meta-data
     """
@@ -109,7 +109,7 @@ class Index(object):
         )
 
 
-class Column(object):
+class Column:
     """
     Keeps a single table column meta-data
 

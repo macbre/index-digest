@@ -6,7 +6,7 @@ from indexdigest.utils import LinterEntry
 from .. import DatabaseTestMixin
 
 
-class DatabaseMock(object):
+class DatabaseMock:
     VERSION = '1.2.3-test'
     HOST = 'test.local'
 
@@ -25,7 +25,7 @@ class DatabaseMock(object):
         return []
 
 
-class FormatterTestMixin(object):
+class FormatterTestMixin:
     @staticmethod
     def get_database_mock():
         return DatabaseMock()

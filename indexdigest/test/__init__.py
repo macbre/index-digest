@@ -17,7 +17,7 @@ def read_queries_from_log(log_file):
     return queries
 
 
-class DatabaseTestMixin(object):
+class DatabaseTestMixin:
     DSN = 'mysql://index_digest:qwerty@127.0.0.1:53306/index_digest'
     DBNAME = 'index_digest'
 

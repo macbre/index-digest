@@ -1,0 +1,3 @@
+[MESSAGES CONTROL]
+# Messages to disable
+disable = consider-using-f-string,fixme,use-dict-literal,R0801
