@@ -53,7 +53,7 @@ setup(
             'coveralls==3.2.0',
             'pylint==2.11.1',
             'pytest==6.2.5',
-            'pytest-cov==2.12.1',
+            'pytest-cov==3.0.0',
             'twine==3.4.2',
         ]
     },
