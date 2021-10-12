@@ -49,7 +49,7 @@ setup(
     packages=find_packages(),
     extras_require={
         'dev': [
-            'coverage==5.5',
+            'coverage==6.0.2',
             'coveralls==3.2.0',
             'pylint==2.11.1',
             'pytest==6.2.5',
