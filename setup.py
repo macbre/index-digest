@@ -41,15 +41,15 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
     packages=find_packages(),
     extras_require={
         'dev': [
-            'coverage==6.2',
+            'coverage==6.3',
             'coveralls==3.3.1',
             'pylint==2.12.2',
             'pytest==6.2.5',
