@@ -60,7 +60,7 @@ setup(
     install_requires=[
         'docopt==0.6.2',
         'PyYAML==6.0',
-        'mysqlclient==2.1.0',
+        'mysqlclient==2.1.1',
         'sql_metadata==2.6.0',
         'termcolor==1.1.0',
         'yamlordereddictloader==0.4.0'
