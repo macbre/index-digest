@@ -15,12 +15,12 @@ jobs:
 
       matrix:
         # Python version(s) to use when running the tests
-        # # https://github.com/actions/python-versions/blob/main/versions-manifest.json
+        # https://github.com/actions/python-versions/blob/main/versions-manifest.json
         python-version:
-          - "3.7"
           - "3.8"
           - "3.9"
           - "3.10"
+          - "3.11"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
