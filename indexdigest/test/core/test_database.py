@@ -173,7 +173,7 @@ class TestDatabase(TestCase, DatabaseTestMixin):
 
         self.assertEqual(columns[1].name, 'foo')
         self.assertEqual(columns[1].type, 'varchar(16)')
-        self.assertEqual(columns[1].character_set, 'utf8')
+        self.assertIn(columns[1].character_set, ['utf8', 'utf8mb3'])
 
         self.assertEqual(len(columns), 2)
 
