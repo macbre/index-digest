@@ -29,7 +29,7 @@ jobs:
           - "mariadb:10.2"
           - "mariadb:10.5"
           - "mariadb:10.6"
-          - "mariadb:11.1.2"
+          - "mariadb:11.1.2-jammy"
           # https://hub.docker.com/_/percona?tab=tags
           - "percona:8.0.22-13"
 
