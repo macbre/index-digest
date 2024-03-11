@@ -133,8 +133,7 @@ class DatabaseBase:
         :rtype: dict[]
         """
         # DictCursor is a Cursor class that returns rows as dictionaries
-        for row in self.query(sql, cursor_class=DictCursor):
-            yield row
+        yield from self.query(sql, cursor_class=DictCursor)
 
     def query_field(self, sql):
         """
