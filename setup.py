@@ -50,7 +50,7 @@ setup(
     extras_require={
         'dev': [
             'coverage==6.5.0',
-            'coveralls==4.0.0',
+            'coveralls==4.0.1',
             'pylint==3.2.0',
             'pytest==8.2.0',
             'pytest-cov==5.0.0',
