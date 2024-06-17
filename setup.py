@@ -61,7 +61,7 @@ setup(
         'docopt==0.6.2',
         'PyYAML==6.0.1',
         'mysqlclient==2.2.4',
-        'sql_metadata==2.11.0',
+        'sql_metadata==2.12.0',
         'termcolor==2.4.0',
         'yamlordereddictloader==0.4.2'
     ],
