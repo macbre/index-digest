@@ -52,7 +52,7 @@ setup(
             'coverage==7.6.0',
             'coveralls==4.0.1',
             'pylint==3.2.5',
-            'pytest==8.2.2',
+            'pytest==8.3.1',
             'pytest-cov==5.0.0',
             'twine==5.1.1',
         ]
