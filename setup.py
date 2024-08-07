@@ -59,7 +59,7 @@ setup(
     },
     install_requires=[
         'docopt==0.6.2',
-        'PyYAML==6.0.1',
+        'PyYAML==6.0.2',
         'mysqlclient==2.2.4',
         'sql_metadata==2.12.0',
         'termcolor==2.4.0',
