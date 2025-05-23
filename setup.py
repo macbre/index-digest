@@ -46,7 +46,7 @@ setup(
         'Programming Language :: Python :: 3.10',
     ],
     packages=find_packages(),
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     extras_require={
         'dev': [
             'coverage==7.6.1',
