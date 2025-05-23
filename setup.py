@@ -61,7 +61,7 @@ setup(
         'PyYAML==6.0.2',
         'mysqlclient==2.2.7',
         'sql_metadata==2.17.0',
-        'termcolor==2.4.0',
+        'termcolor==3.1.0',
         'yamlordereddictloader==0.4.2'
     ],
     entry_points={
