@@ -1,4 +1,4 @@
 """
 index_digest Python module
 """
-VERSION = '1.6.0'
+VERSION = '1.7.0'
