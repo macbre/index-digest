@@ -17,10 +17,11 @@ jobs:
         # Python version(s) to use when running the tests
         # https://github.com/actions/python-versions/blob/main/versions-manifest.json
         python-version:
-          - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
+          - "3.12"
+          - "3.13"
 
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
@@ -80,7 +81,9 @@ jobs:
     # https://coveralls-python.readthedocs.io/en/latest/usage/index.html
     # upload coverage report for just one of Python version matrix runs
     - name: Upload coverage report to Coveralls
-      if: matrix.python-version == '3.9'
+      if: matrix.python-version == '3.12'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --service=github
+      run: |
+        pip install coveralls
+        coveralls --service=github

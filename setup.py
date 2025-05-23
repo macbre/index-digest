@@ -46,11 +46,10 @@ setup(
         'Programming Language :: Python :: 3.10',
     ],
     packages=find_packages(),
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     extras_require={
         'dev': [
             'coverage==7.6.1',
-            'coveralls==4.0.1',
             'pylint==3.2.7',
             'pytest==8.3.5',
             'pytest-cov==5.0.0',
