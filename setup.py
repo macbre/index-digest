@@ -49,7 +49,7 @@ setup(
     python_requires='>=3.9',
     extras_require={
         'dev': [
-            'coverage==7.10.6',
+            'coverage==7.10.7',
             'pylint==3.3.8',
             'pytest==8.4.2',
             'pytest-cov==6.3.0',
