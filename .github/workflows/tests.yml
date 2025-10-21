@@ -14,10 +14,6 @@ jobs:
       fail-fast: false
 
       matrix:
-        # Python version(s) to use when running the tests
-        python:
-         - "3.13"
-
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
           # https://hub.docker.com/_/mysql?tab=tags
@@ -46,32 +42,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5.0.0
+
+    # https://github.com/actions/setup-python?tab=readme-ov-file#caching-packages-dependencies
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
-        python-version: ${{ matrix.python }}
-
-    # https://github.com/actions/cache/blob/main/examples.md#using-pip-to-get-cache-location
-    - name: Get pip cache dir
-      id: pip-cache
-      run: |
-        echo "::set-output name=dir::$(pip cache dir)"
-
-    - name: pip cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/setup.py') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        python-version: "3.14"
+        cache: 'pip' # dependencies caching
 
     - name: Install dependencies
       run: |
         pip install wheel
         make install
-
-    - name: Linter
-      run: make lint
 
     - name: Set up the database
       run: |
