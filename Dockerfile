@@ -1,11 +1,11 @@
 # https://hub.docker.com/_/python/
-FROM python:3.13-alpine
+FROM python:3.14.0-alpine
 
 WORKDIR /opt/index-digest
 
 # copy files required to run "pip install"
-ADD setup.py README.md ./
-ADD ./indexdigest/__init__.py ./indexdigest/__init__.py
+COPY setup.py README.md ./
+COPY ./indexdigest/__init__.py ./indexdigest/__init__.py
 
 # installs mysql_config and pip dependencies
 # https://github.com/gliderlabs/docker-alpine/issues/181
@@ -17,15 +17,15 @@ RUN apk upgrade \
     && apk del build-deps
 
 ARG GITHUB_SHA="dev"
-ENV COMMIT_SHA ${GITHUB_SHA}
-
-# install the remaining files
-ADD . .
+ENV COMMIT_SHA=${GITHUB_SHA}
 
 # run as nobody
-ENV HOME /opt/index-digest
+ENV HOME=/opt/index-digest
 RUN chown -R nobody .
 USER nobody
+
+# install the remaining files
+COPY --chown=nobody . .
 
 # install the entire package
 RUN pip install --no-warn-script-location --user . \
