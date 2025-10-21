@@ -17,7 +17,7 @@ RUN apk upgrade \
     && apk del build-deps
 
 ARG GITHUB_SHA="dev"
-ENV COMMIT_SHA ${GITHUB_SHA}
+ENV COMMIT_SHA=${GITHUB_SHA}
 
 # run as nobody
 ENV HOME=/opt/index-digest
