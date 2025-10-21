@@ -20,7 +20,7 @@ ARG GITHUB_SHA="dev"
 ENV COMMIT_SHA ${GITHUB_SHA}
 
 # run as nobody
-ENV HOME /opt/index-digest
+ENV HOME=/opt/index-digest
 RUN chown -R nobody .
 USER nobody
 
