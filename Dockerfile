@@ -21,7 +21,7 @@ ENV COMMIT_SHA ${GITHUB_SHA}
 
 # run as nobody
 ENV HOME /opt/index-digest
-RUN chown nobody .
+RUN chown -R nobody .
 USER nobody
 
 # install the remaining files
