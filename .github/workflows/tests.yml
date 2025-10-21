@@ -49,6 +49,7 @@ jobs:
       with:
         python-version: "3.14"
         cache: 'pip' # dependencies caching
+        cache-dependency-path: 'setup.py'
 
     - name: Install dependencies
       run: |
