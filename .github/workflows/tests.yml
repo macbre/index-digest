@@ -24,11 +24,13 @@ jobs:
           - "mysql:5.7.32"
           - "mysql:8.0.22"
           - "mysql:8.1.0"
+          - "mysql:9.4.0"
           # https://hub.docker.com/_/mariadb?tab=tags
           - "mariadb:10.1"
           - "mariadb:10.2"
           - "mariadb:10.5"
           - "mariadb:10.6"
+          - "mariadb:11.8"
           # https://hub.docker.com/_/percona?tab=tags
           - "percona:8.0.22-13"
 
