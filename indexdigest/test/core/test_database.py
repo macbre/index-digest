@@ -76,14 +76,14 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         print(variables)
 
         self.assertTrue('version_compile_os' in variables)
-        self.assertTrue('innodb_version' in variables)
+        self.assertTrue('innodb_data_home_dir' in variables)
 
     def test_get_variables_like(self):
         variables = self.connection.get_variables(like='innodb')
         print(variables)
 
         self.assertFalse('version_compile_os' in variables)  # this variable does not match given like
-        self.assertTrue('innodb_version' in variables)
+        self.assertTrue('innodb_data_home_dir' in variables)
 
     def test_explain_and_utf_query(self):
         """
