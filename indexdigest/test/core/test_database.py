@@ -56,12 +56,13 @@ class TestDatabase(TestCase, DatabaseTestMixin):
     TABLE_NAME = '0000_the_table'
 
     def test_database_version(self):
-        # 5.5.57-0+deb8u1 / 8.0.3-rc-log / 10.2.10-MariaDB-10.2.10+maria~jessie
+        # 5.5.57-0+deb8u1 / 8.0.3-rc-log / 9.4.0 MySQL Community Server - GPL
+        # 10.2.10-MariaDB-10.2.10+maria~jessie / 12.0.2-MariaDB-ubu2404 mariadb.org binary distribution
         version = self.connection.get_server_version()
 
         self.assertTrue(
-            version.startswith('5.') or version.startswith('8.') or 'MariaDB' in version,
-            'MySQL server should be from 5.x or 8.x line or have MariaDB part')
+            version.startswith('5.') or version.startswith('8.') or version.startswith('9.') or 'MariaDB' in version,
+            'MySQL server should be from 5.x/8.x/9.x line or have MariaDB part')
 
     def test_get_tables(self):
         tables = list(self.connection.get_tables())
@@ -76,14 +77,14 @@ class TestDatabase(TestCase, DatabaseTestMixin):
         print(variables)
 
         self.assertTrue('version_compile_os' in variables)
-        self.assertTrue('innodb_version' in variables)
+        self.assertTrue('innodb_data_home_dir' in variables)
 
     def test_get_variables_like(self):
         variables = self.connection.get_variables(like='innodb')
         print(variables)
 
         self.assertFalse('version_compile_os' in variables)  # this variable does not match given like
-        self.assertTrue('innodb_version' in variables)
+        self.assertTrue('innodb_data_home_dir' in variables)
 
     def test_explain_and_utf_query(self):
         """

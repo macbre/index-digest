@@ -14,21 +14,20 @@ jobs:
       fail-fast: false
 
       matrix:
-        # Python version(s) to use when running the tests
-        python:
-         - "3.13"
-
         # Docker images of MySQL-compliant databases to run the tests suite on
         database:
           # https://hub.docker.com/_/mysql?tab=tags
           - "mysql:5.7.32"
           - "mysql:8.0.22"
           - "mysql:8.1.0"
+          - "mysql:9.4.0"
           # https://hub.docker.com/_/mariadb?tab=tags
           - "mariadb:10.1"
           - "mariadb:10.2"
           - "mariadb:10.5"
           - "mariadb:10.6"
+          - "mariadb:11.8"
+          - "mariadb:12.0"
           # https://hub.docker.com/_/percona?tab=tags
           - "percona:8.0.22-13"
 
@@ -40,36 +39,23 @@ jobs:
                 MYSQL_DATABASE: index_digest
             ports:
                 - "53306:3306"
-            options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+            options: --health-cmd="mysqladmin ping || mariadb-admin ping" --health-interval=10s --health-timeout=5s --health-retries=6
 
     steps:
     - uses: actions/checkout@v5.0.0
+
+    # https://github.com/actions/setup-python?tab=readme-ov-file#caching-packages-dependencies
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
-        python-version: ${{ matrix.python }}
-
-    # https://github.com/actions/cache/blob/main/examples.md#using-pip-to-get-cache-location
-    - name: Get pip cache dir
-      id: pip-cache
-      run: |
-        echo "::set-output name=dir::$(pip cache dir)"
-
-    - name: pip cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/setup.py') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        python-version: "3.14"
+        cache: 'pip' # dependencies caching
+        cache-dependency-path: 'setup.py'
 
     - name: Install dependencies
       run: |
         pip install wheel
         make install
-
-    - name: Linter
-      run: make lint
 
     - name: Set up the database
       run: |

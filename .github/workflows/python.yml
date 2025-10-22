@@ -44,20 +44,8 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
-
-    # https://github.com/actions/cache/blob/main/examples.md#using-pip-to-get-cache-location
-    - name: Get pip cache dir
-      id: pip-cache
-      run: |
-        echo "::set-output name=dir::$(pip cache dir)"
-
-    - name: pip cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/setup.py') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        cache: 'pip' # dependencies caching
+        cache-dependency-path: 'setup.py'
 
     - name: Install dependencies
       run: |
