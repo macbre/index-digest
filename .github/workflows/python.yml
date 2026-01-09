@@ -16,8 +16,8 @@ jobs:
       matrix:
         # Python version(s) to use when running the tests
         # https://github.com/actions/python-versions/blob/main/versions-manifest.json
+        # https://devguide.python.org/versions/
         python-version:
-          - "3.9"
           - "3.10"
           - "3.11"
           - "3.12"
