@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/python/
-FROM python:3.16.0a1-alpine
+FROM python:3.16.0a2-alpine
 
 WORKDIR /opt/index-digest
 
