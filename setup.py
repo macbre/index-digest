@@ -47,7 +47,7 @@ setup(
             'pylint==3.3.9',
             'pytest==8.4.2',
             'pytest-cov==7.1.0',
-            'twine==6.2.0',
+            'twine==7.0.0',
         ]
     },
     install_requires=[
